@@ -2,9 +2,15 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>持股分帳本 · Stock Ledger</title>
 <meta name="description" content="共用股票帳戶分帳追蹤工具，獨立計算兩人持股成本與損益。">
+<!-- PWA -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="持股分帳本">
+<meta name="theme-color" content="#0f0f0f">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -147,6 +153,28 @@ select option { background: var(--surface2); }
 .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
 .empty { text-align: center; padding: 3rem; color: var(--muted); font-size: 13px; }
 
+/* Compact stock card (single-person mobile view) */
+.compact-list { display: flex; flex-direction: column; gap: 10px; }
+.compact-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: border-color 0.15s; }
+.compact-card:active { border-color: var(--border2); }
+.compact-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px 10px; }
+.compact-sym { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: 0.01em; }
+.compact-sym-name { font-size: 11px; color: var(--muted); margin-top: 1px; font-family: 'DM Mono', monospace; }
+.compact-price-block { text-align: right; }
+.compact-price { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; }
+.compact-change { font-size: 11px; font-family: 'DM Mono', monospace; margin-top: 2px; }
+.compact-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid var(--border); }
+.compact-stat { padding: 10px 16px; }
+.compact-stat:not(:last-child) { border-right: 1px solid var(--border); }
+.compact-stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.compact-stat-val { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500; }
+.compact-pnl-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-top: 1px solid var(--border); background: rgba(255,255,255,0.015); }
+.compact-pnl-label { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.1em; }
+.compact-pnl-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; }
+.compact-pnl-pct { font-size: 11px; font-family: 'DM Mono', monospace; margin-left: 6px; opacity: 0.8; }
+.compact-actions { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.2); flex-wrap: wrap; }
+.compact-no-price { padding: 8px 16px 12px; font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
 /* Info box */
 .info-box { background: rgba(212,168,83,0.06); border: 1px solid rgba(212,168,83,0.2); border-radius: var(--radius); padding: 12px 16px; font-size: 12px; color: var(--muted); line-height: 1.8; margin-bottom: 1.5rem; }
 .info-box strong { color: var(--accent); }
@@ -172,10 +200,16 @@ select option { background: var(--surface2); }
   .app { grid-template-columns: 1fr; }
   .sidebar { display: none; }
   .mobile-nav { display: flex; }
-  .main { padding: 1rem; }
+  .main { padding: 1rem; padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }
   .form-grid, .form-grid-3, .chart-grid { grid-template-columns: 1fr; }
   .stock-card-body { grid-template-columns: 1fr; }
   .holder-pane:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  .person-tabs { width: 100%; }
+  .person-tab { flex: 1; text-align: center; }
+  .compact-stats { grid-template-columns: 1fr 1fr 1fr; }
+  .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .page-header > div:last-child { width: 100%; }
+  .page-header > div:last-child button { width: 100%; justify-content: center; }
 }
 </style>
 </head>
@@ -754,7 +788,6 @@ async function fetchAllPrices() {
 // ── Positions ──────────────────────────────────────────
 function renderPositions() {
   const pos = getPositions();
-  // 依檢視模式決定要顯示的股票（只有持有該人員股票的才顯示）
   const allSyms = [...new Set(trades.map(t => t.sym))];
   const syms = positionView === 'all'
     ? allSyms
@@ -765,19 +798,92 @@ function renderPositions() {
     return;
   }
   if (!syms.length) {
-    document.getElementById('positions-list').innerHTML = `<div class="empty">${name(positionView)} 目前沒有任何交易紀錄。</div>`;
+    document.getElementById('positions-list').innerHTML = `<div class="empty">${name(positionView)} 目前沒有任何交易紀錄。</div>';
     return;
   }
 
-  document.getElementById('positions-list').innerHTML = syms.map(sym => {
-    const cp = prices[sym];
-    const pA = pos[sym + '_A'], pB = pos[sym + '_B'];
+  const isSingle = positionView !== 'all';
 
-    const priceHeader = cp
-      ? `<span style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--text)">${cp.toFixed(2)} 元</span>`
-      : `<span style="color:var(--muted);font-size:12px;font-family:'DM Mono',monospace">— 尚無現價</span>`;
+  if (isSingle) {
+    // ── 緊湊卡片模式（單人 / 手機優化）──────────────────
+    const who = positionView;
+    const accentColor = who === 'A' ? 'var(--a-color)' : 'var(--b-color)';
+    const pnlColor = v => v >= 0 ? 'var(--green)' : 'var(--red)';
 
-    const paneHTML = (p, who) => {
+    document.getElementById('positions-list').innerHTML = `<div class="compact-list">${syms.map(sym => {
+      const p = pos[sym + '_' + who];
+      const cp = prices[sym];
+      const avg = p && p.qty > 0 ? p.cost / p.qty : 0;
+      const unr = cp && p && p.qty > 0 ? (cp - avg) * p.qty : null;
+      const realized = p ? p.realized : 0;
+      const totalPnl = (unr ?? 0) + realized;
+      const qty = p ? p.qty : 0;
+      const costPct = cp && avg > 0 ? ((cp - avg) / avg * 100) : null;
+
+      // 頂部：股票代號 + 現價 + 漲跌幅
+      const priceBlock = cp
+        ? `<div class="compact-price-block">
+            <div class="compact-price" style="color:${costPct!==null&&costPct>=0?'var(--green)':'var(--red)'}">${cp.toFixed(2)}</div>
+            ${costPct !== null ? `<div class="compact-change" style="color:${costPct>=0?'var(--green)':'var(--red)'}">${costPct>=0?'+':''}${costPct.toFixed(2)}% vs 均</div>` : '<div class="compact-change" style="color:var(--muted)">— 無均價</div>'}
+          </div>`
+        : `<div class="compact-price-block"><div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace">尚無現價</div></div>`;
+
+      // 中間三格統計
+      const statsRow = `<div class="compact-stats">
+        <div class="compact-stat">
+          <div class="compact-stat-label">持股</div>
+          <div class="compact-stat-val">${qty > 0 ? qty.toLocaleString() : '—'}<span style="font-size:11px;color:var(--muted)"> 股</span></div>
+        </div>
+        <div class="compact-stat">
+          <div class="compact-stat-label">均成本</div>
+          <div class="compact-stat-val">${avg > 0 ? avg.toFixed(1) : '—'}<span style="font-size:11px;color:var(--muted)"> 元</span></div>
+        </div>
+        <div class="compact-stat">
+          <div class="compact-stat-label">已實現</div>
+          <div class="compact-stat-val" style="color:${pnlColor(realized)}">${realized !== 0 ? (realized >= 0 ? '+' : '') + Math.round(realized).toLocaleString() : '—'}</div>
+        </div>
+      </div>`;
+
+      // 底部損益列
+      const pnlRow = cp
+        ? `<div class="compact-pnl-row">
+            <div class="compact-pnl-label">合計損益</div>
+            <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+              <div class="compact-pnl-val" style="color:${pnlColor(totalPnl)}">${totalPnl >= 0 ? '+' : ''}${Math.round(totalPnl).toLocaleString()} 元</div>
+              ${unr !== null ? `<div class="compact-pnl-pct" style="color:${pnlColor(unr)}">（未實 ${unr>=0?'+':''}${Math.round(unr).toLocaleString()}）</div>` : ''}
+            </div>
+          </div>`
+        : `<div class="compact-no-price">⟵ 點「⟳ 抓取現價」計算損益</div>`;
+
+      // 操作列
+      const actionsRow = `<div class="compact-actions">
+        <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:11px">⟳ 抓取現價</button>
+        <input type="number" step="0.01" placeholder="手動輸入現價" id="manual-${sym}"
+          style="flex:1;min-width:90px;padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace"
+          onkeydown="if(event.key==='Enter')saveManual('${sym}')">
+        <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:11px">存</button>
+      </div>`;
+
+      return `<div class="compact-card">
+        <div class="compact-top">
+          <div>
+            <div class="compact-sym" style="color:${accentColor}">${sym}</div>
+            <div class="compact-sym-name">${qty > 0 ? qty.toLocaleString() + ' 股持有中' : '已出清'}</div>
+          </div>
+          ${priceBlock}
+        </div>
+        ${statsRow}
+        ${pnlRow}
+        ${actionsRow}
+      </div>`;
+    }).join('')}</div>`;
+
+  } else {
+    // ── 全部模式：原本的雙欄卡片 ─────────────────────────
+    const pnlColor = v => v >= 0 ? 'var(--green)' : 'var(--red)';
+
+    const paneHTML = (p, who, sym) => {
+      const cp = prices[sym];
       if (!p || (p.qty <= 0 && p.realized === 0)) {
         const hadTrades = trades.some(t => t.sym === sym && t.who === who);
         if (!hadTrades) return `<div class="holder-pane"><div class="holder-name" style="color:${who === 'A' ? 'var(--a-color)' : 'var(--b-color)'}">${name(who)}</div><div style="font-size:12px;color:var(--muted)">無持倉</div></div>`;
@@ -786,8 +892,6 @@ function renderPositions() {
 
       const avg = p.qty > 0 ? p.cost / p.qty : 0;
       const unr = cp && p.qty > 0 ? (cp - avg) * p.qty : null;
-      const pnlColor = v => v >= 0 ? 'var(--green)' : 'var(--red)';
-      const totalPnl = (unr ?? 0) + p.realized;
 
       const unrealizedBlock = unr !== null
         ? `<div class="holder-stat">
@@ -795,16 +899,7 @@ function renderPositions() {
             <div class="holder-stat-val" style="color:${pnlColor(unr)}">${unr >= 0 ? '+' : ''}${Math.round(unr).toLocaleString()} 元</div>
             <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace">現 ${cp} ／ 均 ${avg.toFixed(2)} ／ 差 ${(cp - avg) >= 0 ? '+' : ''}${(cp - avg).toFixed(2)}</div>
           </div>`
-        : p.qty > 0
-          ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">← 按「抓取現價」計算未實現損益</div>`
-          : '';
-
-      // 單人模式：顯示合計損益
-      const totalBlock = positionView !== 'all' && cp
-        ? `<div class="holder-stat" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-            <div class="holder-stat-label">合計損益</div>
-            <div class="holder-stat-val" style="color:${pnlColor(totalPnl)}">${totalPnl >= 0 ? '+' : ''}${Math.round(totalPnl).toLocaleString()} 元</div>
-          </div>` : '';
+        : p.qty > 0 ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">← 按「抓取現價」計算</div>` : '';
 
       return `<div class="holder-pane">
         <div class="holder-name" style="color:${who === 'A' ? 'var(--a-color)' : 'var(--b-color)'}">${name(who)}</div>
