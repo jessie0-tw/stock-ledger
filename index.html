@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>持股分帳本 · Stock Ledger</title>
+<meta name="description" content="共用股票帳戶分帳追蹤工具，獨立計算兩人持股成本與損益。">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0f0f;
+  --surface: #181818;
+  --surface2: #222;
+  --border: #2a2a2a;
+  --border2: #333;
+  --text: #f0ede8;
+  --muted: #888;
+  --accent: #d4a853;
+  --accent2: #c17f3a;
+  --green: #4caf7d;
+  --red: #e05c5c;
+  --blue: #5b9bd5;
+  --a-color: #d4a853;
+  --b-color: #5b9bd5;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Noto Sans TC', sans-serif; font-weight: 300; min-height: 100vh; }
+a { color: inherit; text-decoration: none; }
+
+/* Layout */
+.app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+.sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 2rem 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.main { padding: 2rem 2.5rem; overflow-x: hidden; }
+
+/* Sidebar */
+.logo { padding: 0 1.5rem 2rem; }
+.logo-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--accent); letter-spacing: 0.02em; line-height: 1.2; }
+.logo-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 2px; font-family: 'DM Mono', monospace; }
+.nav { flex: 1; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 1.5rem; font-size: 13px; cursor: pointer; color: var(--muted); transition: all 0.15s; border-left: 2px solid transparent; }
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(212,168,83,0.06); font-weight: 400; }
+.nav-icon { font-size: 15px; width: 18px; text-align: center; }
+.nav-section { padding: 1.5rem 1.5rem 0.5rem; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+.sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); }
+.person-badge { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 12px; }
+.person-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* Page header */
+.page-header { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; }
+.page-title { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text); }
+.page-sub { font-size: 12px; color: var(--muted); margin-top: 4px; font-family: 'DM Mono', monospace; }
+
+/* Sections */
+.section { display: none; }
+.section.active { display: block; }
+
+/* Cards & Metrics */
+.metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+.metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; }
+.metric-card.accent { border-color: rgba(212,168,83,0.3); background: rgba(212,168,83,0.05); }
+.metric-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+.metric-value { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; }
+.metric-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.pos { color: var(--green); }
+.neg { color: var(--red); }
+.neutral { color: var(--text); }
+
+/* Table */
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.table-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+.table-title { font-size: 13px; font-weight: 500; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { padding: 10px 16px; text-align: left; font-size: 10px; font-weight: 400; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; border-bottom: 1px solid var(--border); }
+td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-family: 'DM Mono', monospace; }
+.badge-a { background: rgba(212,168,83,0.15); color: var(--a-color); border: 1px solid rgba(212,168,83,0.3); }
+.badge-b { background: rgba(91,155,213,0.15); color: var(--b-color); border: 1px solid rgba(91,155,213,0.3); }
+.tag-buy { color: var(--green); font-size: 11px; font-family: 'DM Mono', monospace; }
+.tag-sell { color: var(--red); font-size: 11px; font-family: 'DM Mono', monospace; }
+
+/* Form */
+.form-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+label.field-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; }
+input, select, textarea { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 13px; font-family: 'Noto Sans TC', sans-serif; outline: none; width: 100%; transition: border-color 0.15s; }
+input:focus, select:focus { border-color: var(--accent); }
+select option { background: var(--surface2); }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-family: 'Noto Sans TC', sans-serif; transition: all 0.15s; }
+.btn:hover { border-color: var(--border); background: var(--surface); }
+.btn-primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 500; }
+.btn-primary:hover { background: var(--accent2); border-color: var(--accent2); }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--muted); padding: 6px 10px; font-size: 12px; }
+.btn-ghost:hover { color: var(--red); background: rgba(224,92,92,0.08); }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Chart area */
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 2rem; }
+.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+.chart-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 1rem; }
+.chart-wrap { position: relative; height: 220px; }
+
+/* Stock overview cards */
+.stock-grid { display: grid; gap: 12px; }
+.stock-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.stock-card-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+.stock-sym { font-family: 'DM Serif Display', serif; font-size: 20px; }
+.stock-price { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); }
+.stock-card-body { display: grid; grid-template-columns: 1fr 1fr; }
+.holder-pane { padding: 1rem 1.25rem; }
+.holder-pane:first-child { border-right: 1px solid var(--border); }
+.holder-name { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: 10px; }
+.holder-stat { margin-bottom: 8px; }
+.holder-stat-label { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
+.holder-stat-val { font-family: 'DM Mono', monospace; font-size: 14px; }
+
+/* Price status banner */
+.fetch-banner { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 1.5rem; display: none; line-height: 1.6; }
+.fetch-banner.visible { display: block; }
+
+/* CSV import/export area */
+.import-area { border: 2px dashed var(--border2); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.15s; }
+.import-area:hover, .import-area.drag { border-color: var(--accent); background: rgba(212,168,83,0.04); }
+.import-icon { font-size: 32px; margin-bottom: 12px; }
+.import-title { font-size: 14px; font-weight: 400; margin-bottom: 6px; }
+.import-sub { font-size: 12px; color: var(--muted); }
+.divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+.empty { text-align: center; padding: 3rem; color: var(--muted); font-size: 13px; }
+
+/* Info box */
+.info-box { background: rgba(212,168,83,0.06); border: 1px solid rgba(212,168,83,0.2); border-radius: var(--radius); padding: 12px 16px; font-size: 12px; color: var(--muted); line-height: 1.8; margin-bottom: 1.5rem; }
+.info-box strong { color: var(--accent); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* Toast */
+#toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 18px; font-size: 13px; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 999; max-width: 300px; }
+#toast.show { transform: translateY(0); opacity: 1; }
+#toast.success { border-color: var(--green); color: var(--green); }
+#toast.error { border-color: var(--red); color: var(--red); }
+#toast.info { border-color: var(--accent); color: var(--accent); }
+
+/* Mobile nav */
+.mobile-nav { display: none; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.75rem 1rem; gap: 8px; flex-wrap: wrap; }
+.mobile-nav .nav-item { padding: 6px 12px; border-radius: 8px; border-left: none; font-size: 12px; }
+.mobile-nav .nav-item.active { background: rgba(212,168,83,0.1); border-radius: 8px; }
+
+@media (max-width: 768px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .mobile-nav { display: flex; }
+  .main { padding: 1rem; }
+  .form-grid, .form-grid-3, .chart-grid { grid-template-columns: 1fr; }
+  .stock-card-body { grid-template-columns: 1fr; }
+  .holder-pane:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobile-nav">
+  <div class="nav-item active" onclick="switchSection('dashboard', this)"><span class="nav-icon">▦</span> 總覽</div>
+  <div class="nav-item" onclick="switchSection('positions', this)"><span class="nav-icon">◈</span> 持股</div>
+  <div class="nav-item" onclick="switchSection('add', this)"><span class="nav-icon">＋</span> 新增</div>
+  <div class="nav-item" onclick="switchSection('history', this)"><span class="nav-icon">≡</span> 明細</div>
+  <div class="nav-item" onclick="switchSection('csv', this)"><span class="nav-icon">⇅</span> CSV</div>
+  <div class="nav-item" onclick="switchSection('settings', this)"><span class="nav-icon">⚙</span> 設定</div>
+</div>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-title">持股<br>分帳本</div>
+      <div class="logo-sub">Stock Ledger</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">主選單</div>
+      <div class="nav-item active" id="nav-dashboard" onclick="switchSection('dashboard', this)"><span class="nav-icon">▦</span> 總覽</div>
+      <div class="nav-item" id="nav-positions" onclick="switchSection('positions', this)"><span class="nav-icon">◈</span> 持股分析</div>
+      <div class="nav-item" id="nav-add" onclick="switchSection('add', this)"><span class="nav-icon">＋</span> 新增交易</div>
+      <div class="nav-item" id="nav-history" onclick="switchSection('history', this)"><span class="nav-icon">≡</span> 交易明細</div>
+      <div class="nav-section">資料</div>
+      <div class="nav-item" id="nav-csv" onclick="switchSection('csv', this)"><span class="nav-icon">⇅</span> CSV 匯入匯出</div>
+      <div class="nav-item" id="nav-settings" onclick="switchSection('settings', this)"><span class="nav-icon">⚙</span> 設定</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="person-badge"><div class="person-dot" style="background:var(--a-color)"></div><span id="name-a-label" style="font-size:12px">人員 A</span></div>
+      <div class="person-badge"><div class="person-dot" style="background:var(--b-color)"></div><span id="name-b-label" style="font-size:12px">人員 B</span></div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Dashboard -->
+    <div class="section active" id="sec-dashboard">
+      <div class="page-header">
+        <div><div class="page-title">總覽</div><div class="page-sub" id="dash-date">—</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm" onclick="switchSection('positions', document.getElementById('nav-positions')); fetchAllPrices()">↻ 更新現價</button>
+        </div>
+      </div>
+      <div class="metrics-row" id="dash-metrics"></div>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-title">持倉成本分佈</div>
+          <div class="chart-wrap"><canvas id="chart-cost"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">損益比較</div>
+          <div class="chart-wrap"><canvas id="chart-pnl"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-title">各股票持股成本（依人員）</div>
+          <div class="chart-wrap"><canvas id="chart-bar"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">交易量時間軸</div>
+          <div class="chart-wrap"><canvas id="chart-timeline"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Positions -->
+    <div class="section" id="sec-positions">
+      <div class="page-header">
+        <div><div class="page-title">持股分析</div><div class="page-sub">各股票分人員損益明細</div></div>
+        <button class="btn btn-primary btn-sm" onclick="fetchAllPrices()" id="btn-fetch-all">⟳ 自動抓取所有現價</button>
+      </div>
+      <div class="fetch-banner" id="fetch-status"></div>
+      <div class="stock-grid" id="positions-list"></div>
+    </div>
+
+    <!-- Add Trade -->
+    <div class="section" id="sec-add">
+      <div class="page-header">
+        <div><div class="page-title">新增交易</div><div class="page-sub">記錄一筆買賣明細</div></div>
+      </div>
+      <div class="form-card">
+        <div class="form-grid" style="margin-bottom:16px">
+          <div class="form-group">
+            <label class="field-label">股票代號</label>
+            <input id="f-sym" type="text" placeholder="例：2330" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="field-label">交易人</label>
+            <select id="f-who">
+              <option value="A" id="opt-a">人員 A</option>
+              <option value="B" id="opt-b">人員 B</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid-3" style="margin-bottom:16px">
+          <div class="form-group">
+            <label class="field-label">買 / 賣</label>
+            <select id="f-side">
+              <option value="buy">買進</option>
+              <option value="sell">賣出</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="field-label">股數（股）</label>
+            <input id="f-qty" type="number" placeholder="1000" min="1">
+          </div>
+          <div class="form-group">
+            <label class="field-label">成交價（元）</label>
+            <input id="f-price" type="number" step="0.01" placeholder="600">
+          </div>
+        </div>
+        <div class="form-grid" style="margin-bottom:20px">
+          <div class="form-group">
+            <label class="field-label">日期</label>
+            <input id="f-date" type="date">
+          </div>
+          <div class="form-group">
+            <label class="field-label">備註（選填）</label>
+            <input id="f-note" type="text" placeholder="波段操作、停損...">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="addTrade()" id="btn-add-trade">確認新增</button>
+      </div>
+      <div class="info-box">
+        💡 新增後請至「<strong>CSV 匯入匯出</strong>」下載備份，傳給對方後請對方匯入即可同步資料。
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="section" id="sec-history">
+      <div class="page-header">
+        <div><div class="page-title">交易明細</div></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select id="filter-who" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
+            <option value="">全部人員</option>
+            <option value="A" id="filter-a">人員 A</option>
+            <option value="B" id="filter-b">人員 B</option>
+          </select>
+          <select id="filter-sym" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
+            <option value="">全部股票</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <div id="history-body"></div>
+      </div>
+    </div>
+
+    <!-- CSV -->
+    <div class="section" id="sec-csv">
+      <div class="page-header">
+        <div><div class="page-title">CSV 匯入匯出</div><div class="page-sub">與另一方同步資料的方式</div></div>
+      </div>
+      <div class="form-card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:12px">匯出交易紀錄</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">
+          將目前所有交易匯出成 CSV 檔案，傳給另一方後請對方用「匯入」功能載入，兩邊就能有相同的資料。
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="exportCSV()" id="btn-export">⬇ 下載 CSV</button>
+          <button class="btn" onclick="copyCSV()" id="btn-copy-csv">複製 CSV 內容</button>
+        </div>
+      </div>
+      <div class="form-card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:12px">匯入交易紀錄</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">
+          選取另一方傳來的 CSV 檔，或直接把 CSV 文字貼入下方。匯入時可選擇「合併」（保留現有再加入）或「覆蓋」（全部替換）。
+        </div>
+        <div class="import-area" onclick="document.getElementById('csv-file').click()" id="drop-area">
+          <div class="import-icon">📂</div>
+          <div class="import-title">點擊選取 CSV 檔案</div>
+          <div class="import-sub">或直接拖曳到這裡</div>
+          <input type="file" id="csv-file" accept=".csv,text/csv" style="display:none" onchange="handleFileImport(this)">
+        </div>
+        <div style="margin-top:16px">
+          <label class="field-label" style="margin-bottom:6px;display:block">或貼上 CSV 文字</label>
+          <textarea id="csv-paste" rows="5" placeholder="date,who,side,symbol,qty,price,note&#10;2024-01-15,A,buy,2330,1000,600,..." style="font-family:'DM Mono',monospace;font-size:12px;resize:vertical"></textarea>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="importCSV('merge')" id="btn-import-merge">合併匯入</button>
+          <button class="btn" onclick="importCSV('replace')" id="btn-import-replace">覆蓋匯入</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="section" id="sec-settings">
+      <div class="page-header">
+        <div><div class="page-title">設定</div></div>
+      </div>
+      <div class="form-card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:16px">人員名稱</div>
+        <div class="form-grid" style="margin-bottom:16px">
+          <div class="form-group">
+            <label class="field-label" style="color:var(--a-color)">人員 A（金色）</label>
+            <input id="set-name-a" type="text" placeholder="例：阿明">
+          </div>
+          <div class="form-group">
+            <label class="field-label" style="color:var(--b-color)">人員 B（藍色）</label>
+            <input id="set-name-b" type="text" placeholder="例：小美">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()" id="btn-save-settings">儲存設定</button>
+      </div>
+      <div class="form-card" style="border-color:rgba(224,92,92,0.3)">
+        <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--red)">清除所有資料</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px">這個動作無法復原，請先匯出 CSV 備份。</div>
+        <button class="btn" style="border-color:var(--red);color:var(--red)" onclick="clearAll()" id="btn-clear-all">清除所有交易紀錄</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── State ──────────────────────────────────────────────
+let trades = [];
+let prices = {};
+let settings = { nameA: '人員 A', nameB: '人員 B' };
+let charts = {};
+let isFetching = false;
+
+// ── Persistence ───────────────────────────────────────
+function save() {
+  try {
+    localStorage.setItem('slt_trades', JSON.stringify(trades));
+    localStorage.setItem('slt_prices', JSON.stringify(prices));
+    localStorage.setItem('slt_settings', JSON.stringify(settings));
+  } catch(e) { console.warn('localStorage save failed', e); }
+}
+function load() {
+  try { trades = JSON.parse(localStorage.getItem('slt_trades') || '[]'); } catch(e) { trades = []; }
+  try { prices = JSON.parse(localStorage.getItem('slt_prices') || '{}'); } catch(e) { prices = {}; }
+  try { settings = { nameA:'人員 A', nameB:'人員 B', ...JSON.parse(localStorage.getItem('slt_settings') || '{}') }; } catch(e) {}
+}
+
+// ── Toast ─────────────────────────────────────────────
+let toastTimer;
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = '', 3000);
+}
+
+// ── Names ──────────────────────────────────────────────
+function name(who) { return who === 'A' ? settings.nameA : settings.nameB; }
+function applyNames() {
+  document.getElementById('name-a-label').textContent = settings.nameA;
+  document.getElementById('name-b-label').textContent = settings.nameB;
+  document.getElementById('opt-a').textContent = settings.nameA;
+  document.getElementById('opt-b').textContent = settings.nameB;
+  document.getElementById('filter-a').textContent = settings.nameA;
+  document.getElementById('filter-b').textContent = settings.nameB;
+  const sa = document.getElementById('set-name-a'), sb = document.getElementById('set-name-b');
+  if (sa) sa.value = settings.nameA;
+  if (sb) sb.value = settings.nameB;
+}
+
+// ── Navigation ─────────────────────────────────────────
+function switchSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  // highlight in both sidebar and mobile nav
+  document.querySelectorAll('[id^="nav-' + id + '"]').forEach(n => n.classList.add('active'));
+  if (el) el.classList.add('active');
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'positions') renderPositions();
+  if (id === 'history') renderHistory();
+}
+
+// ── Calculations ───────────────────────────────────────
+function getPositions() {
+  const pos = {};
+  [...trades].sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id).forEach(t => {
+    const key = t.sym + '_' + t.who;
+    if (!pos[key]) pos[key] = { sym: t.sym, who: t.who, qty: 0, cost: 0, realized: 0 };
+    if (t.side === 'buy') {
+      pos[key].cost += t.qty * t.price;
+      pos[key].qty += t.qty;
+    } else {
+      const avg = pos[key].qty > 0 ? pos[key].cost / pos[key].qty : 0;
+      pos[key].realized += (t.price - avg) * t.qty;
+      pos[key].cost -= avg * t.qty;
+      pos[key].qty = Math.max(0, pos[key].qty - t.qty);
+      if (pos[key].qty < 0.001) pos[key].cost = 0;
+    }
+  });
+  return pos;
+}
+
+function getSummary() {
+  const pos = getPositions();
+  let costA = 0, costB = 0, pnlA = 0, pnlB = 0;
+  let realA = 0, realB = 0;
+  Object.values(pos).forEach(p => {
+    const avg = p.qty > 0 ? p.cost / p.qty : 0;
+    const cp = prices[p.sym];
+    const unr = cp && p.qty > 0 ? (cp - avg) * p.qty : 0;
+    const total = unr + p.realized;
+    if (p.who === 'A') { costA += p.cost; pnlA += total; realA += p.realized; }
+    else { costB += p.cost; pnlB += total; realB += p.realized; }
+  });
+  return { costA, costB, pnlA, pnlB, realA, realB };
+}
+
+// ── Dashboard ──────────────────────────────────────────
+function renderDashboard() {
+  document.getElementById('dash-date').textContent = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+  const { costA, costB, pnlA, pnlB } = getSummary();
+  const totalCost = costA + costB;
+  const totalPnl = pnlA + pnlB;
+  document.getElementById('dash-metrics').innerHTML = `
+    <div class="metric-card"><div class="metric-label">總持倉成本</div><div class="metric-value neutral">$${Math.round(totalCost).toLocaleString()}</div><div class="metric-sub">${trades.length} 筆交易</div></div>
+    <div class="metric-card"><div class="metric-label">${settings.nameA} 成本</div><div class="metric-value" style="color:var(--a-color)">$${Math.round(costA).toLocaleString()}</div></div>
+    <div class="metric-card"><div class="metric-label">${settings.nameB} 成本</div><div class="metric-value" style="color:var(--b-color)">$${Math.round(costB).toLocaleString()}</div></div>
+    <div class="metric-card accent"><div class="metric-label">${settings.nameA} 損益</div><div class="metric-value ${pnlA >= 0 ? 'pos' : 'neg'}">${pnlA >= 0 ? '+' : ''}$${Math.round(pnlA).toLocaleString()}</div></div>
+    <div class="metric-card accent"><div class="metric-label">${settings.nameB} 損益</div><div class="metric-value ${pnlB >= 0 ? 'pos' : 'neg'}">${pnlB >= 0 ? '+' : ''}$${Math.round(pnlB).toLocaleString()}</div></div>
+    <div class="metric-card"><div class="metric-label">合計損益</div><div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${totalPnl >= 0 ? '+' : ''}$${Math.round(totalPnl).toLocaleString()}</div></div>
+  `;
+  renderCharts(costA, costB, pnlA, pnlB);
+}
+
+function renderCharts(costA, costB, pnlA, pnlB) {
+  const chartOpts = {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { color: '#888', font: { size: 11, family: 'DM Mono' }, boxWidth: 12 } } },
+  };
+  const gridColor = 'rgba(255,255,255,0.04)';
+  const tickColor = '#555';
+
+  Object.values(charts).forEach(c => { try { c.destroy(); } catch(e) {} });
+  charts = {};
+
+  // Cost donut
+  if (costA + costB > 0) {
+    charts.cost = new Chart(document.getElementById('chart-cost'), {
+      type: 'doughnut',
+      data: {
+        labels: [settings.nameA, settings.nameB],
+        datasets: [{ data: [costA, costB], backgroundColor: ['rgba(212,168,83,0.85)', 'rgba(91,155,213,0.85)'], borderColor: '#181818', borderWidth: 3 }]
+      },
+      options: { ...chartOpts, cutout: '65%' }
+    });
+  }
+
+  // PnL bar
+  charts.pnl = new Chart(document.getElementById('chart-pnl'), {
+    type: 'bar',
+    data: {
+      labels: [settings.nameA, settings.nameB],
+      datasets: [{
+        data: [pnlA, pnlB],
+        backgroundColor: [
+          pnlA >= 0 ? 'rgba(76,175,125,0.75)' : 'rgba(224,92,92,0.75)',
+          pnlB >= 0 ? 'rgba(76,175,125,0.75)' : 'rgba(224,92,92,0.75)'
+        ],
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: { ...chartOpts, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } }, y: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } } } }
+  });
+
+  // Bar chart by stock
+  const pos = getPositions();
+  const syms = [...new Set(Object.values(pos).map(p => p.sym))];
+  const dataA = syms.map(s => { const p = pos[s + '_A']; return p ? Math.round(p.cost) : 0; });
+  const dataB = syms.map(s => { const p = pos[s + '_B']; return p ? Math.round(p.cost) : 0; });
+  charts.bar = new Chart(document.getElementById('chart-bar'), {
+    type: 'bar',
+    data: {
+      labels: syms,
+      datasets: [
+        { label: settings.nameA, data: dataA, backgroundColor: 'rgba(212,168,83,0.75)', borderRadius: 4, borderSkipped: false },
+        { label: settings.nameB, data: dataB, backgroundColor: 'rgba(91,155,213,0.75)', borderRadius: 4, borderSkipped: false }
+      ]
+    },
+    options: { ...chartOpts, scales: { x: { stacked: false, ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } }, y: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } } } }
+  });
+
+  // Timeline
+  const byDate = {};
+  trades.forEach(t => { byDate[t.date] = (byDate[t.date] || 0) + t.qty * t.price; });
+  const dates = Object.keys(byDate).sort();
+  charts.timeline = new Chart(document.getElementById('chart-timeline'), {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{ label: '交易金額', data: dates.map(d => Math.round(byDate[d])), borderColor: 'rgba(212,168,83,0.85)', backgroundColor: 'rgba(212,168,83,0.08)', fill: true, tension: 0.35, pointRadius: 3, pointBackgroundColor: 'rgba(212,168,83,0.85)' }]
+    },
+    options: { ...chartOpts, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 10 }, maxTicksLimit: 6 }, grid: { color: gridColor } }, y: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor } } } }
+  });
+}
+
+// ── Price Fetch (TWSE / TPEx) ──────────────────────────
+// 多重策略：直接 → allorigins → corsproxy.io → codetabs → 手動
+// 在 https:// (GitHub Pages) 環境下，allorigins 等 proxy 可正常使用
+
+async function parseTWSEResponse(data) {
+  const arr = data?.msgArray;
+  if (!arr || !arr.length) return null;
+  const item = arr.find(i => i.z && i.z !== '-') || arr[0];
+  if (!item) return null;
+  const price = parseFloat(item.z !== '-' ? item.z : item.y);
+  const prev = parseFloat(item.y);
+  if (isNaN(price) || price <= 0) return null;
+  const change = prev ? ((price - prev) / prev * 100) : null;
+  return { price, prev, change, name: item.n || '' };
+}
+
+async function fetchTWSEDirect(sym) {
+  const exCh = `tse_${sym}.tw|otc_${sym}.tw`;
+  const url = `https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=${exCh}&json=1&delay=0&_=${Date.now()}`;
+  const res = await fetch(url, {
+    signal: AbortSignal.timeout(5000),
+    headers: { 'Accept': 'application/json' }
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return parseTWSEResponse(await res.json());
+}
+
+async function fetchViaAllorigins(sym) {
+  const target = encodeURIComponent(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${sym}.tw|otc_${sym}.tw&json=1&delay=0&_=${Date.now()}`);
+  const url = `https://api.allorigins.win/get?url=${target}`;
+  const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error('allorigins HTTP ' + res.status);
+  const outer = await res.json();
+  if (!outer.contents) throw new Error('no contents');
+  return parseTWSEResponse(JSON.parse(outer.contents));
+}
+
+async function fetchViaCorsproxy(sym) {
+  const target = encodeURIComponent(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${sym}.tw|otc_${sym}.tw&json=1&delay=0`);
+  const url = `https://corsproxy.io/?${target}`;
+  const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error('corsproxy HTTP ' + res.status);
+  return parseTWSEResponse(await res.json());
+}
+
+async function fetchViaCodetabs(sym) {
+  const target = encodeURIComponent(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${sym}.tw|otc_${sym}.tw&json=1&delay=0`);
+  const url = `https://api.codetabs.com/v1/proxy?quest=${target}`;
+  const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error('codetabs HTTP ' + res.status);
+  return parseTWSEResponse(await res.json());
+}
+
+// Yahoo Finance fallback（支援台股 .TW / .TWO）
+async function fetchViaYahooProxy(sym) {
+  // 嘗試上市 (.TW) 和上櫃 (.TWO)
+  const suffixes = ['.TW', '.TWO'];
+  for (const suf of suffixes) {
+    try {
+      const target = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}${suf}?interval=1d&range=1d`);
+      const url = `https://api.allorigins.win/get?url=${target}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+      if (!res.ok) continue;
+      const outer = await res.json();
+      if (!outer.contents) continue;
+      const data = JSON.parse(outer.contents);
+      const meta = data?.chart?.result?.[0]?.meta;
+      if (!meta) continue;
+      const price = meta.regularMarketPrice || meta.previousClose;
+      const prev = meta.previousClose;
+      if (!price || isNaN(price)) continue;
+      const change = prev ? ((price - prev) / prev * 100) : null;
+      return { price, prev, change, name: meta.shortName || sym };
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
+async function fetchPrice(sym) {
+  const strategies = [
+    { name: '直接連接', fn: () => fetchTWSEDirect(sym) },
+    { name: 'Proxy (allorigins)', fn: () => fetchViaAllorigins(sym) },
+    { name: 'Proxy (corsproxy)', fn: () => fetchViaCorsproxy(sym) },
+    { name: 'Proxy (codetabs)', fn: () => fetchViaCodetabs(sym) },
+    { name: 'Yahoo Finance', fn: () => fetchViaYahooProxy(sym) },
+  ];
+
+  for (const s of strategies) {
+    try {
+      const r = await s.fn();
+      if (r && r.price > 0) {
+        console.log(`[${sym}] 成功 via ${s.name}: ${r.price}`);
+        return r;
+      }
+    } catch(e) {
+      console.log(`[${sym}] ${s.name} 失敗: ${e.message}`);
+    }
+  }
+  return null;
+}
+
+// ── Fetch All ──────────────────────────────────────────
+async function fetchAllPrices() {
+  if (isFetching) return;
+  const syms = [...new Set(trades.map(t => t.sym))];
+  if (!syms.length) { toast('尚無股票紀錄', 'error'); return; }
+
+  isFetching = true;
+  const btn = document.getElementById('btn-fetch-all');
+  const status = document.getElementById('fetch-status');
+  if (btn) { btn.textContent = '⟳ 抓取中...'; btn.disabled = true; }
+  status.classList.add('visible');
+  status.style.color = '';
+
+  let ok = 0;
+  const fail = [];
+  for (const sym of syms) {
+    status.innerHTML = `⏳ 正在抓取 <strong>${sym}</strong>（${syms.indexOf(sym) + 1}/${syms.length}）...`;
+    const r = await fetchPrice(sym);
+    if (r) {
+      prices[sym] = r.price;
+      ok++;
+      const sign = (r.change ?? 0) >= 0 ? '+' : '';
+      const chgStr = r.change != null ? `${sign}${r.change.toFixed(2)}%` : '—';
+      status.innerHTML = `✓ <strong>${sym}</strong>${r.name ? ' ' + r.name : ''} → <strong>${r.price} 元</strong> <span style="color:${(r.change??0)>=0?'var(--green)':'var(--red)'}">(${chgStr})</span>`;
+    } else {
+      fail.push(sym);
+    }
+    await new Promise(r => setTimeout(r, 300)); // polite delay
+  }
+
+  save();
+  isFetching = false;
+  if (btn) { btn.textContent = '⟳ 自動抓取所有現價'; btn.disabled = false; }
+
+  if (fail.length) {
+    status.style.color = 'var(--red)';
+    status.innerHTML = `完成：${ok} 支成功 ✓　無法自動抓取：<strong>${fail.join('、')}</strong>（請在下方手動輸入現價）`;
+  } else {
+    status.style.color = 'var(--green)';
+    status.innerHTML = `✅ 全部 ${ok} 支股票現價已更新`;
+    setTimeout(() => { status.classList.remove('visible'); status.style.color = ''; }, 5000);
+  }
+  renderPositions();
+}
+
+// ── Positions ──────────────────────────────────────────
+function renderPositions() {
+  const pos = getPositions();
+  const syms = [...new Set(trades.map(t => t.sym))];
+
+  if (!syms.length) {
+    document.getElementById('positions-list').innerHTML = '<div class="empty">尚無持股紀錄，請先至「新增交易」新增一筆。</div>';
+    return;
+  }
+
+  document.getElementById('positions-list').innerHTML = syms.map(sym => {
+    const cp = prices[sym];
+    const pA = pos[sym + '_A'], pB = pos[sym + '_B'];
+
+    const priceHeader = cp
+      ? `<span style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--text)">${cp.toFixed(2)} 元</span>`
+      : `<span style="color:var(--muted);font-size:12px;font-family:'DM Mono',monospace">— 尚無現價</span>`;
+
+    const paneHTML = (p, who) => {
+      if (!p || p.qty <= 0 && p.realized === 0) {
+        // 檢查是否曾有過交易但已出清
+        const hadTrades = trades.some(t => t.sym === sym && t.who === who);
+        if (!hadTrades) return `<div class="holder-pane"><div class="holder-name" style="color:${who === 'A' ? 'var(--a-color)' : 'var(--b-color)'}">${name(who)}</div><div style="font-size:12px;color:var(--muted)">無持倉</div></div>`;
+      }
+      if (!p) return `<div class="holder-pane"><div class="holder-name" style="color:${who === 'A' ? 'var(--a-color)' : 'var(--b-color)'}">${name(who)}</div><div style="font-size:12px;color:var(--muted)">無持倉</div></div>`;
+
+      const avg = p.qty > 0 ? p.cost / p.qty : 0;
+      const unr = cp && p.qty > 0 ? (cp - avg) * p.qty : null;
+      const pnlColor = v => v >= 0 ? 'var(--green)' : 'var(--red)';
+
+      const unrealizedBlock = unr !== null
+        ? `<div class="holder-stat">
+            <div class="holder-stat-label">未實現損益</div>
+            <div class="holder-stat-val" style="color:${pnlColor(unr)}">${unr >= 0 ? '+' : ''}${Math.round(unr).toLocaleString()} 元</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace">現 ${cp} ／ 均 ${avg.toFixed(2)} ／ 差 ${(cp - avg) >= 0 ? '+' : ''}${(cp - avg).toFixed(2)}</div>
+          </div>`
+        : p.qty > 0
+          ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">← 按「抓取現價」計算未實現損益</div>`
+          : '';
+
+      return `<div class="holder-pane">
+        <div class="holder-name" style="color:${who === 'A' ? 'var(--a-color)' : 'var(--b-color)'}">${name(who)}</div>
+        <div class="holder-stat"><div class="holder-stat-label">持股數</div><div class="holder-stat-val">${p.qty > 0 ? p.qty.toLocaleString() + ' 股' : '已出清'}</div></div>
+        ${p.qty > 0 ? `<div class="holder-stat"><div class="holder-stat-label">均攤成本</div><div class="holder-stat-val">${avg.toFixed(2)} 元</div></div>` : ''}
+        <div class="holder-stat"><div class="holder-stat-label">已實現損益</div><div class="holder-stat-val" style="color:${pnlColor(p.realized)}">${p.realized >= 0 ? '+' : ''}${Math.round(p.realized).toLocaleString()} 元</div></div>
+        ${unrealizedBlock}
+      </div>`;
+    };
+
+    return `<div class="stock-card">
+      <div class="stock-card-header">
+        <div class="stock-sym">${sym}</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          ${priceHeader}
+          <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:11px;padding:4px 10px">⟳ 抓取現價</button>
+          <div style="display:flex;align-items:center;gap:4px">
+            <input type="number" step="0.01" placeholder="手動輸入" id="manual-${sym}"
+              style="width:96px;padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace"
+              onkeydown="if(event.key==='Enter')saveManual('${sym}')">
+            <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:11px;padding:4px 10px">存</button>
+          </div>
+        </div>
+      </div>
+      <div class="stock-card-body">${paneHTML(pA, 'A')}${paneHTML(pB, 'B')}</div>
+    </div>`;
+  }).join('');
+}
+
+async function fetchOneSym(sym) {
+  const btn = document.getElementById('fetch-btn-' + sym);
+  if (btn) { btn.textContent = '...'; btn.disabled = true; }
+  const r = await fetchPrice(sym);
+  if (r) {
+    prices[sym] = r.price;
+    save();
+    const sign = (r.change ?? 0) >= 0 ? '+' : '';
+    const chgStr = r.change != null ? `${sign}${r.change.toFixed(2)}%` : '—';
+    toast(`${sym} ${r.name ? r.name + ' ' : ''}現價：${r.price} 元 (${chgStr})`);
+  } else {
+    toast(`${sym} 自動抓取失敗，請手動輸入`, 'error');
+  }
+  if (btn) { btn.textContent = '⟳ 抓取現價'; btn.disabled = false; }
+  renderPositions();
+}
+
+function saveManual(sym) {
+  const inp = document.getElementById('manual-' + sym);
+  const val = parseFloat(inp?.value);
+  if (!val || val <= 0) { toast('請輸入有效股價', 'error'); return; }
+  prices[sym] = val;
+  inp.value = '';
+  save();
+  renderPositions();
+  toast(`${sym} 現價已手動設為 ${val} 元`);
+}
+
+// ── Add Trade ──────────────────────────────────────────
+function addTrade() {
+  const sym = document.getElementById('f-sym').value.trim().toUpperCase();
+  const who = document.getElementById('f-who').value;
+  const side = document.getElementById('f-side').value;
+  const qty = parseFloat(document.getElementById('f-qty').value);
+  const price = parseFloat(document.getElementById('f-price').value);
+  const date = document.getElementById('f-date').value;
+  const note = document.getElementById('f-note').value.trim();
+  if (!sym) { toast('請輸入股票代號', 'error'); return; }
+  if (!qty || qty <= 0) { toast('請輸入有效股數', 'error'); return; }
+  if (!price || price <= 0) { toast('請輸入有效成交價', 'error'); return; }
+  if (!date) { toast('請選擇日期', 'error'); return; }
+  trades.push({ id: Date.now(), sym, who, side, qty, price, date, note });
+  save();
+  document.getElementById('f-sym').value = '';
+  document.getElementById('f-qty').value = '';
+  document.getElementById('f-price').value = '';
+  document.getElementById('f-note').value = '';
+  toast(`✓ 已新增 ${side === 'buy' ? '買進' : '賣出'} ${sym} ${qty.toLocaleString()} 股 @ ${price}`);
+  refreshFilters();
+}
+
+// ── History ────────────────────────────────────────────
+function refreshFilters() {
+  const syms = [...new Set(trades.map(t => t.sym))];
+  const sel = document.getElementById('filter-sym');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">全部股票</option>' + syms.map(s => `<option value="${s}"${s === cur ? ' selected' : ''}>${s}</option>`).join('');
+}
+
+function renderHistory() {
+  refreshFilters();
+  const whoF = document.getElementById('filter-who').value;
+  const symF = document.getElementById('filter-sym').value;
+  let filtered = [...trades].filter(t => (!whoF || t.who === whoF) && (!symF || t.sym === symF));
+  filtered.sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+  if (!filtered.length) {
+    document.getElementById('history-body').innerHTML = '<div class="empty">沒有符合條件的交易紀錄</div>';
+    return;
+  }
+  document.getElementById('history-body').innerHTML = `
+    <table>
+      <thead><tr><th>日期</th><th>股票</th><th>交易人</th><th>買/賣</th><th>股數</th><th>成交價</th><th>金額</th><th>備註</th><th></th></tr></thead>
+      <tbody>
+        ${filtered.map(t => `<tr>
+          <td style="font-family:'DM Mono',monospace;font-size:12px">${t.date}</td>
+          <td style="font-weight:500">${t.sym}</td>
+          <td><span class="badge badge-${t.who.toLowerCase()}">${name(t.who)}</span></td>
+          <td><span class="${t.side === 'buy' ? 'tag-buy' : 'tag-sell'}">${t.side === 'buy' ? '▲ 買進' : '▼ 賣出'}</span></td>
+          <td style="font-family:'DM Mono',monospace">${t.qty.toLocaleString()}</td>
+          <td style="font-family:'DM Mono',monospace">${t.price}</td>
+          <td style="font-family:'DM Mono',monospace">${Math.round(t.qty * t.price).toLocaleString()}</td>
+          <td style="color:var(--muted);font-size:12px">${t.note || '—'}</td>
+          <td><button class="btn btn-ghost" onclick="deleteTrade(${t.id})">✕</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function deleteTrade(id) {
+  if (!confirm('確定刪除這筆交易？')) return;
+  trades = trades.filter(t => t.id !== id);
+  save();
+  renderHistory();
+  toast('已刪除');
+}
+
+// ── CSV ────────────────────────────────────────────────
+const CSV_HEADER = 'date,who,side,symbol,qty,price,note';
+
+function tradesToCSV() {
+  const rows = trades.map(t => [t.date, t.who, t.side, t.sym, t.qty, t.price, (t.note || '').replace(/,/g, '，')].join(','));
+  return CSV_HEADER + '\n' + rows.join('\n');
+}
+
+function exportCSV() {
+  const bom = '\uFEFF'; // UTF-8 BOM for Excel compatibility
+  const blob = new Blob([bom + tradesToCSV()], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '持股分帳_' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('已下載 CSV');
+}
+
+function copyCSV() {
+  navigator.clipboard.writeText(tradesToCSV())
+    .then(() => toast('已複製 CSV 內容'))
+    .catch(() => toast('複製失敗，請手動選取文字', 'error'));
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/).filter(l => l.trim());
+  if (!lines.length) return [];
+  const firstLine = lines[0].toLowerCase().replace(/^\uFEFF/, ''); // strip BOM
+  if (!firstLine.includes('date')) { toast('CSV 格式錯誤，缺少 date 標題列', 'error'); return null; }
+  return lines.slice(1).map((line, i) => {
+    const parts = line.split(',');
+    const [date, who, side, sym, qty, price, ...noteParts] = parts;
+    if (!date || !who || !sym) return null;
+    return {
+      id: Date.now() + i,
+      date: date.trim(),
+      who: who.trim().toUpperCase(),
+      side: (side || 'buy').trim(),
+      sym: sym.trim().toUpperCase(),
+      qty: parseFloat(qty),
+      price: parseFloat(price),
+      note: noteParts.join(',').trim()
+    };
+  }).filter(Boolean);
+}
+
+function importCSV(mode) {
+  const text = document.getElementById('csv-paste').value.trim();
+  if (!text) { toast('請貼上 CSV 內容或選取檔案', 'error'); return; }
+  const parsed = parseCSV(text);
+  if (!parsed) return;
+  if (parsed.length === 0) { toast('CSV 中沒有有效的交易紀錄', 'error'); return; }
+  if (mode === 'replace') {
+    if (!confirm(`確定覆蓋所有現有 ${trades.length} 筆紀錄？`)) return;
+    trades = parsed;
+    toast(`覆蓋完成，共匯入 ${parsed.length} 筆交易`);
+  } else {
+    const existIds = new Set(trades.map(t => `${t.date}|${t.who}|${t.sym}|${t.side}|${t.qty}|${t.price}`));
+    const newOnes = parsed.filter(t => !existIds.has(`${t.date}|${t.who}|${t.sym}|${t.side}|${t.qty}|${t.price}`));
+    trades = [...trades, ...newOnes];
+    toast(`合併完成，新增 ${newOnes.length} 筆，略過重複 ${parsed.length - newOnes.length} 筆`);
+  }
+  save();
+  document.getElementById('csv-paste').value = '';
+  refreshFilters();
+}
+
+function handleFileImport(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('csv-paste').value = e.target.result;
+    toast('檔案已載入，請確認後點「合併匯入」或「覆蓋匯入」', 'info');
+  };
+  reader.readAsText(file, 'UTF-8');
+  input.value = ''; // reset so same file can be re-selected
+}
+
+// Drag & drop
+const dropArea = document.getElementById('drop-area');
+dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('drag'); });
+dropArea.addEventListener('dragleave', () => dropArea.classList.remove('drag'));
+dropArea.addEventListener('drop', e => {
+  e.preventDefault();
+  dropArea.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('csv-paste').value = ev.target.result;
+    toast('檔案已載入，請確認後點「合併匯入」或「覆蓋匯入」', 'info');
+  };
+  reader.readAsText(file, 'UTF-8');
+});
+
+// ── Settings ───────────────────────────────────────────
+function saveSettings() {
+  const a = document.getElementById('set-name-a').value.trim();
+  const b = document.getElementById('set-name-b').value.trim();
+  if (a) settings.nameA = a;
+  if (b) settings.nameB = b;
+  save();
+  applyNames();
+  toast('設定已儲存');
+}
+
+function clearAll() {
+  if (!confirm(`確定清除所有 ${trades.length} 筆交易紀錄？此動作無法復原。`)) return;
+  trades = [];
+  prices = {};
+  save();
+  renderDashboard();
+  renderPositions();
+  refreshFilters();
+  toast('已清除所有資料');
+}
+
+// ── Init ───────────────────────────────────────────────
+load();
+applyNames();
+document.getElementById('f-date').value = new Date().toISOString().slice(0, 10);
+renderDashboard();
+refreshFilters();
+</script>
+</body>
+</html>
