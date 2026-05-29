@@ -130,6 +130,14 @@ select option { background: var(--surface2); }
 .fetch-banner { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 1.5rem; display: none; line-height: 1.6; }
 .fetch-banner.visible { display: block; }
 
+/* Person tabs */
+.person-tabs { display: flex; gap: 6px; margin-bottom: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 5px; width: fit-content; }
+.person-tab { padding: 7px 18px; border-radius: 7px; font-size: 13px; cursor: pointer; color: var(--muted); transition: all 0.15s; font-family: 'Noto Sans TC', sans-serif; border: 1px solid transparent; user-select: none; }
+.person-tab:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.person-tab.active-all { background: var(--surface2); color: var(--text); border-color: var(--border2); }
+.person-tab.active-a { background: rgba(212,168,83,0.15); color: var(--a-color); border-color: rgba(212,168,83,0.35); }
+.person-tab.active-b { background: rgba(91,155,213,0.15); color: var(--b-color); border-color: rgba(91,155,213,0.35); }
+
 /* CSV import/export area */
 .import-area { border: 2px dashed var(--border2); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.15s; }
 .import-area:hover, .import-area.drag { border-color: var(--accent); background: rgba(212,168,83,0.04); }
@@ -245,6 +253,12 @@ select option { background: var(--surface2); }
       <div class="page-header">
         <div><div class="page-title">持股分析</div><div class="page-sub">各股票分人員損益明細</div></div>
         <button class="btn btn-primary btn-sm" onclick="fetchAllPrices()" id="btn-fetch-all">⟳ 自動抓取所有現價</button>
+      </div>
+      <!-- Person view tabs -->
+      <div class="person-tabs">
+        <div class="person-tab active-all" id="ptab-all" onclick="setPositionView('all')">全部</div>
+        <div class="person-tab" id="ptab-a" onclick="setPositionView('A')" id="ptab-a-inner"><span id="ptab-a-label">人員 A</span></div>
+        <div class="person-tab" id="ptab-b" onclick="setPositionView('B')" id="ptab-b-inner"><span id="ptab-b-label">人員 B</span></div>
       </div>
       <div class="fetch-banner" id="fetch-status"></div>
       <div class="stock-grid" id="positions-list"></div>
@@ -398,6 +412,7 @@ let prices = {};
 let settings = { nameA: '人員 A', nameB: '人員 B' };
 let charts = {};
 let isFetching = false;
+let positionView = 'all'; // 'all' | 'A' | 'B'
 
 // ── Persistence ───────────────────────────────────────
 function save() {
@@ -435,6 +450,23 @@ function applyNames() {
   const sa = document.getElementById('set-name-a'), sb = document.getElementById('set-name-b');
   if (sa) sa.value = settings.nameA;
   if (sb) sb.value = settings.nameB;
+  // update tab labels
+  const tA = document.getElementById('ptab-a-label'), tB = document.getElementById('ptab-b-label');
+  if (tA) tA.textContent = settings.nameA;
+  if (tB) tB.textContent = settings.nameB;
+}
+
+// ── Position View Tabs ────────────────────────────────
+function setPositionView(v) {
+  positionView = v;
+  // reset all tab styles
+  document.getElementById('ptab-all').className = 'person-tab';
+  document.getElementById('ptab-a').className = 'person-tab';
+  document.getElementById('ptab-b').className = 'person-tab';
+  if (v === 'all') document.getElementById('ptab-all').classList.add('active-all');
+  else if (v === 'A') document.getElementById('ptab-a').classList.add('active-a');
+  else document.getElementById('ptab-b').classList.add('active-b');
+  renderPositions();
 }
 
 // ── Navigation ─────────────────────────────────────────
@@ -722,10 +754,18 @@ async function fetchAllPrices() {
 // ── Positions ──────────────────────────────────────────
 function renderPositions() {
   const pos = getPositions();
-  const syms = [...new Set(trades.map(t => t.sym))];
+  // 依檢視模式決定要顯示的股票（只有持有該人員股票的才顯示）
+  const allSyms = [...new Set(trades.map(t => t.sym))];
+  const syms = positionView === 'all'
+    ? allSyms
+    : allSyms.filter(sym => trades.some(t => t.sym === sym && t.who === positionView));
 
-  if (!syms.length) {
+  if (!allSyms.length) {
     document.getElementById('positions-list').innerHTML = '<div class="empty">尚無持股紀錄，請先至「新增交易」新增一筆。</div>';
+    return;
+  }
+  if (!syms.length) {
+    document.getElementById('positions-list').innerHTML = `<div class="empty">${name(positionView)} 目前沒有任何交易紀錄。</div>`;
     return;
   }
 
@@ -738,8 +778,7 @@ function renderPositions() {
       : `<span style="color:var(--muted);font-size:12px;font-family:'DM Mono',monospace">— 尚無現價</span>`;
 
     const paneHTML = (p, who) => {
-      if (!p || p.qty <= 0 && p.realized === 0) {
-        // 檢查是否曾有過交易但已出清
+      if (!p || (p.qty <= 0 && p.realized === 0)) {
         const hadTrades = trades.some(t => t.sym === sym && t.who === who);
         if (!hadTrades) return `<div class="holder-pane"><div class="holder-name" style="color:${who === 'A' ? 'var(--a-color)' : 'var(--b-color)'}">${name(who)}</div><div style="font-size:12px;color:var(--muted)">無持倉</div></div>`;
       }
@@ -748,6 +787,7 @@ function renderPositions() {
       const avg = p.qty > 0 ? p.cost / p.qty : 0;
       const unr = cp && p.qty > 0 ? (cp - avg) * p.qty : null;
       const pnlColor = v => v >= 0 ? 'var(--green)' : 'var(--red)';
+      const totalPnl = (unr ?? 0) + p.realized;
 
       const unrealizedBlock = unr !== null
         ? `<div class="holder-stat">
@@ -759,14 +799,31 @@ function renderPositions() {
           ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">← 按「抓取現價」計算未實現損益</div>`
           : '';
 
+      // 單人模式：顯示合計損益
+      const totalBlock = positionView !== 'all' && cp
+        ? `<div class="holder-stat" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+            <div class="holder-stat-label">合計損益</div>
+            <div class="holder-stat-val" style="color:${pnlColor(totalPnl)}">${totalPnl >= 0 ? '+' : ''}${Math.round(totalPnl).toLocaleString()} 元</div>
+          </div>` : '';
+
       return `<div class="holder-pane">
         <div class="holder-name" style="color:${who === 'A' ? 'var(--a-color)' : 'var(--b-color)'}">${name(who)}</div>
         <div class="holder-stat"><div class="holder-stat-label">持股數</div><div class="holder-stat-val">${p.qty > 0 ? p.qty.toLocaleString() + ' 股' : '已出清'}</div></div>
         ${p.qty > 0 ? `<div class="holder-stat"><div class="holder-stat-label">均攤成本</div><div class="holder-stat-val">${avg.toFixed(2)} 元</div></div>` : ''}
         <div class="holder-stat"><div class="holder-stat-label">已實現損益</div><div class="holder-stat-val" style="color:${pnlColor(p.realized)}">${p.realized >= 0 ? '+' : ''}${Math.round(p.realized).toLocaleString()} 元</div></div>
         ${unrealizedBlock}
+        ${totalBlock}
       </div>`;
     };
+
+    // 單人模式：card-body 全寬單欄，不顯示另一人
+    const isSingle = positionView !== 'all';
+    const bodyContent = isSingle
+      ? paneHTML(pos[sym + '_' + positionView], positionView)
+      : paneHTML(pA, 'A') + paneHTML(pB, 'B');
+    const bodyStyle = isSingle
+      ? 'grid-template-columns: 1fr;'
+      : '';
 
     return `<div class="stock-card">
       <div class="stock-card-header">
@@ -782,7 +839,7 @@ function renderPositions() {
           </div>
         </div>
       </div>
-      <div class="stock-card-body">${paneHTML(pA, 'A')}${paneHTML(pB, 'B')}</div>
+      <div class="stock-card-body" style="${bodyStyle}">${bodyContent}</div>
     </div>`;
   }).join('');
 }
