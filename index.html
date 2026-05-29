@@ -12,6 +12,9 @@
 <meta name="apple-mobile-web-app-title" content="持股分帳本">
 <meta name="theme-color" content="#0f0f0f">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -191,6 +194,36 @@ select option { background: var(--surface2); }
 #toast.error { border-color: var(--red); color: var(--red); }
 #toast.info { border-color: var(--accent); color: var(--accent); }
 
+/* Sync Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: 'DM Mono', monospace;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  transition: all 0.3s ease;
+}
+.status-badge.local {
+  border-color: var(--border);
+  color: var(--muted);
+}
+.status-badge.cloud {
+  background: rgba(46, 204, 113, 0.08);
+  border-color: rgba(46, 204, 113, 0.25);
+  color: var(--green);
+}
+.status-badge.error {
+  background: rgba(231, 76, 60, 0.08);
+  border-color: rgba(231, 76, 60, 0.25);
+  color: var(--red);
+}
+
 /* Mobile nav */
 .mobile-nav { display: none; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.75rem 1rem; gap: 8px; flex-wrap: wrap; }
 .mobile-nav .nav-item { padding: 6px 12px; border-radius: 8px; border-left: none; font-size: 12px; }
@@ -250,6 +283,10 @@ select option { background: var(--surface2); }
 
   <!-- Main -->
   <main class="main">
+    <!-- Global Sync Status Indicator -->
+    <div id="sync-status-bar" style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
+      <span id="sync-status" class="status-badge local">💾 本機儲存模式</span>
+    </div>
 
     <!-- Dashboard -->
     <div class="section active" id="sec-dashboard">
@@ -427,6 +464,18 @@ select option { background: var(--surface2); }
         </div>
         <button class="btn btn-primary" onclick="saveSettings()" id="btn-save-settings">儲存設定</button>
       </div>
+      <div class="form-card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:8px">☁️ 雲端即時同步說明</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7;">
+          本帳本已支援 **Firebase Firestore** 雲端即時同步。開通後，各個裝置（電腦與手機）只要開啟網址，無須輸入任何金鑰即會自動同步更新。<br><br>
+          <strong style="color:var(--text)">設定步驟：</strong><br>
+          1. 登入 <a href="https://console.firebase.google.com/" target="_blank" style="color:var(--accent);text-decoration:underline">Firebase Console</a>，建立一個免費的專案。<br>
+          2. 在該專案中建立一個 **Firestore Database** 資料庫（建議選擇測試模式以開放讀寫）。<br>
+          3. 新增一個「Web 網頁應用程式」，並複製出現的 <code>firebaseConfig</code>（包含 <code>apiKey</code>、<code>projectId</code> 等欄位）。<br>
+          4. 打開本機的 <code>index.html</code> 檔案，在程式碼最上方的 <code>firebaseConfig</code> 物件中填入對應欄位，並設定一個自訂的 <code>SYNC_CODE</code> 作為同步密碼。<br>
+          5. 儲存並將 <code>index.html</code> 上傳至 GitHub Pages，即可完成跨裝置無縫同步！
+        </div>
+      </div>
       <div class="form-card" style="border-color:rgba(224,92,92,0.3)">
         <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--red)">清除所有資料</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:16px">這個動作無法復原，請先匯出 CSV 備份。</div>
@@ -440,6 +489,23 @@ select option { background: var(--surface2); }
 <div id="toast"></div>
 
 <script>
+// ── Firebase Cloud Sync Configuration (Optional) ──────
+// 如果您想開啟跨裝置即時同步，請填寫您的 Firebase 設定：
+const firebaseConfig = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
+};
+const SYNC_CODE = "stock-ledger-sync"; // 自訂同步代碼，多個裝置填寫相同代碼即可同步
+
+let db = null;
+let syncDocRef = null;
+let isSyncingFromCloud = false;
+let lastSyncTimestamp = 0;
+
 // ── State ──────────────────────────────────────────────
 let trades = [];
 let prices = {};
@@ -448,18 +514,121 @@ let charts = {};
 let isFetching = false;
 let positionView = 'all'; // 'all' | 'A' | 'B'
 
-// ── Persistence ───────────────────────────────────────
+// ── Persistence & Sync ────────────────────────────────
 function save() {
   try {
     localStorage.setItem('slt_trades', JSON.stringify(trades));
     localStorage.setItem('slt_prices', JSON.stringify(prices));
     localStorage.setItem('slt_settings', JSON.stringify(settings));
   } catch(e) { console.warn('localStorage save failed', e); }
+
+  // 同時推送到雲端資料庫
+  uploadToCloud();
 }
 function load() {
   try { trades = JSON.parse(localStorage.getItem('slt_trades') || '[]'); } catch(e) { trades = []; }
   try { prices = JSON.parse(localStorage.getItem('slt_prices') || '{}'); } catch(e) { prices = {}; }
   try { settings = { nameA:'人員 A', nameB:'人員 B', ...JSON.parse(localStorage.getItem('slt_settings') || '{}') }; } catch(e) {}
+}
+
+// ── Firebase Sync Core ─────────────────────────────────
+function initFirebase() {
+  const isFirebaseLoaded = typeof firebase !== 'undefined';
+  const hasConfig = firebaseConfig && firebaseConfig.projectId && firebaseConfig.apiKey;
+  const statusIndicator = document.getElementById('sync-status');
+
+  if (isFirebaseLoaded && hasConfig) {
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      
+      const docId = SYNC_CODE.trim() || 'default-ledger';
+      syncDocRef = db.collection('ledgers').doc(docId);
+      
+      if (statusIndicator) {
+        statusIndicator.innerHTML = `☁️ 雲端同步中 (${docId})`;
+        statusIndicator.className = 'status-badge cloud';
+      }
+      
+      setupFirebaseListener();
+    } catch (e) {
+      console.error("Firebase 初始化失敗:", e);
+      if (statusIndicator) {
+        statusIndicator.innerHTML = `⚠️ 雲端連線失敗`;
+        statusIndicator.className = 'status-badge error';
+      }
+    }
+  } else {
+    if (statusIndicator) {
+      statusIndicator.innerHTML = `💾 本機儲存模式`;
+      statusIndicator.className = 'status-badge local';
+    }
+  }
+}
+
+function setupFirebaseListener() {
+  if (!syncDocRef) return;
+
+  syncDocRef.onSnapshot((docSnapshot) => {
+    if (docSnapshot.exists) {
+      const data = docSnapshot.data();
+      // 只有當雲端的資料時間戳記新於本機，才更新本機資料
+      if (data && data.timestamp > lastSyncTimestamp) {
+        isSyncingFromCloud = true;
+        
+        trades = data.trades || [];
+        prices = data.prices || {};
+        if (data.settings) {
+          settings = { ...settings, ...data.settings };
+        }
+        
+        lastSyncTimestamp = data.timestamp;
+        
+        // 備份存入本機 localStorage
+        try {
+          localStorage.setItem('slt_trades', JSON.stringify(trades));
+          localStorage.setItem('slt_prices', JSON.stringify(prices));
+          localStorage.setItem('slt_settings', JSON.stringify(settings));
+        } catch (e) {
+          console.warn('localStorage save failed', e);
+        }
+        
+        // 重新更新所有 UI 畫面
+        applyNames();
+        renderDashboard();
+        renderPositions();
+        refreshFilters();
+        
+        isSyncingFromCloud = false;
+      }
+    } else {
+      // 雲端目前沒有此文件資料（初次連線），自動將本機目前的資料上傳初始化
+      uploadToCloud();
+    }
+  }, (error) => {
+    console.error("Firebase 即時監聽發生錯誤:", error);
+    const statusIndicator = document.getElementById('sync-status');
+    if (statusIndicator) {
+      statusIndicator.innerHTML = `⚠️ 同步出錯`;
+      statusIndicator.className = 'status-badge error';
+    }
+  });
+}
+
+function uploadToCloud() {
+  if (!db || !syncDocRef || isSyncingFromCloud) return;
+  
+  const now = Date.now();
+  lastSyncTimestamp = now;
+  
+  syncDocRef.set({
+    trades: trades,
+    prices: prices,
+    settings: settings,
+    timestamp: now
+  }).catch((error) => {
+    console.error("資料上傳至雲端失敗:", error);
+  });
 }
 
 // ── Toast ─────────────────────────────────────────────
@@ -1158,6 +1327,7 @@ function clearAll() {
 
 // ── Init ───────────────────────────────────────────────
 load();
+initFirebase();
 applyNames();
 document.getElementById('f-date').value = new Date().toISOString().slice(0, 10);
 renderDashboard();
