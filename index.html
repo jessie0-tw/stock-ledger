@@ -492,14 +492,15 @@ select option { background: var(--surface2); }
 // ── Firebase Cloud Sync Configuration (Optional) ──────
 // 如果您想開啟跨裝置即時同步，請填寫您的 Firebase 設定：
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyCk-kb5AOR3iBK8C5p9GUPgVHLNm91xEAY",
+  authDomain: "jessie-stock-ledger.firebaseapp.com",
+  projectId: "jessie-stock-ledger",
+  storageBucket: "jessie-stock-ledger.firebasestorage.app",
+  messagingSenderId: "4712534847",
+  appId: "1:4712534847:web:3eb4ed35bc62e265d5f98a",
+  measurementId: "G-HW9J58FW7M"
 };
-const SYNC_CODE = "stock-ledger-sync"; // 自訂同步代碼，多個裝置填寫相同代碼即可同步
+const SYNC_CODE = "jessie-stock-ledger"; // 自訂同步代碼，多個裝置填寫相同代碼即可同步
 
 let db = null;
 let syncDocRef = null;
