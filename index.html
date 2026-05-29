@@ -46,23 +46,23 @@ a { color: inherit; text-decoration: none; }
 
 /* Sidebar */
 .logo { padding: 0 1.5rem 2rem; }
-.logo-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--accent); letter-spacing: 0.02em; line-height: 1.2; }
-.logo-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 2px; font-family: 'DM Mono', monospace; }
+.logo-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); letter-spacing: 0.02em; line-height: 1.2; }
+.logo-sub { font-size: 12px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 2px; font-family: 'DM Mono', monospace; }
 .nav { flex: 1; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 1.5rem; font-size: 13px; cursor: pointer; color: var(--muted); transition: all 0.15s; border-left: 2px solid transparent; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 1.5rem; font-size: 15px; cursor: pointer; color: var(--muted); transition: all 0.15s; border-left: 2px solid transparent; }
 .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
 .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(212,168,83,0.06); font-weight: 400; }
-.nav-icon { font-size: 15px; width: 18px; text-align: center; }
-.nav-section { padding: 1.5rem 1.5rem 0.5rem; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; }
+.nav-icon { font-size: 17px; width: 18px; text-align: center; }
+.nav-section { padding: 1.5rem 1.5rem 0.5rem; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; }
 
 .sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); }
-.person-badge { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 12px; }
+.person-badge { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 14px; }
 .person-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
 /* Page header */
 .page-header { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; }
-.page-title { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text); }
-.page-sub { font-size: 12px; color: var(--muted); margin-top: 4px; font-family: 'DM Mono', monospace; }
+.page-title { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--text); }
+.page-sub { font-size: 14px; color: var(--muted); margin-top: 4px; font-family: 'DM Mono', monospace; }
 
 /* Sections */
 .section { display: none; }
@@ -72,9 +72,9 @@ a { color: inherit; text-decoration: none; }
 .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 2rem; }
 .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; }
 .metric-card.accent { border-color: rgba(212,168,83,0.3); background: rgba(212,168,83,0.05); }
-.metric-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; margin-bottom: 8px; }
-.metric-value { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; }
-.metric-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.metric-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+.metric-value { font-family: 'DM Mono', monospace; font-size: 25px; font-weight: 500; }
+.metric-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
 .pos { color: var(--green); }
 .neg { color: var(--red); }
 .neutral { color: var(--text); }
@@ -82,66 +82,66 @@ a { color: inherit; text-decoration: none; }
 /* Table */
 .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
 .table-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
-.table-title { font-size: 13px; font-weight: 500; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-th { padding: 10px 16px; text-align: left; font-size: 10px; font-weight: 400; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; border-bottom: 1px solid var(--border); }
+.table-title { font-size: 15px; font-weight: 500; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th { padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 400; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; border-bottom: 1px solid var(--border); }
 td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(255,255,255,0.02); }
 
-.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-family: 'DM Mono', monospace; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 99px; font-size: 13px; font-family: 'DM Mono', monospace; }
 .badge-a { background: rgba(212,168,83,0.15); color: var(--a-color); border: 1px solid rgba(212,168,83,0.3); }
 .badge-b { background: rgba(91,155,213,0.15); color: var(--b-color); border: 1px solid rgba(91,155,213,0.3); }
-.tag-buy { color: var(--green); font-size: 11px; font-family: 'DM Mono', monospace; }
-.tag-sell { color: var(--red); font-size: 11px; font-family: 'DM Mono', monospace; }
+.tag-buy { color: var(--green); font-size: 13px; font-family: 'DM Mono', monospace; }
+.tag-sell { color: var(--red); font-size: 13px; font-family: 'DM Mono', monospace; }
 
 /* Form */
 .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
 .form-group { display: flex; flex-direction: column; gap: 6px; }
-label.field-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; }
-input, select, textarea { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 13px; font-family: 'Noto Sans TC', sans-serif; outline: none; width: 100%; transition: border-color 0.15s; }
+label.field-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; }
+input, select, textarea { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 15px; font-family: 'Noto Sans TC', sans-serif; outline: none; width: 100%; transition: border-color 0.15s; }
 input:focus, select:focus { border-color: var(--accent); }
 select option { background: var(--surface2); }
 
 /* Buttons */
-.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-family: 'Noto Sans TC', sans-serif; transition: all 0.15s; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; font-size: 15px; cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-family: 'Noto Sans TC', sans-serif; transition: all 0.15s; }
 .btn:hover { border-color: var(--border); background: var(--surface); }
 .btn-primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 500; }
 .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); }
-.btn-ghost { background: transparent; border-color: transparent; color: var(--muted); padding: 6px 10px; font-size: 12px; }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--muted); padding: 6px 10px; font-size: 14px; }
 .btn-ghost:hover { color: var(--red); background: rgba(224,92,92,0.08); }
-.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-sm { padding: 5px 12px; font-size: 14px; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Chart area */
 .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 2rem; }
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
-.chart-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 1rem; }
+.chart-title { font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 1rem; }
 .chart-wrap { position: relative; height: 220px; }
 
 /* Stock overview cards */
 .stock-grid { display: grid; gap: 12px; }
 .stock-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
 .stock-card-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
-.stock-sym { font-family: 'DM Serif Display', serif; font-size: 20px; }
-.stock-price { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); }
+.stock-sym { font-family: 'DM Serif Display', serif; font-size: 22px; }
+.stock-price { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--muted); }
 .stock-card-body { display: grid; grid-template-columns: 1fr 1fr; }
 .holder-pane { padding: 1rem 1.25rem; }
 .holder-pane:first-child { border-right: 1px solid var(--border); }
-.holder-name { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: 10px; }
+.holder-name { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: 10px; }
 .holder-stat { margin-bottom: 8px; }
-.holder-stat-label { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
-.holder-stat-val { font-family: 'DM Mono', monospace; font-size: 14px; }
+.holder-stat-label { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+.holder-stat-val { font-family: 'DM Mono', monospace; font-size: 16px; }
 
 /* Price status banner */
-.fetch-banner { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 1.5rem; display: none; line-height: 1.6; }
+.fetch-banner { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 14px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 1.5rem; display: none; line-height: 1.6; }
 .fetch-banner.visible { display: block; }
 
 /* Person tabs */
 .person-tabs { display: flex; gap: 6px; margin-bottom: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 5px; width: fit-content; }
-.person-tab { padding: 7px 18px; border-radius: 7px; font-size: 13px; cursor: pointer; color: var(--muted); transition: all 0.15s; font-family: 'Noto Sans TC', sans-serif; border: 1px solid transparent; user-select: none; }
+.person-tab { padding: 7px 18px; border-radius: 7px; font-size: 15px; cursor: pointer; color: var(--muted); transition: all 0.15s; font-family: 'Noto Sans TC', sans-serif; border: 1px solid transparent; user-select: none; }
 .person-tab:hover { color: var(--text); background: rgba(255,255,255,0.04); }
 .person-tab.active-all { background: var(--surface2); color: var(--text); border-color: var(--border2); }
 .person-tab.active-a { background: rgba(212,168,83,0.15); color: var(--a-color); border-color: rgba(212,168,83,0.35); }
@@ -151,35 +151,35 @@ select option { background: var(--surface2); }
 .import-area { border: 2px dashed var(--border2); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.15s; }
 .import-area:hover, .import-area.drag { border-color: var(--accent); background: rgba(212,168,83,0.04); }
 .import-icon { font-size: 32px; margin-bottom: 12px; }
-.import-title { font-size: 14px; font-weight: 400; margin-bottom: 6px; }
-.import-sub { font-size: 12px; color: var(--muted); }
+.import-title { font-size: 16px; font-weight: 400; margin-bottom: 6px; }
+.import-sub { font-size: 14px; color: var(--muted); }
 .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
-.empty { text-align: center; padding: 3rem; color: var(--muted); font-size: 13px; }
+.empty { text-align: center; padding: 3rem; color: var(--muted); font-size: 15px; }
 
 /* Compact stock card (single-person mobile view) */
 .compact-list { display: flex; flex-direction: column; gap: 10px; }
 .compact-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: border-color 0.15s; }
 .compact-card:active { border-color: var(--border2); }
 .compact-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px 10px; }
-.compact-sym { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: 0.01em; }
-.compact-sym-name { font-size: 11px; color: var(--muted); margin-top: 1px; font-family: 'DM Mono', monospace; }
+.compact-sym { font-family: 'DM Serif Display', serif; font-size: 25px; letter-spacing: 0.01em; }
+.compact-sym-name { font-size: 13px; color: var(--muted); margin-top: 1px; font-family: 'DM Mono', monospace; }
 .compact-price-block { text-align: right; }
-.compact-price { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; }
-.compact-change { font-size: 11px; font-family: 'DM Mono', monospace; margin-top: 2px; }
+.compact-price { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; }
+.compact-change { font-size: 13px; font-family: 'DM Mono', monospace; margin-top: 2px; }
 .compact-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid var(--border); }
 .compact-stat { padding: 10px 16px; }
 .compact-stat:not(:last-child) { border-right: 1px solid var(--border); }
-.compact-stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
-.compact-stat-val { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500; }
+.compact-stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.compact-stat-val { font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 500; }
 .compact-pnl-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-top: 1px solid var(--border); background: rgba(255,255,255,0.015); }
-.compact-pnl-label { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.1em; }
-.compact-pnl-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; }
-.compact-pnl-pct { font-size: 11px; font-family: 'DM Mono', monospace; margin-left: 6px; opacity: 0.8; }
+.compact-pnl-label { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.1em; }
+.compact-pnl-val { font-family: 'DM Mono', monospace; font-size: 21px; font-weight: 500; }
+.compact-pnl-pct { font-size: 13px; font-family: 'DM Mono', monospace; margin-left: 6px; opacity: 0.8; }
 .compact-actions { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.2); flex-wrap: wrap; }
-.compact-no-price { padding: 8px 16px 12px; font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.compact-no-price { padding: 8px 16px 12px; font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; }
 
 /* Info box */
-.info-box { background: rgba(212,168,83,0.06); border: 1px solid rgba(212,168,83,0.2); border-radius: var(--radius); padding: 12px 16px; font-size: 12px; color: var(--muted); line-height: 1.8; margin-bottom: 1.5rem; }
+.info-box { background: rgba(212,168,83,0.06); border: 1px solid rgba(212,168,83,0.2); border-radius: var(--radius); padding: 12px 16px; font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 1.5rem; }
 .info-box strong { color: var(--accent); }
 
 /* Scrollbar */
@@ -188,7 +188,7 @@ select option { background: var(--surface2); }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
 /* Toast */
-#toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 18px; font-size: 13px; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 999; max-width: 300px; }
+#toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 18px; font-size: 15px; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 999; max-width: 300px; }
 #toast.show { transform: translateY(0); opacity: 1; }
 #toast.success { border-color: var(--green); color: var(--green); }
 #toast.error { border-color: var(--red); color: var(--red); }
@@ -201,7 +201,7 @@ select option { background: var(--surface2); }
   gap: 6px;
   padding: 5px 12px;
   border-radius: 20px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   font-family: 'DM Mono', monospace;
   background: var(--surface2);
@@ -226,7 +226,7 @@ select option { background: var(--surface2); }
 
 /* Mobile nav */
 .mobile-nav { display: none; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.75rem 1rem; gap: 8px; flex-wrap: wrap; }
-.mobile-nav .nav-item { padding: 6px 12px; border-radius: 8px; border-left: none; font-size: 12px; }
+.mobile-nav .nav-item { padding: 6px 12px; border-radius: 8px; border-left: none; font-size: 14px; }
 .mobile-nav .nav-item.active { background: rgba(212,168,83,0.1); border-radius: 8px; }
 
 @media (max-width: 768px) {
@@ -274,8 +274,8 @@ select option { background: var(--surface2); }
       <div class="nav-item" id="nav-settings" onclick="switchSection('settings', this)"><span class="nav-icon">⚙</span> 系統設定</div>
     </nav>
     <div class="sidebar-footer">
-      <div class="person-badge"><div class="person-dot" style="background:var(--a-color)"></div><span id="name-a-label" style="font-size:12px">人員 A</span></div>
-      <div class="person-badge"><div class="person-dot" style="background:var(--b-color)"></div><span id="name-b-label" style="font-size:12px">人員 B</span></div>
+      <div class="person-badge"><div class="person-dot" style="background:var(--a-color)"></div><span id="name-a-label" style="font-size:14px">人員 A</span></div>
+      <div class="person-badge"><div class="person-dot" style="background:var(--b-color)"></div><span id="name-b-label" style="font-size:14px">人員 B</span></div>
     </div>
   </aside>
 
@@ -298,7 +298,20 @@ select option { background: var(--surface2); }
       <div class="chart-grid">
         <div class="chart-card">
           <div class="chart-title">持倉成本分佈</div>
-          <div class="chart-wrap"><canvas id="chart-cost"></canvas></div>
+          <div class="chart-wrap" style="display: flex; gap: 16px;">
+            <div style="flex: 1; position: relative; min-width: 0; display: flex; flex-direction: column;">
+              <div style="text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-a-title">人員 A 持倉配比</div>
+              <div style="position: relative; height: 180px;" id="chart-cost-a-container">
+                <canvas id="chart-cost-a"></canvas>
+              </div>
+            </div>
+            <div style="flex: 1; position: relative; min-width: 0; display: flex; flex-direction: column;">
+              <div style="text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-b-title">人員 B 持倉配比</div>
+              <div style="position: relative; height: 180px;" id="chart-cost-b-container">
+                <canvas id="chart-cost-b"></canvas>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="chart-card">
           <div class="chart-title">損益比較</div>
@@ -369,6 +382,24 @@ select option { background: var(--surface2); }
             <input id="f-price" type="number" step="0.01" placeholder="600">
           </div>
         </div>
+        <div class="form-grid-3" style="margin-bottom:16px">
+          <div class="form-group">
+            <label class="field-label">手續費（元）</label>
+            <input id="f-fee" type="number" placeholder="自動預估" min="0">
+          </div>
+          <div class="form-group">
+            <label class="field-label">交易稅率</label>
+            <select id="f-tax-rate">
+              <option value="0.003">一般股票 (0.3%)</option>
+              <option value="0.001">ETF (0.1%)</option>
+              <option value="0.0015">現股當沖 (0.15%)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="field-label">證券交易稅（元）</label>
+            <input id="f-tax" type="number" placeholder="自動預估" min="0">
+          </div>
+        </div>
         <div class="form-grid" style="margin-bottom:20px">
           <div class="form-group">
             <label class="field-label">日期</label>
@@ -382,7 +413,7 @@ select option { background: var(--surface2); }
         <button class="btn btn-primary" onclick="addTrade()" id="btn-add-trade">確認新增</button>
       </div>
       <div class="info-box">
-        💡 新增後請至「<strong>CSV 匯入匯出</strong>」下載備份，傳給對方後請對方匯入即可同步資料。
+        💡 提示：若已啟用雲端同步，資料將在您按下新增後 1 秒內自動同步到所有手機與電腦。
       </div>
     </div>
 
@@ -423,7 +454,7 @@ select option { background: var(--surface2); }
         <div><div class="page-title">系統設定</div></div>
       </div>
       <div class="form-card">
-        <div style="font-size:13px;font-weight:500;margin-bottom:16px">人員名稱</div>
+        <div style="font-size:13px;font-weight:500;margin-bottom:16px">人員與手續費設定</div>
         <div class="form-grid" style="margin-bottom:16px">
           <div class="form-group">
             <label class="field-label" style="color:var(--a-color)">人員 A（金色）</label>
@@ -432,6 +463,17 @@ select option { background: var(--surface2); }
           <div class="form-group">
             <label class="field-label" style="color:var(--b-color)">人員 B（藍色）</label>
             <input id="set-name-b" type="text" placeholder="例：小美">
+          </div>
+        </div>
+        <div style="font-size:13px;font-weight:500;margin-top:20px;margin-bottom:16px;border-top:1px solid var(--border);padding-top:20px">證券手續費設定</div>
+        <div class="form-grid" style="margin-bottom:16px">
+          <div class="form-group">
+            <label class="field-label">手續費折扣（如 2.8 折填 0.28）</label>
+            <input id="set-fee-discount" type="number" step="0.01" min="0" max="1" placeholder="預設：0.28">
+          </div>
+          <div class="form-group">
+            <label class="field-label">單筆最低收費（元）</label>
+            <input id="set-min-fee" type="number" min="0" placeholder="預設：1">
           </div>
         </div>
         <button class="btn btn-primary" onclick="saveSettings()" id="btn-save-settings">儲存設定</button>
@@ -530,11 +572,50 @@ function save() {
   // 同時推送到雲端資料庫
   uploadToCloud();
 }
+
+function backfillTrades() {
+  let migrated = false;
+  trades = trades.map(t => {
+    if (t.fee === undefined || t.tax === undefined) {
+      migrated = true;
+      const amt = Math.round(t.qty * t.price);
+      
+      // 手續費計算
+      let fee = t.fee;
+      if (fee === undefined) {
+        const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
+        const minFee = settings.minFee !== undefined ? settings.minFee : 1;
+        fee = Math.max(minFee, Math.round(amt * 0.001425 * discount));
+      }
+      
+      // 交易稅計算
+      let tax = t.tax;
+      if (tax === undefined) {
+        if (t.side === 'buy') {
+          tax = 0;
+        } else {
+          // 判斷 ETF 或一般股票
+          const isEtf = t.sym.startsWith('00') || t.sym.startsWith('01');
+          const taxRate = isEtf ? 0.001 : 0.003;
+          tax = Math.round(amt * taxRate);
+        }
+      }
+      return { ...t, fee, tax };
+    }
+    return t;
+  });
+  return migrated;
+}
+
 function load() {
   try { trades = JSON.parse(localStorage.getItem('slt_trades') || '[]'); } catch(e) { trades = []; }
   try { prices = JSON.parse(localStorage.getItem('slt_prices') || '{}'); } catch(e) { prices = {}; }
   try { settings = { nameA:'人員 A', nameB:'人員 B', ...JSON.parse(localStorage.getItem('slt_settings') || '{}') }; } catch(e) {}
   try { stockNames = JSON.parse(localStorage.getItem('slt_stock_names') || '{}'); } catch(e) { stockNames = {}; }
+
+  if (backfillTrades()) {
+    save();
+  }
 }
 
 // ── Firebase Sync Core ─────────────────────────────────
@@ -589,6 +670,7 @@ function setupFirebaseListener() {
           settings = { ...settings, ...data.settings };
         }
         
+        const migrated = backfillTrades();
         lastSyncTimestamp = data.timestamp;
         
         // 備份存入本機 localStorage
@@ -608,6 +690,10 @@ function setupFirebaseListener() {
         refreshFilters();
         
         isSyncingFromCloud = false;
+        
+        if (migrated) {
+          uploadToCloud();
+        }
       }
     } else {
       // 雲端目前沒有此文件資料（初次連線），自動將本機目前的資料上傳初始化
@@ -662,6 +748,13 @@ function applyNames() {
   const sa = document.getElementById('set-name-a'), sb = document.getElementById('set-name-b');
   if (sa) sa.value = settings.nameA;
   if (sb) sb.value = settings.nameB;
+  
+  // 填充手續費設定欄位
+  const sd = document.getElementById('set-fee-discount');
+  const sm = document.getElementById('set-min-fee');
+  if (sd) sd.value = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
+  if (sm) sm.value = settings.minFee !== undefined ? settings.minFee : 1;
+
   // update tab labels
   const tA = document.getElementById('ptab-a-label'), tB = document.getElementById('ptab-b-label');
   if (tA) tA.textContent = settings.nameA;
@@ -697,17 +790,70 @@ function switchSection(id, el) {
 // ── Calculations ───────────────────────────────────────
 function getPositions() {
   const pos = {};
+  
+  // 用於追蹤 FIFO 的買入隊列，鍵值為 t.sym + '_' + t.who
+  const queues = {};
+  
   [...trades].sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id).forEach(t => {
     const key = t.sym + '_' + t.who;
-    if (!pos[key]) pos[key] = { sym: t.sym, who: t.who, qty: 0, cost: 0, realized: 0 };
+    if (!pos[key]) {
+      pos[key] = { sym: t.sym, who: t.who, qty: 0, cost: 0, realized: 0 };
+      queues[key] = [];
+    }
+    
+    const fee = t.fee || 0;
+    const tax = t.tax || 0;
+    
     if (t.side === 'buy') {
-      pos[key].cost += t.qty * t.price;
+      // 買入總成本：成交總額 + 買入手續費
+      const totalBuyCost = (t.qty * t.price) + fee;
+      pos[key].cost += totalBuyCost;
       pos[key].qty += t.qty;
+      
+      // 紀錄買入批次到 FIFO 隊列中
+      queues[key].push({
+        qty: t.qty,
+        price: t.price,
+        fee: fee,
+        cost: totalBuyCost
+      });
     } else {
-      const avg = pos[key].qty > 0 ? pos[key].cost / pos[key].qty : 0;
-      pos[key].realized += (t.price - avg) * t.qty;
-      pos[key].cost -= avg * t.qty;
+      // 賣出實拿金額：成交總額 - 賣出手續費 - 交易稅
+      const actualRevenue = (t.qty * t.price) - fee - tax;
+      
+      // 先進先出 (FIFO) 扣除持股與計算售出股份成本
+      let remainingSellQty = t.qty;
+      let costOfSoldShares = 0;
+      const queue = queues[key];
+      
+      while (remainingSellQty > 0 && queue.length > 0) {
+        const oldestBuy = queue[0];
+        if (oldestBuy.qty <= remainingSellQty) {
+          // 全額消耗最舊的一筆買入
+          costOfSoldShares += oldestBuy.cost;
+          remainingSellQty -= oldestBuy.qty;
+          queue.shift(); // 移出隊列
+        } else {
+          // 部分消耗最舊的一筆買入
+          const fraction = remainingSellQty / oldestBuy.qty;
+          const consumedCost = oldestBuy.cost * fraction;
+          
+          costOfSoldShares += consumedCost;
+          
+          // 更新該筆買入剩餘的股數與成本
+          oldestBuy.qty -= remainingSellQty;
+          oldestBuy.cost -= consumedCost;
+          
+          remainingSellQty = 0;
+        }
+      }
+      
+      // 已實現損益：賣出實拿金額 - 售出股數的 FIFO 成本
+      pos[key].realized += (actualRevenue - costOfSoldShares);
       pos[key].qty = Math.max(0, pos[key].qty - t.qty);
+      
+      // 重新加總剩餘持股的總成本 (FIFO 剩餘成本)
+      pos[key].cost = queue.reduce((sum, item) => sum + item.cost, 0);
       if (pos[key].qty < 0.001) pos[key].cost = 0;
     }
   });
@@ -716,37 +862,98 @@ function getPositions() {
 
 function getSummary() {
   const pos = getPositions();
-  let costA = 0, costB = 0, pnlA = 0, pnlB = 0;
+  let costA = 0, costB = 0;
+  let unrealA = 0, unrealB = 0;
   let realA = 0, realB = 0;
+  
+  const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
+  const minFee = settings.minFee !== undefined ? settings.minFee : 1;
+  
   Object.values(pos).forEach(p => {
-    const avg = p.qty > 0 ? p.cost / p.qty : 0;
     const cp = prices[p.sym];
-    const unr = cp && p.qty > 0 ? (cp - avg) * p.qty : 0;
-    const total = unr + p.realized;
-    if (p.who === 'A') { costA += p.cost; pnlA += total; realA += p.realized; }
-    else { costB += p.cost; pnlB += total; realB += p.realized; }
+    
+    // 估計賣出手續費與交易稅 (未實現損益扣除手續費和交易稅)
+    let estimatedSellFee = 0;
+    let estimatedSellTax = 0;
+    if (cp && p.qty > 0) {
+      const rawFee = Math.round(p.qty * cp * 0.001425 * discount);
+      estimatedSellFee = Math.max(minFee, rawFee);
+      
+      const isEtf = p.sym.startsWith('00') || p.sym.startsWith('01');
+      const taxRate = isEtf ? 0.001 : 0.003;
+      estimatedSellTax = Math.round(p.qty * cp * taxRate);
+    }
+    
+    // 未實現損益：預估市值 - 預估賣出手續費 - 預估賣出交易稅 - 持有總成本
+    const unr = cp && p.qty > 0 ? (cp * p.qty - estimatedSellFee - estimatedSellTax) - p.cost : 0;
+    
+    if (p.who === 'A') {
+      costA += p.cost;
+      unrealA += unr;
+      realA += p.realized;
+    } else {
+      costB += p.cost;
+      unrealB += unr;
+      realB += p.realized;
+    }
   });
-  return { costA, costB, pnlA, pnlB, realA, realB };
+  return { costA, costB, unrealA, unrealB, realA, realB };
 }
 
 // ── Dashboard ──────────────────────────────────────────
 function renderDashboard() {
   document.getElementById('dash-date').textContent = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
-  const { costA, costB, pnlA, pnlB } = getSummary();
+  const { costA, costB, unrealA, unrealB, realA, realB } = getSummary();
   const totalCost = costA + costB;
-  const totalPnl = pnlA + pnlB;
+  const totalUnreal = unrealA + unrealB;
+  const totalReal = realA + realB;
+  const totalPnl = totalUnreal + totalReal;
+  
   document.getElementById('dash-metrics').innerHTML = `
-    <div class="metric-card"><div class="metric-label">總持倉成本</div><div class="metric-value neutral">$${Math.round(totalCost).toLocaleString()}</div><div class="metric-sub">${trades.length} 筆交易</div></div>
-    <div class="metric-card"><div class="metric-label">${settings.nameA} 成本</div><div class="metric-value" style="color:var(--a-color)">$${Math.round(costA).toLocaleString()}</div></div>
-    <div class="metric-card"><div class="metric-label">${settings.nameB} 成本</div><div class="metric-value" style="color:var(--b-color)">$${Math.round(costB).toLocaleString()}</div></div>
-    <div class="metric-card accent"><div class="metric-label">${settings.nameA} 損益</div><div class="metric-value ${pnlA >= 0 ? 'pos' : 'neg'}">${pnlA >= 0 ? '+' : ''}$${Math.round(pnlA).toLocaleString()}</div></div>
-    <div class="metric-card accent"><div class="metric-label">${settings.nameB} 損益</div><div class="metric-value ${pnlB >= 0 ? 'pos' : 'neg'}">${pnlB >= 0 ? '+' : ''}$${Math.round(pnlB).toLocaleString()}</div></div>
-    <div class="metric-card"><div class="metric-label">合計損益</div><div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${totalPnl >= 0 ? '+' : ''}$${Math.round(totalPnl).toLocaleString()}</div></div>
+    <div class="metric-card">
+      <div class="metric-label">總持倉成本</div>
+      <div class="metric-value neutral">$${Math.round(totalCost).toLocaleString()}</div>
+      <div class="metric-sub">${trades.length} 筆交易</div>
+    </div>
+    
+    <div class="metric-card accent">
+      <div class="metric-label">${settings.nameA} 未實現損益</div>
+      <div class="metric-value ${unrealA >= 0 ? 'pos' : 'neg'}">${unrealA >= 0 ? '+' : ''}$${Math.round(unrealA).toLocaleString()}</div>
+      <div class="metric-sub">持倉成本：$${Math.round(costA).toLocaleString()}</div>
+    </div>
+    <div class="metric-card accent">
+      <div class="metric-label">${settings.nameA} 已實現損益</div>
+      <div class="metric-value ${realA >= 0 ? 'pos' : 'neg'}">${realA >= 0 ? '+' : ''}$${Math.round(realA).toLocaleString()}</div>
+    </div>
+    
+    <div class="metric-card accent">
+      <div class="metric-label">${settings.nameB} 未實現損益</div>
+      <div class="metric-value ${unrealB >= 0 ? 'pos' : 'neg'}">${unrealB >= 0 ? '+' : ''}$${Math.round(unrealB).toLocaleString()}</div>
+      <div class="metric-sub">持倉成本：$${Math.round(costB).toLocaleString()}</div>
+    </div>
+    <div class="metric-card accent">
+      <div class="metric-label">${settings.nameB} 已實現損益</div>
+      <div class="metric-value ${realB >= 0 ? 'pos' : 'neg'}">${realB >= 0 ? '+' : ''}$${Math.round(realB).toLocaleString()}</div>
+    </div>
+    
+    <div class="metric-card">
+      <div class="metric-label">合計未實現損益</div>
+      <div class="metric-value ${totalUnreal >= 0 ? 'pos' : 'neg'}">${totalUnreal >= 0 ? '+' : ''}$${Math.round(totalUnreal).toLocaleString()}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">合計已實現損益</div>
+      <div class="metric-value ${totalReal >= 0 ? 'pos' : 'neg'}">${totalReal >= 0 ? '+' : ''}$${Math.round(totalReal).toLocaleString()}</div>
+    </div>
+    <div class="metric-card accent">
+      <div class="metric-label">合計總損益</div>
+      <div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${totalPnl >= 0 ? '+' : ''}$${Math.round(totalPnl).toLocaleString()}</div>
+      <div class="metric-sub">未實現 $${Math.round(totalUnreal).toLocaleString()} ／ 已實現 $${Math.round(totalReal).toLocaleString()}</div>
+    </div>
   `;
-  renderCharts(costA, costB, pnlA, pnlB);
+  renderCharts(costA, costB, unrealA, unrealB, realA, realB);
 }
 
-function renderCharts(costA, costB, pnlA, pnlB) {
+function renderCharts(costA, costB, unrealA, unrealB, realA, realB) {
   const chartOpts = {
     responsive: true, maintainAspectRatio: false,
     plugins: { legend: { labels: { color: '#888', font: { size: 11, family: 'DM Mono' }, boxWidth: 12 } } },
@@ -757,37 +964,128 @@ function renderCharts(costA, costB, pnlA, pnlB) {
   Object.values(charts).forEach(c => { try { c.destroy(); } catch(e) {} });
   charts = {};
 
-  // Cost donut
-  if (costA + costB > 0) {
-    charts.cost = new Chart(document.getElementById('chart-cost'), {
+  // Cost donut (per person stock distribution)
+  document.getElementById('chart-cost-a-title').textContent = `${settings.nameA} 持倉配比`;
+  document.getElementById('chart-cost-b-title').textContent = `${settings.nameB} 持倉配比`;
+
+  const donutOpts = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const val = context.raw;
+            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+            const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+            return ` ${context.label}: $${val.toLocaleString()} (${pct}%)`;
+          }
+        }
+      }
+    }
+  };
+
+  const pos = getPositions();
+
+  // Person A's stocks with cost > 0
+  const donutStocksA = Object.values(pos).filter(p => p.who === 'A' && p.qty > 0 && p.cost > 0);
+  const donutLabelsA = donutStocksA.map(p => `${p.sym} ${stockNames[p.sym] || ''}`.trim());
+  const donutDataA = donutStocksA.map(p => Math.round(p.cost));
+  const donutColorsA = donutStocksA.map((_, i) => {
+    const hues = [42, 24, 14, 55, 36, 8, 48];
+    const h = hues[i % hues.length];
+    return `hsla(${h}, 70%, 60%, 0.85)`;
+  });
+
+  const containerA = document.getElementById('chart-cost-a-container');
+  if (donutStocksA.length > 0) {
+    containerA.innerHTML = '';
+    const canvasA = document.createElement('canvas');
+    canvasA.id = 'chart-cost-a';
+    containerA.appendChild(canvasA);
+    charts.costA = new Chart(canvasA, {
       type: 'doughnut',
       data: {
-        labels: [settings.nameA, settings.nameB],
-        datasets: [{ data: [costA, costB], backgroundColor: ['rgba(212,168,83,0.85)', 'rgba(91,155,213,0.85)'], borderColor: '#181818', borderWidth: 3 }]
+        labels: donutLabelsA,
+        datasets: [{ data: donutDataA, backgroundColor: donutColorsA, borderColor: '#181818', borderWidth: 2 }]
       },
-      options: { ...chartOpts, cutout: '65%' }
+      options: { ...donutOpts, cutout: '60%' }
     });
+  } else {
+    containerA.innerHTML = '<div style="display:flex; align-items:center; justify-content:center; height:100%; font-size:13px; color:var(--muted); font-family:sans-serif;">無持倉</div>';
   }
 
-  // PnL bar
+  // Person B's stocks with cost > 0
+  const donutStocksB = Object.values(pos).filter(p => p.who === 'B' && p.qty > 0 && p.cost > 0);
+  const donutLabelsB = donutStocksB.map(p => `${p.sym} ${stockNames[p.sym] || ''}`.trim());
+  const donutDataB = donutStocksB.map(p => Math.round(p.cost));
+  const donutColorsB = donutStocksB.map((_, i) => {
+    const hues = [207, 185, 230, 160, 260, 220];
+    const h = hues[i % hues.length];
+    return `hsla(${h}, 70%, 60%, 0.85)`;
+  });
+
+  const containerB = document.getElementById('chart-cost-b-container');
+  if (donutStocksB.length > 0) {
+    containerB.innerHTML = '';
+    const canvasB = document.createElement('canvas');
+    canvasB.id = 'chart-cost-b';
+    containerB.appendChild(canvasB);
+    charts.costB = new Chart(canvasB, {
+      type: 'doughnut',
+      data: {
+        labels: donutLabelsB,
+        datasets: [{ data: donutDataB, backgroundColor: donutColorsB, borderColor: '#181818', borderWidth: 2 }]
+      },
+      options: { ...donutOpts, cutout: '60%' }
+    });
+  } else {
+    containerB.innerHTML = '<div style="display:flex; align-items:center; justify-content:center; height:100%; font-size:13px; color:var(--muted); font-family:sans-serif;">無持倉</div>';
+  }
+
+  // PnL bar (Clustered: Realized vs Unrealized P&L)
   charts.pnl = new Chart(document.getElementById('chart-pnl'), {
     type: 'bar',
     data: {
       labels: [settings.nameA, settings.nameB],
-      datasets: [{
-        data: [pnlA, pnlB],
-        backgroundColor: [
-          pnlA >= 0 ? 'rgba(76,175,125,0.75)' : 'rgba(224,92,92,0.75)',
-          pnlB >= 0 ? 'rgba(76,175,125,0.75)' : 'rgba(224,92,92,0.75)'
-        ],
-        borderRadius: 6, borderSkipped: false
-      }]
+      datasets: [
+        {
+          label: '未實現損益',
+          data: [unrealA, unrealB],
+          backgroundColor: [
+            unrealA >= 0 ? 'rgba(76,175,125,0.75)' : 'rgba(224,92,92,0.75)',
+            unrealB >= 0 ? 'rgba(76,175,125,0.75)' : 'rgba(224,92,92,0.75)'
+          ],
+          borderRadius: 6, borderSkipped: false
+        },
+        {
+          label: '已實現損益',
+          data: [realA, realB],
+          backgroundColor: [
+            realA >= 0 ? 'rgba(212,168,83,0.75)' : 'rgba(224,92,92,0.75)',
+            realB >= 0 ? 'rgba(212,168,83,0.75)' : 'rgba(224,92,92,0.75)'
+          ],
+          borderRadius: 6, borderSkipped: false
+        }
+      ]
     },
-    options: { ...chartOpts, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } }, y: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } } } }
+    options: {
+      ...chartOpts,
+      plugins: {
+        legend: {
+          display: true,
+          labels: { color: '#888', font: { size: 11, family: 'DM Mono' }, boxWidth: 12 }
+        }
+      },
+      scales: {
+        x: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } },
+        y: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } }
+      }
+    }
   });
 
   // Bar chart by stock
-  const pos = getPositions();
   const syms = [...new Set(Object.values(pos).map(p => p.sym))];
   const dataA = syms.map(s => { const p = pos[s + '_A']; return p ? Math.round(p.cost) : 0; });
   const dataB = syms.map(s => { const p = pos[s + '_B']; return p ? Math.round(p.cost) : 0; });
@@ -995,7 +1293,21 @@ function renderPositions() {
       const p = pos[sym + '_' + who];
       const cp = prices[sym];
       const avg = p && p.qty > 0 ? p.cost / p.qty : 0;
-      const unr = cp && p && p.qty > 0 ? (cp - avg) * p.qty : null;
+      
+      let estimatedSellFee = 0;
+      let estimatedSellTax = 0;
+      if (cp && p && p.qty > 0) {
+        const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
+        const minFee = settings.minFee !== undefined ? settings.minFee : 1;
+        const rawFee = Math.round(p.qty * cp * 0.001425 * discount);
+        estimatedSellFee = Math.max(minFee, rawFee);
+        
+        const isEtf = sym.startsWith('00') || sym.startsWith('01');
+        const taxRate = isEtf ? 0.001 : 0.003;
+        estimatedSellTax = Math.round(p.qty * cp * taxRate);
+      }
+      
+      const unr = cp && p && p.qty > 0 ? (cp * p.qty - estimatedSellFee - estimatedSellTax) - p.cost : null;
       const realized = p ? p.realized : 0;
       const totalPnl = (unr ?? 0) + realized;
       const qty = p ? p.qty : 0;
@@ -1017,7 +1329,7 @@ function renderPositions() {
         </div>
         <div class="compact-stat">
           <div class="compact-stat-label">均成本</div>
-          <div class="compact-stat-val">${avg > 0 ? avg.toFixed(1) : '—'}<span style="font-size:11px;color:var(--muted)"> 元</span></div>
+          <div class="compact-stat-val">${avg > 0 ? avg.toFixed(2) : '—'}<span style="font-size:11px;color:var(--muted)"> 元</span></div>
         </div>
         <div class="compact-stat">
           <div class="compact-stat-label">已實現</div>
@@ -1031,18 +1343,18 @@ function renderPositions() {
             <div class="compact-pnl-label">合計損益</div>
             <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;justify-content:flex-end">
               <div class="compact-pnl-val" style="color:${pnlColor(totalPnl)}">${totalPnl >= 0 ? '+' : ''}${Math.round(totalPnl).toLocaleString()} 元</div>
-              ${unr !== null ? `<div class="compact-pnl-pct" style="color:${pnlColor(unr)}">（未實 ${unr>=0?'+':''}${Math.round(unr).toLocaleString()}）</div>` : ''}
+              ${unr !== null ? `<div class="compact-pnl-pct" style="color:${pnlColor(unr)}">（未實 ${unr>=0?'+':''}${Math.round(unr).toLocaleString()} ／ 估費 $${estimatedSellFee} ／ 估稅 $${estimatedSellTax}）</div>` : ''}
             </div>
           </div>`
         : `<div class="compact-no-price">⟵ 點「⟳ 抓取現價」計算損益</div>`;
 
       // 操作列
       const actionsRow = `<div class="compact-actions">
-        <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:11px">⟳ 抓取現價</button>
+        <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:13px">⟳ 抓取現價</button>
         <input type="number" step="0.01" placeholder="手動輸入現價" id="manual-${sym}"
-          style="flex:1;min-width:90px;padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace"
+          style="flex:1;min-width:90px;padding:5px 8px;font-size:14px;font-family:'DM Mono',monospace"
           onkeydown="if(event.key==='Enter')saveManual('${sym}')">
-        <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:11px">存</button>
+        <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:13px">存</button>
       </div>`;
 
       return `<div class="compact-card">
@@ -1072,13 +1384,27 @@ function renderPositions() {
       if (!p) return `<div class="holder-pane"><div class="holder-name" style="color:${who === 'A' ? 'var(--a-color)' : 'var(--b-color)'}">${name(who)}</div><div style="font-size:12px;color:var(--muted)">無持倉</div></div>`;
 
       const avg = p.qty > 0 ? p.cost / p.qty : 0;
-      const unr = cp && p.qty > 0 ? (cp - avg) * p.qty : null;
+      
+      let estimatedSellFee = 0;
+      let estimatedSellTax = 0;
+      if (cp && p.qty > 0) {
+        const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
+        const minFee = settings.minFee !== undefined ? settings.minFee : 1;
+        const rawFee = Math.round(p.qty * cp * 0.001425 * discount);
+        estimatedSellFee = Math.max(minFee, rawFee);
+        
+        const isEtf = sym.startsWith('00') || sym.startsWith('01');
+        const taxRate = isEtf ? 0.001 : 0.003;
+        estimatedSellTax = Math.round(p.qty * cp * taxRate);
+      }
+      
+      const unr = cp && p.qty > 0 ? (cp * p.qty - estimatedSellFee - estimatedSellTax) - p.cost : null;
 
       const unrealizedBlock = unr !== null
         ? `<div class="holder-stat">
             <div class="holder-stat-label">未實現損益</div>
             <div class="holder-stat-val" style="color:${pnlColor(unr)}">${unr >= 0 ? '+' : ''}${Math.round(unr).toLocaleString()} 元</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace">現 ${cp} ／ 均 ${avg.toFixed(2)} ／ 差 ${(cp - avg) >= 0 ? '+' : ''}${(cp - avg).toFixed(2)}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace">現 ${cp} ／ 均 ${avg.toFixed(2)} ／ 差 ${(cp - avg) >= 0 ? '+' : ''}${(cp - avg).toFixed(2)} ／ 估費 $${estimatedSellFee} ／ 估稅 $${estimatedSellTax}</div>
           </div>`
         : p.qty > 0 ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">← 按「抓取現價」計算</div>` : '';
 
@@ -1096,22 +1422,22 @@ function renderPositions() {
       const pA = pos[sym + '_A'], pB = pos[sym + '_B'];
 
       const priceHeader = cp
-        ? `<span style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--text)">${cp.toFixed(2)} 元</span>`
-        : `<span style="color:var(--muted);font-size:12px;font-family:'DM Mono',monospace">— 尚無現價</span>`;
+        ? `<span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--text)">${cp.toFixed(2)} 元</span>`
+        : `<span style="color:var(--muted);font-size:14px;font-family:'DM Mono',monospace">— 尚無現價</span>`;
 
       const bodyContent = paneHTML(pA, 'A', sym) + paneHTML(pB, 'B', sym);
 
       return `<div class="stock-card">
         <div class="stock-card-header">
-          <div class="stock-sym">${sym} <span style="font-size:12px;color:var(--muted);font-weight:normal;margin-left:6px">${stockNames[sym] || ''}</span></div>
+          <div class="stock-sym">${sym} <span style="font-size:14px;color:var(--muted);font-weight:normal;margin-left:6px">${stockNames[sym] || ''}</span></div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             ${priceHeader}
-            <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:11px;padding:4px 10px">⟳ 抓取現價</button>
+            <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:13px;padding:4px 10px">⟳ 抓取現價</button>
             <div style="display:flex;align-items:center;gap:4px">
               <input type="number" step="0.01" placeholder="手動輸入" id="manual-${sym}"
-                style="width:96px;padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace"
+                style="width:96px;padding:5px 8px;font-size:14px;font-family:'DM Mono',monospace"
                 onkeydown="if(event.key==='Enter')saveManual('${sym}')">
-              <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:11px;padding:4px 10px">存</button>
+              <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:13px;padding:4px 10px">存</button>
             </div>
           </div>
         </div>
@@ -1152,6 +1478,46 @@ function saveManual(sym) {
   toast(`${sym} 現價已手動設為 ${val} 元`);
 }
 
+// ── Cost Auto-Calculation ──────────────────────────────
+function autoCalcCosts() {
+  const sym = document.getElementById('f-sym').value.trim();
+  const side = document.getElementById('f-side').value;
+  const qty = parseFloat(document.getElementById('f-qty').value) || 0;
+  const price = parseFloat(document.getElementById('f-price').value) || 0;
+  
+  if (sym) {
+    const isEtf = sym.startsWith('00') || sym.startsWith('01');
+    const taxRateSelect = document.getElementById('f-tax-rate');
+    if (isEtf) {
+      if (taxRateSelect.value !== '0.0015' && taxRateSelect.value !== '0.001') {
+        taxRateSelect.value = '0.001';
+      }
+    } else {
+      if (taxRateSelect.value !== '0.0015' && taxRateSelect.value !== '0.003') {
+        taxRateSelect.value = '0.003';
+      }
+    }
+  }
+  
+  const taxRate = parseFloat(document.getElementById('f-tax-rate').value) || 0.003;
+  const amount = qty * price;
+  
+  let fee = 0;
+  if (amount > 0) {
+    const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
+    const minFee = settings.minFee !== undefined ? settings.minFee : 1;
+    fee = Math.max(minFee, Math.round(amount * 0.001425 * discount));
+  }
+  
+  let tax = 0;
+  if (amount > 0 && side === 'sell') {
+    tax = Math.round(amount * taxRate);
+  }
+  
+  document.getElementById('f-fee').value = amount > 0 ? fee : '';
+  document.getElementById('f-tax').value = (amount > 0 && side === 'sell') ? tax : (side === 'buy' ? 0 : '');
+}
+
 // ── Add Trade ──────────────────────────────────────────
 function addTrade() {
   const sym = document.getElementById('f-sym').value.trim().toUpperCase();
@@ -1165,7 +1531,22 @@ function addTrade() {
   if (!qty || qty <= 0) { toast('請輸入有效股數', 'error'); return; }
   if (!price || price <= 0) { toast('請輸入有效成交價', 'error'); return; }
   if (!date) { toast('請選擇日期', 'error'); return; }
-  trades.push({ id: Date.now(), sym, who, side, qty, price, date, note });
+
+  const feeInput = document.getElementById('f-fee').value;
+  const taxInput = document.getElementById('f-tax').value;
+  
+  const amount = qty * price;
+  const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
+  const minFee = settings.minFee !== undefined ? settings.minFee : 1;
+  const defaultFee = Math.max(minFee, Math.round(amount * 0.001425 * discount));
+  
+  const taxRate = parseFloat(document.getElementById('f-tax-rate').value) || 0.003;
+  const defaultTax = side === 'sell' ? Math.round(amount * taxRate) : 0;
+
+  const fee = feeInput !== '' ? Math.round(parseFloat(feeInput)) : defaultFee;
+  const tax = taxInput !== '' ? Math.round(parseFloat(taxInput)) : defaultTax;
+
+  trades.push({ id: Date.now(), sym, who, side, qty, price, date, note, fee, tax });
   save();
   
   // 背景自動抓取該股票的最新現價與中文名稱
@@ -1186,6 +1567,8 @@ function addTrade() {
   document.getElementById('f-qty').value = '';
   document.getElementById('f-price').value = '';
   document.getElementById('f-note').value = '';
+  document.getElementById('f-fee').value = '';
+  document.getElementById('f-tax').value = '';
   toast(`✓ 已新增 ${side === 'buy' ? '買進' : '賣出'} ${sym} ${qty.toLocaleString()} 股 @ ${price}`);
   refreshFilters();
 }
@@ -1242,17 +1625,32 @@ function renderHistory() {
   
   document.getElementById('history-body').innerHTML = `
     <table>
-      <thead><tr><th>日期</th><th>股票</th><th>交易人</th><th>買/賣</th><th>股數</th><th>成交價</th><th>金額</th><th>備註</th><th></th></tr></thead>
+      <thead><tr><th>日期</th><th>股票</th><th>交易人</th><th>買/賣</th><th>股數</th><th>成交價</th><th>金額 (收支)</th><th>備註</th><th></th></tr></thead>
       <tbody>
         ${filtered.map(t => `<tr>
-          <td style="font-family:'DM Mono',monospace;font-size:12px">${t.date}</td>
-          <td style="font-weight:500">${t.sym} <span style="font-size:11px;color:var(--muted);font-weight:normal;margin-left:4px">${stockNames[t.sym] || ''}</span></td>
+          <td style="font-family:'DM Mono',monospace;font-size:14px">${t.date}</td>
+          <td style="font-weight:500">${t.sym} <span style="font-size:13px;color:var(--muted);font-weight:normal;margin-left:4px">${stockNames[t.sym] || ''}</span></td>
           <td><span class="badge badge-${t.who.toLowerCase()}">${name(t.who)}</span></td>
           <td><span class="${t.side === 'buy' ? 'tag-buy' : 'tag-sell'}">${t.side === 'buy' ? '▲ 買進' : '▼ 賣出'}</span></td>
           <td style="font-family:'DM Mono',monospace">${t.qty.toLocaleString()}</td>
           <td style="font-family:'DM Mono',monospace">${t.price}</td>
-          <td style="font-family:'DM Mono',monospace">${Math.round(t.qty * t.price).toLocaleString()}</td>
-          <td style="color:var(--muted);font-size:12px">${t.note || '—'}</td>
+          <td style="font-family:'DM Mono',monospace;line-height:1.3">
+            ${(() => {
+              const amt = Math.round(t.qty * t.price);
+              const fee = t.fee || 0;
+              const tax = t.tax || 0;
+              if (t.side === 'buy') {
+                const net = amt + fee;
+                return `<div>$${net.toLocaleString()}</div>
+                        <div style="font-size:12px;color:var(--muted)">單價 $${amt.toLocaleString()} + 手續費 $${fee}</div>`;
+              } else {
+                const net = amt - fee - tax;
+                return `<div>$${net.toLocaleString()}</div>
+                        <div style="font-size:12px;color:var(--muted)">單價 $${amt.toLocaleString()} - 手續費 $${fee} - 稅 $${tax}</div>`;
+              }
+            })()}
+          </td>
+          <td style="color:var(--muted);font-size:14px">${t.note || '—'}</td>
           <td><button class="btn btn-ghost" onclick="deleteTrade(${t.id})">✕</button></td>
         </tr>`).join('')}
       </tbody>
@@ -1268,10 +1666,20 @@ function deleteTrade(id) {
 }
 
 // ── CSV ────────────────────────────────────────────────
-const CSV_HEADER = 'date,who,side,symbol,qty,price,note';
+const CSV_HEADER = 'date,who,side,symbol,qty,price,note,fee,tax';
 
 function tradesToCSV() {
-  const rows = trades.map(t => [t.date, t.who, t.side, t.sym, t.qty, t.price, (t.note || '').replace(/,/g, '，')].join(','));
+  const rows = trades.map(t => [
+    t.date,
+    t.who,
+    t.side,
+    t.sym,
+    t.qty,
+    t.price,
+    (t.note || '').replace(/,/g, '，'),
+    t.fee || 0,
+    t.tax || 0
+  ].join(','));
   return CSV_HEADER + '\n' + rows.join('\n');
 }
 
@@ -1300,17 +1708,41 @@ function parseCSV(text) {
   if (!firstLine.includes('date')) { toast('CSV 格式錯誤，缺少 date 標題列', 'error'); return null; }
   return lines.slice(1).map((line, i) => {
     const parts = line.split(',');
-    const [date, who, side, sym, qty, price, ...noteParts] = parts;
-    if (!date || !who || !sym) return null;
+    if (parts.length < 6) return null;
+    const date = parts[0].trim();
+    const who = parts[1].trim().toUpperCase();
+    const side = parts[2].trim().toLowerCase();
+    const sym = parts[3].trim().toUpperCase();
+    const qty = parseFloat(parts[4]);
+    const price = parseFloat(parts[5]);
+    if (!date || !who || !sym || isNaN(qty) || isNaN(price)) return null;
+
+    let note = '';
+    let fee = 0;
+    let tax = 0;
+    
+    if (parts.length >= 9) {
+      note = parts[6].trim();
+      fee = Math.round(parseFloat(parts[7])) || 0;
+      tax = Math.round(parseFloat(parts[8])) || 0;
+    } else if (parts.length === 8) {
+      note = parts[6].trim();
+      fee = Math.round(parseFloat(parts[7])) || 0;
+    } else if (parts.length === 7) {
+      note = parts[6].trim();
+    }
+    
     return {
       id: Date.now() + i,
-      date: date.trim(),
-      who: who.trim().toUpperCase(),
-      side: (side || 'buy').trim(),
-      sym: sym.trim().toUpperCase(),
-      qty: parseFloat(qty),
-      price: parseFloat(price),
-      note: noteParts.join(',').trim()
+      date,
+      who,
+      side,
+      sym,
+      qty,
+      price,
+      note,
+      fee,
+      tax
     };
   }).filter(Boolean);
 }
@@ -1369,8 +1801,14 @@ dropArea.addEventListener('drop', e => {
 function saveSettings() {
   const a = document.getElementById('set-name-a').value.trim();
   const b = document.getElementById('set-name-b').value.trim();
+  const discount = parseFloat(document.getElementById('set-fee-discount').value);
+  const minFee = parseInt(document.getElementById('set-min-fee').value);
+  
   if (a) settings.nameA = a;
   if (b) settings.nameB = b;
+  if (!isNaN(discount) && discount >= 0 && discount <= 1) settings.feeDiscount = discount;
+  if (!isNaN(minFee) && minFee >= 0) settings.minFee = minFee;
+  
   save();
   applyNames();
   toast('設定已儲存');
@@ -1392,6 +1830,14 @@ load();
 initFirebase();
 applyNames();
 document.getElementById('f-date').value = new Date().toISOString().slice(0, 10);
+
+// 綁定交易輸入自動計算事件
+document.getElementById('f-sym').addEventListener('input', autoCalcCosts);
+document.getElementById('f-side').addEventListener('change', autoCalcCosts);
+document.getElementById('f-qty').addEventListener('input', autoCalcCosts);
+document.getElementById('f-price').addEventListener('input', autoCalcCosts);
+document.getElementById('f-tax-rate').addEventListener('change', autoCalcCosts);
+
 renderDashboard();
 refreshFilters();
 </script>
