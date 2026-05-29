@@ -907,36 +907,37 @@ function renderPositions() {
         ${p.qty > 0 ? `<div class="holder-stat"><div class="holder-stat-label">均攤成本</div><div class="holder-stat-val">${avg.toFixed(2)} 元</div></div>` : ''}
         <div class="holder-stat"><div class="holder-stat-label">已實現損益</div><div class="holder-stat-val" style="color:${pnlColor(p.realized)}">${p.realized >= 0 ? '+' : ''}${Math.round(p.realized).toLocaleString()} 元</div></div>
         ${unrealizedBlock}
-        ${totalBlock}
       </div>`;
     };
 
-    // 單人模式：card-body 全寬單欄，不顯示另一人
-    const isSingle = positionView !== 'all';
-    const bodyContent = isSingle
-      ? paneHTML(pos[sym + '_' + positionView], positionView)
-      : paneHTML(pA, 'A') + paneHTML(pB, 'B');
-    const bodyStyle = isSingle
-      ? 'grid-template-columns: 1fr;'
-      : '';
+    document.getElementById('positions-list').innerHTML = syms.map(sym => {
+      const cp = prices[sym];
+      const pA = pos[sym + '_A'], pB = pos[sym + '_B'];
 
-    return `<div class="stock-card">
-      <div class="stock-card-header">
-        <div class="stock-sym">${sym}</div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          ${priceHeader}
-          <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:11px;padding:4px 10px">⟳ 抓取現價</button>
-          <div style="display:flex;align-items:center;gap:4px">
-            <input type="number" step="0.01" placeholder="手動輸入" id="manual-${sym}"
-              style="width:96px;padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace"
-              onkeydown="if(event.key==='Enter')saveManual('${sym}')">
-            <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:11px;padding:4px 10px">存</button>
+      const priceHeader = cp
+        ? `<span style="font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--text)">${cp.toFixed(2)} 元</span>`
+        : `<span style="color:var(--muted);font-size:12px;font-family:'DM Mono',monospace">— 尚無現價</span>`;
+
+      const bodyContent = paneHTML(pA, 'A', sym) + paneHTML(pB, 'B', sym);
+
+      return `<div class="stock-card">
+        <div class="stock-card-header">
+          <div class="stock-sym">${sym}</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            ${priceHeader}
+            <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:11px;padding:4px 10px">⟳ 抓取現價</button>
+            <div style="display:flex;align-items:center;gap:4px">
+              <input type="number" step="0.01" placeholder="手動輸入" id="manual-${sym}"
+                style="width:96px;padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace"
+                onkeydown="if(event.key==='Enter')saveManual('${sym}')">
+              <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:11px;padding:4px 10px">存</button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="stock-card-body" style="${bodyStyle}">${bodyContent}</div>
-    </div>`;
-  }).join('');
+        <div class="stock-card-body">${bodyContent}</div>
+      </div>`;
+    }).join('');
+  }
 }
 
 async function fetchOneSym(sym) {
