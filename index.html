@@ -254,7 +254,6 @@ select option { background: var(--surface2); }
   <div class="nav-item" onclick="switchSection('positions', this)"><span class="nav-icon">◈</span> 持股</div>
   <div class="nav-item" onclick="switchSection('add', this)"><span class="nav-icon">＋</span> 新增</div>
   <div class="nav-item" onclick="switchSection('history', this)"><span class="nav-icon">≡</span> 明細</div>
-  <div class="nav-item" onclick="switchSection('csv', this)"><span class="nav-icon">⇅</span> CSV</div>
   <div class="nav-item" onclick="switchSection('settings', this)"><span class="nav-icon">⚙</span> 設定</div>
 </div>
 
@@ -271,9 +270,8 @@ select option { background: var(--surface2); }
       <div class="nav-item" id="nav-positions" onclick="switchSection('positions', this)"><span class="nav-icon">◈</span> 持股分析</div>
       <div class="nav-item" id="nav-add" onclick="switchSection('add', this)"><span class="nav-icon">＋</span> 新增交易</div>
       <div class="nav-item" id="nav-history" onclick="switchSection('history', this)"><span class="nav-icon">≡</span> 交易明細</div>
-      <div class="nav-section">資料</div>
-      <div class="nav-item" id="nav-csv" onclick="switchSection('csv', this)"><span class="nav-icon">⇅</span> CSV 匯入匯出</div>
-      <div class="nav-item" id="nav-settings" onclick="switchSection('settings', this)"><span class="nav-icon">⚙</span> 設定</div>
+      <div class="nav-section">系統</div>
+      <div class="nav-item" id="nav-settings" onclick="switchSection('settings', this)"><span class="nav-icon">⚙</span> 系統設定</div>
     </nav>
     <div class="sidebar-footer">
       <div class="person-badge"><div class="person-dot" style="background:var(--a-color)"></div><span id="name-a-label" style="font-size:12px">人員 A</span></div>
@@ -401,6 +399,16 @@ select option { background: var(--surface2); }
           <select id="filter-sym" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
             <option value="">全部股票</option>
           </select>
+          <select id="filter-range" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
+            <option value="">全部時間</option>
+            <option value="this-month">當月</option>
+            <option value="3-months">近三個月</option>
+            <option value="1-year">近一年</option>
+          </select>
+          <select id="filter-sort" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
+            <option value="desc">日期：新 ➜ 舊</option>
+            <option value="asc">日期：舊 ➜ 新</option>
+          </select>
         </div>
       </div>
       <div class="table-wrap">
@@ -409,46 +417,10 @@ select option { background: var(--surface2); }
     </div>
 
     <!-- CSV -->
-    <div class="section" id="sec-csv">
-      <div class="page-header">
-        <div><div class="page-title">CSV 匯入匯出</div><div class="page-sub">與另一方同步資料的方式</div></div>
-      </div>
-      <div class="form-card">
-        <div style="font-size:13px;font-weight:500;margin-bottom:12px">匯出交易紀錄</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">
-          將目前所有交易匯出成 CSV 檔案，傳給另一方後請對方用「匯入」功能載入，兩邊就能有相同的資料。
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-primary" onclick="exportCSV()" id="btn-export">⬇ 下載 CSV</button>
-          <button class="btn" onclick="copyCSV()" id="btn-copy-csv">複製 CSV 內容</button>
-        </div>
-      </div>
-      <div class="form-card">
-        <div style="font-size:13px;font-weight:500;margin-bottom:12px">匯入交易紀錄</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">
-          選取另一方傳來的 CSV 檔，或直接把 CSV 文字貼入下方。匯入時可選擇「合併」（保留現有再加入）或「覆蓋」（全部替換）。
-        </div>
-        <div class="import-area" onclick="document.getElementById('csv-file').click()" id="drop-area">
-          <div class="import-icon">📂</div>
-          <div class="import-title">點擊選取 CSV 檔案</div>
-          <div class="import-sub">或直接拖曳到這裡</div>
-          <input type="file" id="csv-file" accept=".csv,text/csv" style="display:none" onchange="handleFileImport(this)">
-        </div>
-        <div style="margin-top:16px">
-          <label class="field-label" style="margin-bottom:6px;display:block">或貼上 CSV 文字</label>
-          <textarea id="csv-paste" rows="5" placeholder="date,who,side,symbol,qty,price,note&#10;2024-01-15,A,buy,2330,1000,600,..." style="font-family:'DM Mono',monospace;font-size:12px;resize:vertical"></textarea>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-          <button class="btn btn-primary" onclick="importCSV('merge')" id="btn-import-merge">合併匯入</button>
-          <button class="btn" onclick="importCSV('replace')" id="btn-import-replace">覆蓋匯入</button>
-        </div>
-      </div>
-    </div>
-
     <!-- Settings -->
     <div class="section" id="sec-settings">
       <div class="page-header">
-        <div><div class="page-title">設定</div></div>
+        <div><div class="page-title">系統設定</div></div>
       </div>
       <div class="form-card">
         <div style="font-size:13px;font-weight:500;margin-bottom:16px">人員名稱</div>
@@ -476,9 +448,39 @@ select option { background: var(--surface2); }
           5. 儲存並將 <code>index.html</code> 上傳至 GitHub Pages，即可完成跨裝置無縫同步！
         </div>
       </div>
+      <div class="form-card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:12px">資料備份 (匯出 CSV)</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">
+          將目前所有交易匯出成 CSV 檔案，可作為本機備份，或手動傳給他人匯入。
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="exportCSV()" id="btn-export">⬇ 下載 CSV 備份</button>
+          <button class="btn" onclick="copyCSV()" id="btn-copy-csv">複製 CSV 內容</button>
+        </div>
+      </div>
+      <div class="form-card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:12px">資料還原 (匯入 CSV)</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">
+          選取備份的 CSV 檔案，或直接將 CSV 文字貼入下方。匯入時可選擇「合併」（保留現有交易）或「覆蓋」（清除現有交易並替換）。
+        </div>
+        <div class="import-area" onclick="document.getElementById('csv-file').click()" id="drop-area">
+          <div class="import-icon">📂</div>
+          <div class="import-title">點擊選取 CSV 檔案</div>
+          <div class="import-sub">或直接拖曳到這裡</div>
+          <input type="file" id="csv-file" accept=".csv,text/csv" style="display:none" onchange="handleFileImport(this)">
+        </div>
+        <div style="margin-top:16px">
+          <label class="field-label" style="margin-bottom:6px;display:block">或貼上 CSV 文字</label>
+          <textarea id="csv-paste" rows="5" placeholder="date,who,side,symbol,qty,price,note&#10;2024-01-15,A,buy,2330,1000,600,..." style="font-family:'DM Mono',monospace;font-size:12px;resize:vertical"></textarea>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="importCSV('merge')" id="btn-import-merge">合併匯入</button>
+          <button class="btn" onclick="importCSV('replace')" id="btn-import-replace">覆蓋匯入</button>
+        </div>
+      </div>
       <div class="form-card" style="border-color:rgba(224,92,92,0.3)">
         <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--red)">清除所有資料</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:16px">這個動作無法復原，請先匯出 CSV 備份。</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px">這個動作會完全刪除本機與雲端的交易紀錄且無法復原，請務必先下載 CSV 備份！</div>
         <button class="btn" style="border-color:var(--red);color:var(--red)" onclick="clearAll()" id="btn-clear-all">清除所有交易紀錄</button>
       </div>
     </div>
@@ -510,6 +512,7 @@ let lastSyncTimestamp = 0;
 // ── State ──────────────────────────────────────────────
 let trades = [];
 let prices = {};
+let stockNames = {}; // 股票中文名稱對照表
 let settings = { nameA: '人員 A', nameB: '人員 B' };
 let charts = {};
 let isFetching = false;
@@ -521,6 +524,7 @@ function save() {
     localStorage.setItem('slt_trades', JSON.stringify(trades));
     localStorage.setItem('slt_prices', JSON.stringify(prices));
     localStorage.setItem('slt_settings', JSON.stringify(settings));
+    localStorage.setItem('slt_stock_names', JSON.stringify(stockNames));
   } catch(e) { console.warn('localStorage save failed', e); }
 
   // 同時推送到雲端資料庫
@@ -530,6 +534,7 @@ function load() {
   try { trades = JSON.parse(localStorage.getItem('slt_trades') || '[]'); } catch(e) { trades = []; }
   try { prices = JSON.parse(localStorage.getItem('slt_prices') || '{}'); } catch(e) { prices = {}; }
   try { settings = { nameA:'人員 A', nameB:'人員 B', ...JSON.parse(localStorage.getItem('slt_settings') || '{}') }; } catch(e) {}
+  try { stockNames = JSON.parse(localStorage.getItem('slt_stock_names') || '{}'); } catch(e) { stockNames = {}; }
 }
 
 // ── Firebase Sync Core ─────────────────────────────────
@@ -547,7 +552,7 @@ function initFirebase() {
       syncDocRef = db.collection('ledgers').doc(docId);
       
       if (statusIndicator) {
-        statusIndicator.innerHTML = `☁️ 雲端同步中 (${docId})`;
+        statusIndicator.innerHTML = `☁️ 雲端同步完成`;
         statusIndicator.className = 'status-badge cloud';
       }
       
@@ -579,6 +584,7 @@ function setupFirebaseListener() {
         
         trades = data.trades || [];
         prices = data.prices || {};
+        stockNames = data.stockNames || {};
         if (data.settings) {
           settings = { ...settings, ...data.settings };
         }
@@ -590,6 +596,7 @@ function setupFirebaseListener() {
           localStorage.setItem('slt_trades', JSON.stringify(trades));
           localStorage.setItem('slt_prices', JSON.stringify(prices));
           localStorage.setItem('slt_settings', JSON.stringify(settings));
+          localStorage.setItem('slt_stock_names', JSON.stringify(stockNames));
         } catch (e) {
           console.warn('localStorage save failed', e);
         }
@@ -625,6 +632,7 @@ function uploadToCloud() {
   syncDocRef.set({
     trades: trades,
     prices: prices,
+    stockNames: stockNames,
     settings: settings,
     timestamp: now
   }).catch((error) => {
@@ -930,6 +938,9 @@ async function fetchAllPrices() {
     const r = await fetchPrice(sym);
     if (r) {
       prices[sym] = r.price;
+      if (r.name) {
+        stockNames[sym] = r.name.trim();
+      }
       ok++;
       const sign = (r.change ?? 0) >= 0 ? '+' : '';
       const chgStr = r.change != null ? `${sign}${r.change.toFixed(2)}%` : '—';
@@ -1037,7 +1048,7 @@ function renderPositions() {
       return `<div class="compact-card">
         <div class="compact-top">
           <div>
-            <div class="compact-sym" style="color:${accentColor}">${sym}</div>
+            <div class="compact-sym" style="color:${accentColor}">${sym} <span style="font-size:12px;color:var(--muted);font-weight:normal;margin-left:4px">${stockNames[sym] || ''}</span></div>
             <div class="compact-sym-name">${qty > 0 ? qty.toLocaleString() + ' 股持有中' : '已出清'}</div>
           </div>
           ${priceBlock}
@@ -1092,7 +1103,7 @@ function renderPositions() {
 
       return `<div class="stock-card">
         <div class="stock-card-header">
-          <div class="stock-sym">${sym}</div>
+          <div class="stock-sym">${sym} <span style="font-size:12px;color:var(--muted);font-weight:normal;margin-left:6px">${stockNames[sym] || ''}</span></div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             ${priceHeader}
             <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:11px;padding:4px 10px">⟳ 抓取現價</button>
@@ -1116,6 +1127,9 @@ async function fetchOneSym(sym) {
   const r = await fetchPrice(sym);
   if (r) {
     prices[sym] = r.price;
+    if (r.name) {
+      stockNames[sym] = r.name.trim();
+    }
     save();
     const sign = (r.change ?? 0) >= 0 ? '+' : '';
     const chgStr = r.change != null ? `${sign}${r.change.toFixed(2)}%` : '—';
@@ -1153,6 +1167,21 @@ function addTrade() {
   if (!date) { toast('請選擇日期', 'error'); return; }
   trades.push({ id: Date.now(), sym, who, side, qty, price, date, note });
   save();
+  
+  // 背景自動抓取該股票的最新現價與中文名稱
+  if (!prices[sym] || !stockNames[sym]) {
+    fetchPrice(sym).then(r => {
+      if (r) {
+        prices[sym] = r.price;
+        if (r.name) stockNames[sym] = r.name.trim();
+        save();
+        renderDashboard();
+        renderPositions();
+        refreshFilters();
+      }
+    });
+  }
+  
   document.getElementById('f-sym').value = '';
   document.getElementById('f-qty').value = '';
   document.getElementById('f-price').value = '';
@@ -1166,26 +1195,58 @@ function refreshFilters() {
   const syms = [...new Set(trades.map(t => t.sym))];
   const sel = document.getElementById('filter-sym');
   const cur = sel.value;
-  sel.innerHTML = '<option value="">全部股票</option>' + syms.map(s => `<option value="${s}"${s === cur ? ' selected' : ''}>${s}</option>`).join('');
+  sel.innerHTML = '<option value="">全部股票</option>' + syms.map(s => `<option value="${s}"${s === cur ? ' selected' : ''}>${s} ${stockNames[s] || ''}</option>`).join('');
 }
 
 function renderHistory() {
   refreshFilters();
   const whoF = document.getElementById('filter-who').value;
   const symF = document.getElementById('filter-sym').value;
-  let filtered = [...trades].filter(t => (!whoF || t.who === whoF) && (!symF || t.sym === symF));
-  filtered.sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+  const rangeF = document.getElementById('filter-range').value;
+  const sortF = document.getElementById('filter-sort').value;
+  
+  let filtered = [...trades];
+  
+  // 1. 時間範圍查詢
+  if (rangeF) {
+    const today = new Date();
+    let limitDate = new Date();
+    if (rangeF === 'this-month') {
+      // 當月第一天
+      limitDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    } else if (rangeF === '3-months') {
+      // 三個月前
+      limitDate.setMonth(today.getMonth() - 3);
+    } else if (rangeF === '1-year') {
+      // 一年前
+      limitDate.setFullYear(today.getFullYear() - 1);
+    }
+    const limitStr = limitDate.toISOString().slice(0, 10);
+    filtered = filtered.filter(t => t.date >= limitStr);
+  }
+  
+  // 2. 交易人與股票篩選
+  filtered = filtered.filter(t => (!whoF || t.who === whoF) && (!symF || t.sym === symF));
+  
+  // 3. 排序 (新➜舊 或 舊➜新)
+  if (sortF === 'asc') {
+    filtered.sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id);
+  } else {
+    filtered.sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+  }
+  
   if (!filtered.length) {
     document.getElementById('history-body').innerHTML = '<div class="empty">沒有符合條件的交易紀錄</div>';
     return;
   }
+  
   document.getElementById('history-body').innerHTML = `
     <table>
       <thead><tr><th>日期</th><th>股票</th><th>交易人</th><th>買/賣</th><th>股數</th><th>成交價</th><th>金額</th><th>備註</th><th></th></tr></thead>
       <tbody>
         ${filtered.map(t => `<tr>
           <td style="font-family:'DM Mono',monospace;font-size:12px">${t.date}</td>
-          <td style="font-weight:500">${t.sym}</td>
+          <td style="font-weight:500">${t.sym} <span style="font-size:11px;color:var(--muted);font-weight:normal;margin-left:4px">${stockNames[t.sym] || ''}</span></td>
           <td><span class="badge badge-${t.who.toLowerCase()}">${name(t.who)}</span></td>
           <td><span class="${t.side === 'buy' ? 'tag-buy' : 'tag-sell'}">${t.side === 'buy' ? '▲ 買進' : '▼ 賣出'}</span></td>
           <td style="font-family:'DM Mono',monospace">${t.qty.toLocaleString()}</td>
