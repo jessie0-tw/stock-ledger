@@ -108,7 +108,11 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .form-group { display: flex; flex-direction: column; gap: 6px; }
 label.field-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; }
 input, select, textarea { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 15px; font-family: 'Noto Sans TC', sans-serif; outline: none; width: 100%; transition: border-color 0.15s; }
-input:focus, select:focus { border-color: var(--accent); }
+.form-group input:focus, .form-group select:focus { border-color: var(--primary); outline: none; }
+.toggle-group-custom { display: flex; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 4px; height: 42px; border: 1px solid var(--border); }
+.toggle-group-custom .toggle-btn { flex: 1; border-radius: 6px; font-size: 14px; font-weight: 600; color: var(--text-muted); background: transparent; border: none; transition: all 0.2s; cursor: pointer; }
+.toggle-group-custom .toggle-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.add-trade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 select option { background: var(--surface2); }
 
 /* Buttons */
@@ -476,64 +480,50 @@ select option { background: var(--surface2); }
 
     <!-- Add Trade -->
     <div class="section" id="sec-add">
-      <div class="page-header">
-        <div><div class="page-title">新增交易</div><div class="page-sub">記錄一筆買賣明細</div></div>
+      <div class="page-header dash-header-v4" style="display: flex; flex-direction: row; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 0.5rem; margin-top: 0.5rem;">
+        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+          <div class="dash-title-v4" style="text-align: left; line-height: 1; margin-top: 4px; font-size: 24px; font-weight: 600;">新增交易</div>
+          <div id="add-trade-date-display" style="font-size: 13px; color: var(--text-muted); margin-top: 6px; text-align: left; white-space: nowrap;"></div>
+        </div>
       </div>
       <div class="form-card">
-        <div class="form-grid" style="margin-bottom:16px">
+        <div class="add-trade-grid">
           <div class="form-group">
             <label class="field-label">股票代號</label>
             <input id="f-sym" type="text" placeholder="例：2330" autocomplete="off">
           </div>
           <div class="form-group">
             <label class="field-label">交易人</label>
-            <select id="f-who">
-              <option value="A" id="opt-a">人員 A</option>
-              <option value="B" id="opt-b">人員 B</option>
-            </select>
+            <div class="toggle-group-custom" id="toggle-who">
+              <button type="button" class="toggle-btn active" onclick="setToggleWho('A')"><span id="lbl-who-a">人員 A</span></button>
+              <button type="button" class="toggle-btn" onclick="setToggleWho('B')"><span id="lbl-who-b">人員 B</span></button>
+            </div>
+            <input type="hidden" id="f-who" value="A">
           </div>
-        </div>
-        <div class="form-grid-3" style="margin-bottom:16px">
+          
           <div class="form-group">
             <label class="field-label">買 / 賣</label>
-            <select id="f-side">
-              <option value="buy">買進</option>
-              <option value="sell">賣出</option>
-            </select>
+            <div class="toggle-group-custom" id="toggle-side">
+              <button type="button" class="toggle-btn active" onclick="setToggleSide('buy')">買進</button>
+              <button type="button" class="toggle-btn" onclick="setToggleSide('sell')">賣出</button>
+            </div>
+            <input type="hidden" id="f-side" value="buy">
           </div>
           <div class="form-group">
             <label class="field-label">股數（股）</label>
             <input id="f-qty" type="number" placeholder="1000" min="1">
           </div>
+          
           <div class="form-group">
             <label class="field-label">成交價（元）</label>
             <input id="f-price" type="number" step="0.01" placeholder="600">
           </div>
-        </div>
-        <div class="form-grid-3" style="margin-bottom:16px">
-          <div class="form-group">
-            <label class="field-label">手續費（元）</label>
-            <input id="f-fee" type="number" placeholder="自動預估" min="0">
-          </div>
-          <div class="form-group">
-            <label class="field-label">交易稅率</label>
-            <select id="f-tax-rate">
-              <option value="0.003">一般股票 (0.3%)</option>
-              <option value="0.001">ETF (0.1%)</option>
-              <option value="0.0015">現股當沖 (0.15%)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="field-label">證券交易稅（元）</label>
-            <input id="f-tax" type="number" placeholder="自動預估" min="0">
-          </div>
-        </div>
-        <div class="form-grid" style="margin-bottom:20px">
           <div class="form-group">
             <label class="field-label">日期</label>
             <input id="f-date" type="date">
           </div>
-          <div class="form-group">
+          
+          <div class="form-group" style="grid-column: 1 / -1;">
             <label class="field-label">備註（選填）</label>
             <input id="f-note" type="text" placeholder="波段操作、停損...">
           </div>
@@ -541,7 +531,7 @@ select option { background: var(--surface2); }
         <button class="btn btn-primary" onclick="addTrade()" id="btn-add-trade">確認新增</button>
       </div>
       <div class="info-box">
-        💡 提示：若已啟用雲端同步，資料將在您按下新增後 1 秒內自動同步到所有手機與電腦。
+        💡 提示：手續費與稅金將根據成交金額與當沖判定，自動為您估算。
       </div>
     </div>
 
@@ -869,8 +859,10 @@ function name(who) { return who === 'A' ? settings.nameA : settings.nameB; }
 function applyNames() {
   document.getElementById('name-a-label').textContent = settings.nameA;
   document.getElementById('name-b-label').textContent = settings.nameB;
-  document.getElementById('opt-a').textContent = settings.nameA;
-  document.getElementById('opt-b').textContent = settings.nameB;
+  const elA = document.getElementById('lbl-who-a') || document.getElementById('opt-a');
+  if (elA) elA.textContent = settings.nameA;
+  const elB = document.getElementById('lbl-who-b') || document.getElementById('opt-b');
+  if (elB) elB.textContent = settings.nameB;
   document.getElementById('filter-a').textContent = settings.nameA;
   document.getElementById('filter-b').textContent = settings.nameB;
   const sa = document.getElementById('set-name-a'), sb = document.getElementById('set-name-b');
@@ -908,8 +900,15 @@ function switchSection(id, el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('sec-' + id).classList.add('active');
   // highlight in both sidebar and mobile nav
-  document.querySelectorAll('[id^="nav-' + id + '"]').forEach(n => n.classList.add('active'));
+  const t = document.querySelector(`.nav-item[onclick*="('${id}')"]`);
+  if (t) t.classList.add('active');
   if (el) el.classList.add('active');
+  
+  if (id === 'add') {
+    const dEl = document.getElementById('add-trade-date-display');
+    if (dEl) dEl.textContent = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+  }
+  
   if (id === 'dashboard') renderDashboard();
   if (id === 'positions') renderPositions();
   if (id === 'history') renderHistory();
@@ -1660,6 +1659,20 @@ function autoCalcCosts() {
   document.getElementById('f-tax').value = (amount > 0 && side === 'sell') ? tax : (side === 'buy' ? 0 : '');
 }
 
+function setToggleWho(val) {
+  document.getElementById('f-who').value = val;
+  const btns = document.getElementById('toggle-who').querySelectorAll('.toggle-btn');
+  btns[0].classList.toggle('active', val === 'A');
+  btns[1].classList.toggle('active', val === 'B');
+}
+
+function setToggleSide(val) {
+  document.getElementById('f-side').value = val;
+  const btns = document.getElementById('toggle-side').querySelectorAll('.toggle-btn');
+  btns[0].classList.toggle('active', val === 'buy');
+  btns[1].classList.toggle('active', val === 'sell');
+}
+
 // ── Add Trade ──────────────────────────────────────────
 function addTrade() {
   const sym = document.getElementById('f-sym').value.trim().toUpperCase();
@@ -1673,20 +1686,21 @@ function addTrade() {
   if (!qty || qty <= 0) { toast('請輸入有效股數', 'error'); return; }
   if (!price || price <= 0) { toast('請輸入有效成交價', 'error'); return; }
   if (!date) { toast('請選擇日期', 'error'); return; }
-
-  const feeInput = document.getElementById('f-fee').value;
-  const taxInput = document.getElementById('f-tax').value;
   
   const amount = qty * price;
   const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
   const minFee = settings.minFee !== undefined ? settings.minFee : 1;
-  const defaultFee = Math.max(minFee, Math.round(amount * 0.001425 * discount));
+  const fee = Math.max(minFee, Math.round(amount * 0.001425 * discount));
   
-  const taxRate = parseFloat(document.getElementById('f-tax-rate').value) || 0.003;
-  const defaultTax = side === 'sell' ? Math.round(amount * taxRate) : 0;
-
-  const fee = feeInput !== '' ? Math.round(parseFloat(feeInput)) : defaultFee;
-  const tax = taxInput !== '' ? Math.round(parseFloat(taxInput)) : defaultTax;
+  let taxRate = 0.003;
+  if (sym.startsWith('00')) {
+    taxRate = 0.001; // ETF
+  } else if (side === 'sell') {
+    const isDayTrade = trades.some(t => t.sym === sym && t.who === who && t.date === date && t.side === 'buy');
+    if (isDayTrade) taxRate = 0.0015; // 當沖稅半減
+  }
+  
+  const tax = side === 'sell' ? Math.round(amount * taxRate) : 0;
 
   trades.push({ id: Date.now(), sym, who, side, qty, price, date, note, fee, tax });
   save();
@@ -1709,8 +1723,6 @@ function addTrade() {
   document.getElementById('f-qty').value = '';
   document.getElementById('f-price').value = '';
   document.getElementById('f-note').value = '';
-  document.getElementById('f-fee').value = '';
-  document.getElementById('f-tax').value = '';
   toast(`✓ 已新增 ${side === 'buy' ? '買進' : '賣出'} ${sym} ${qty.toLocaleString()} 股 @ ${price}`);
   refreshFilters();
 }
