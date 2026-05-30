@@ -83,7 +83,6 @@ a { color: inherit; text-decoration: none; }
 /* V4 specific metrics layout */
 .metric-card-total-cost { grid-column: 1 / -1; background: transparent; border: none; padding: 0 0 1rem 0; text-align: center; }
 .metric-card-total-cost .metric-label { font-size: 11px; margin-bottom: 6px; }
-.metric-card-total-cost .metric-value { font-size: 24px; font-weight: 600; }
 
 .metric-card-total-pnl { grid-column: 1 / -1; text-align: center; padding: 1.25rem; margin-top: 4px; }
 .metric-card-total-pnl .metric-label { font-size: 12px; margin-bottom: 6px; }
@@ -413,9 +412,8 @@ select option { background: var(--surface2); }
 
     <!-- Dashboard -->
     <div class="section active" id="sec-dashboard">
-      <div class="page-header dash-header-v4">
-        <div></div>
-        <div class="dash-title-v4">持股分帳本</div>
+      <div class="page-header dash-header-v4" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2rem; margin-top: 0.5rem;">
+        <div class="dash-title-v4" style="text-align: left;">總覽</div>
         <div class="dash-sync-v4" id="sync-icon-v4">
           <svg viewBox="0 0 24 24"><path d="M17.5 19c2.5 0 4.5-2 4.5-4.5a4.5 4.5 0 0 0-4.08-4.47A7 7 0 0 0 4.58 11.5 5 5 0 0 0 6 21h10z"></path></svg>
         </div>
@@ -1047,13 +1045,13 @@ function renderDashboard() {
       <div class="metric-value ${unrealA >= 0 ? 'pos' : 'neg'}">${unrealA >= 0 ? '+' : ''}$${Math.round(unrealA).toLocaleString()}</div>
     </div>
     <div class="metric-card">
-      <div class="metric-label">${settings.nameA} 已實現損益</div>
-      <div class="metric-value ${realA >= 0 ? 'pos' : 'neg'}">${realA >= 0 ? '+' : ''}$${Math.round(realA).toLocaleString()}</div>
+      <div class="metric-label">${settings.nameB} 未實現損益</div>
+      <div class="metric-value ${unrealB >= 0 ? 'pos' : 'neg'}">${unrealB >= 0 ? '+' : ''}$${Math.round(unrealB).toLocaleString()}</div>
     </div>
     
     <div class="metric-card">
-      <div class="metric-label">${settings.nameB} 未實現損益</div>
-      <div class="metric-value ${unrealB >= 0 ? 'pos' : 'neg'}">${unrealB >= 0 ? '+' : ''}$${Math.round(unrealB).toLocaleString()}</div>
+      <div class="metric-label">${settings.nameA} 已實現損益</div>
+      <div class="metric-value ${realA >= 0 ? 'pos' : 'neg'}">${realA >= 0 ? '+' : ''}$${Math.round(realA).toLocaleString()}</div>
     </div>
     <div class="metric-card">
       <div class="metric-label">${settings.nameB} 已實現損益</div>
