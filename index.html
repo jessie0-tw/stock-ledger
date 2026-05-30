@@ -71,13 +71,13 @@ a { color: inherit; text-decoration: none; }
 
 /* Cards & Metrics */
 .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 2rem; }
-.metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; overflow: hidden; }
+.metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; justify-content: center; text-align: center; }
 .metric-card.accent { border-color: rgba(212,168,83,0.3); background: rgba(212,168,83,0.05); }
-.metric-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'Space Grotesk', 'DM Mono', monospace; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.metric-value { font-family: 'Space Grotesk', 'DM Mono', monospace; font-size: 25px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.metric-label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+.metric-value { font-size: 28px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+.metric-value.pos { color: var(--green); }
+.metric-value.neg { color: var(--red); }
 .metric-sub { font-size: 12px; color: var(--muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pos { color: var(--green); }
-.neg { color: var(--red); }
 .neutral { color: var(--text); }
 
 /* V4 specific metrics layout */
@@ -341,9 +341,10 @@ select option { background: var(--surface2); }
   .desktop-only { display: none !important; }
 
   /* Mobile chart fixes */
+  /* Allow larger metric values on mobile */
+  .metric-value { font-size: 26px; }
   .metrics-row { grid-template-columns: 1fr 1fr; gap: 10px; }
   .metric-card { padding: 0.9rem; }
-  .metric-value { font-size: 20px; }
   .chart-wrap { height: 180px; }
   .chart-dual { flex-direction: column; height: auto; gap: 8px; }
   .chart-dual > div { flex: none !important; }
@@ -412,10 +413,16 @@ select option { background: var(--surface2); }
 
     <!-- Dashboard -->
     <div class="section active" id="sec-dashboard">
-      <div class="page-header dash-header-v4" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 2rem; margin-top: 0.5rem;">
-        <div class="dash-title-v4" style="text-align: left;">總覽</div>
-        <div class="dash-sync-v4" id="sync-icon-v4">
-          <svg viewBox="0 0 24 24"><path d="M17.5 19c2.5 0 4.5-2 4.5-4.5a4.5 4.5 0 0 0-4.08-4.47A7 7 0 0 0 4.58 11.5 5 5 0 0 0 6 21h10z"></path></svg>
+      <div class="page-header dash-header-v4" style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 2rem; margin-top: 0.5rem;">
+        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+          <div class="dash-title-v4" style="text-align: left; line-height: 1;">總覽</div>
+          <div id="dash-date" style="font-size: 13px; color: var(--text-muted); margin-top: 6px; text-align: left;"></div>
+        </div>
+        <div class="dash-sync-v4" id="sync-icon-v4" style="display: flex; justify-content: flex-end;">
+          <svg viewBox="0 0 24 24" style="width: 22px; height: 22px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;">
+            <path d="M17.5 19c2.5 0 4.5-2 4.5-4.5a4.5 4.5 0 0 0-4.08-4.47A7 7 0 0 0 4.58 11.5 5 5 0 0 0 6 21h10z"></path>
+            <polyline points="9 16 11 18 15 13"></polyline>
+          </svg>
         </div>
       </div>
       <div class="metrics-row" id="dash-metrics"></div>
@@ -1027,40 +1034,45 @@ function getSummary() {
 // ── Dashboard ──────────────────────────────────────────
 function renderDashboard() {
   const dateEl = document.getElementById('dash-date');
-  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
   const { costA, costB, unrealA, unrealB, realA, realB } = getSummary();
   const totalCost = costA + costB;
   const totalUnreal = unrealA + unrealB;
   const totalReal = realA + realB;
   const totalPnl = totalUnreal + totalReal;
   
+  const formatMoney = (val) => {
+    const sign = val >= 0 ? '+' : '-';
+    return `${sign}$${Math.round(Math.abs(val)).toLocaleString()}`;
+  };
+  
   document.getElementById('dash-metrics').innerHTML = `
     <div class="metric-card metric-card-total-cost">
       <div class="metric-label">總持倉成本</div>
-      <div class="metric-value neutral">$${Math.round(totalCost).toLocaleString()}</div>
+      <div class="metric-value neutral">$${Math.round(Math.abs(totalCost)).toLocaleString()}</div>
     </div>
     
     <div class="metric-card">
       <div class="metric-label">${settings.nameA} 未實現損益</div>
-      <div class="metric-value ${unrealA >= 0 ? 'pos' : 'neg'}">${unrealA >= 0 ? '+' : ''}$${Math.round(unrealA).toLocaleString()}</div>
+      <div class="metric-value ${unrealA >= 0 ? 'pos' : 'neg'}">${formatMoney(unrealA)}</div>
     </div>
     <div class="metric-card">
       <div class="metric-label">${settings.nameB} 未實現損益</div>
-      <div class="metric-value ${unrealB >= 0 ? 'pos' : 'neg'}">${unrealB >= 0 ? '+' : ''}$${Math.round(unrealB).toLocaleString()}</div>
+      <div class="metric-value ${unrealB >= 0 ? 'pos' : 'neg'}">${formatMoney(unrealB)}</div>
     </div>
     
     <div class="metric-card">
       <div class="metric-label">${settings.nameA} 已實現損益</div>
-      <div class="metric-value ${realA >= 0 ? 'pos' : 'neg'}">${realA >= 0 ? '+' : ''}$${Math.round(realA).toLocaleString()}</div>
+      <div class="metric-value ${realA >= 0 ? 'pos' : 'neg'}">${formatMoney(realA)}</div>
     </div>
     <div class="metric-card">
       <div class="metric-label">${settings.nameB} 已實現損益</div>
-      <div class="metric-value ${realB >= 0 ? 'pos' : 'neg'}">${realB >= 0 ? '+' : ''}$${Math.round(realB).toLocaleString()}</div>
+      <div class="metric-value ${realB >= 0 ? 'pos' : 'neg'}">${formatMoney(realB)}</div>
     </div>
     
     <div class="metric-card metric-card-total-pnl">
       <div class="metric-label">合計總損益</div>
-      <div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${totalPnl >= 0 ? '+' : ''}$${Math.round(totalPnl).toLocaleString()}</div>
+      <div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${formatMoney(totalPnl)}</div>
     </div>
   `;
   renderCharts(costA, costB, unrealA, unrealB, realA, realB);
