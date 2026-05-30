@@ -1611,45 +1611,7 @@ function saveManual(sym) {
   toast(`${sym} 現價已手動設為 ${val} 元`);
 }
 
-// ── Cost Auto-Calculation ──────────────────────────────
-function autoCalcCosts() {
-  const sym = document.getElementById('f-sym').value.trim();
-  const side = document.getElementById('f-side').value;
-  const qty = parseFloat(document.getElementById('f-qty').value) || 0;
-  const price = parseFloat(document.getElementById('f-price').value) || 0;
-  
-  if (sym) {
-    const isEtf = sym.startsWith('00') || sym.startsWith('01');
-    const taxRateSelect = document.getElementById('f-tax-rate');
-    if (isEtf) {
-      if (taxRateSelect.value !== '0.0015' && taxRateSelect.value !== '0.001') {
-        taxRateSelect.value = '0.001';
-      }
-    } else {
-      if (taxRateSelect.value !== '0.0015' && taxRateSelect.value !== '0.003') {
-        taxRateSelect.value = '0.003';
-      }
-    }
-  }
-  
-  const taxRate = parseFloat(document.getElementById('f-tax-rate').value) || 0.003;
-  const amount = qty * price;
-  
-  let fee = 0;
-  if (amount > 0) {
-    const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
-    const minFee = settings.minFee !== undefined ? settings.minFee : 1;
-    fee = Math.max(minFee, Math.round(amount * 0.001425 * discount));
-  }
-  
-  let tax = 0;
-  if (amount > 0 && side === 'sell') {
-    tax = Math.round(amount * taxRate);
-  }
-  
-  document.getElementById('f-fee').value = amount > 0 ? fee : '';
-  document.getElementById('f-tax').value = (amount > 0 && side === 'sell') ? tax : (side === 'buy' ? 0 : '');
-}
+// ── Cost Auto-Calculation Removed (Handled on submit) ────────
 
 function setToggleWho(val) {
   document.getElementById('f-who').value = val;
@@ -1978,11 +1940,7 @@ applyNames();
 document.getElementById('f-date').value = new Date().toISOString().slice(0, 10);
 
 // 綁定交易輸入自動計算事件
-document.getElementById('f-sym').addEventListener('input', autoCalcCosts);
-document.getElementById('f-side').addEventListener('change', autoCalcCosts);
-document.getElementById('f-qty').addEventListener('input', autoCalcCosts);
-document.getElementById('f-price').addEventListener('input', autoCalcCosts);
-document.getElementById('f-tax-rate').addEventListener('change', autoCalcCosts);
+// Event listeners for auto calc removed
 
 renderDashboard();
 refreshFilters();
