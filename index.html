@@ -125,15 +125,62 @@ select option { background: var(--surface2); }
 .stock-grid { display: grid; gap: 12px; }
 .stock-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
 .stock-card-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
-.stock-sym { font-family: 'DM Serif Display', serif; font-size: 22px; }
+.stock-sym { font-family: 'DM Serif Display', serif; font-size: 28px; display: inline-flex; align-items: baseline; gap: 8px; }
+.stock-sym span { font-size: 18px; color: var(--muted); font-weight: normal; font-family: 'Noto Sans TC', sans-serif; }
 .stock-price { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--muted); }
-.stock-card-body { display: grid; grid-template-columns: 1fr 1fr; }
-.holder-pane { padding: 1rem 1.25rem; }
-.holder-pane:first-child { border-right: 1px solid var(--border); }
-.holder-name { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'DM Mono', monospace; margin-bottom: 10px; }
-.holder-stat { margin-bottom: 8px; }
-.holder-stat-label { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
-.holder-stat-val { font-family: 'DM Mono', monospace; font-size: 16px; }
+.stock-card-body { display: block; }
+.stock-card-actions { display: flex; gap: 12px; align-items: center; padding: 8px 1.25rem; border-top: 1px solid var(--border); background: rgba(0,0,0,0.15); }
+.holder-table {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 1.25rem;
+}
+.holder-table-row {
+  display: grid;
+  grid-template-columns: 60px 1.2fr 1.2fr 1.5fr 1.5fr;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.holder-table-row.header-row {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'DM Mono', monospace;
+  border-bottom: 1px solid var(--border2);
+  padding-bottom: 6px;
+}
+.holder-table-row:last-child {
+  border-bottom: none;
+}
+.holder-table-row .col-name {
+  font-size: 13px;
+  font-weight: 500;
+}
+.holder-table-row .col-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  text-align: right;
+}
+.holder-table-row.header-row div {
+  text-align: right;
+}
+.holder-table-row.header-row .col-name {
+  text-align: left;
+}
+.holder-table-row .col-empty {
+  text-align: left;
+}
+.holder-table-details {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  margin-top: 4px;
+  text-align: right;
+}
 
 /* Price status banner */
 .fetch-banner { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 14px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 1.5rem; display: none; line-height: 1.6; }
@@ -161,7 +208,8 @@ select option { background: var(--surface2); }
 .compact-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: border-color 0.15s; }
 .compact-card:active { border-color: var(--border2); }
 .compact-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px 10px; }
-.compact-sym { font-family: 'DM Serif Display', serif; font-size: 25px; letter-spacing: 0.01em; }
+.compact-sym { font-family: 'DM Serif Display', serif; font-size: 32px; letter-spacing: 0.01em; display: inline-flex; align-items: baseline; gap: 8px; }
+.compact-sym span { font-size: 18px; color: var(--muted); font-weight: normal; font-family: 'Noto Sans TC', sans-serif; }
 .compact-sym-name { font-size: 13px; color: var(--muted); margin-top: 1px; font-family: 'DM Mono', monospace; }
 .compact-price-block { text-align: right; }
 .compact-price { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; }
@@ -235,8 +283,6 @@ select option { background: var(--surface2); }
   .mobile-nav { display: flex; }
   .main { padding: 1rem; padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }
   .form-grid, .form-grid-3, .chart-grid { grid-template-columns: 1fr; }
-  .stock-card-body { grid-template-columns: 1fr; }
-  .holder-pane:first-child { border-right: none; border-bottom: 1px solid var(--border); }
   .person-tabs { width: 100%; }
   .person-tab { flex: 1; text-align: center; }
   .compact-stats { grid-template-columns: 1fr 1fr 1fr; }
@@ -1351,16 +1397,18 @@ function renderPositions() {
       // 操作列
       const actionsRow = `<div class="compact-actions">
         <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:13px">⟳ 抓取現價</button>
-        <input type="number" step="0.01" placeholder="手動輸入現價" id="manual-${sym}"
-          style="flex:1;min-width:90px;padding:5px 8px;font-size:14px;font-family:'DM Mono',monospace"
-          onkeydown="if(event.key==='Enter')saveManual('${sym}')">
-        <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:13px">存</button>
+        <div style="display:flex;align-items:center;gap:6px;flex:1">
+          <input type="number" step="0.01" placeholder="現價" id="manual-${sym}"
+            style="flex:1;min-width:70px;padding:5px 8px;font-size:14px;font-family:'DM Mono',monospace"
+            onkeydown="if(event.key==='Enter')saveManual('${sym}')">
+          <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:13px;padding:5px 12px">✓</button>
+        </div>
       </div>`;
 
       return `<div class="compact-card">
         <div class="compact-top">
           <div>
-            <div class="compact-sym" style="color:${accentColor}">${sym} <span style="font-size:12px;color:var(--muted);font-weight:normal;margin-left:4px">${stockNames[sym] || ''}</span></div>
+            <div class="compact-sym" style="color:${accentColor}">${sym}<span>${stockNames[sym] || ''}</span></div>
             <div class="compact-sym-name">${qty > 0 ? qty.toLocaleString() + ' 股持有中' : '已出清'}</div>
           </div>
           ${priceBlock}
@@ -1372,16 +1420,28 @@ function renderPositions() {
     }).join('')}</div>`;
 
   } else {
-    // ── 全部模式：原本的雙欄卡片 ─────────────────────────
+    // ── 全部模式：緊湊表格版面 ─────────────────────────
     const pnlColor = v => v >= 0 ? 'var(--green)' : 'var(--red)';
 
-    const paneHTML = (p, who, sym) => {
+    const paneRowHTML = (p, who, sym) => {
       const cp = prices[sym];
+      const accentColor = who === 'A' ? 'var(--a-color)' : 'var(--b-color)';
+      
       if (!p || (p.qty <= 0 && p.realized === 0)) {
         const hadTrades = trades.some(t => t.sym === sym && t.who === who);
-        if (!hadTrades) return `<div class="holder-pane"><div class="holder-name" style="color:${who === 'A' ? 'var(--a-color)' : 'var(--b-color)'}">${name(who)}</div><div style="font-size:12px;color:var(--muted)">無持倉</div></div>`;
+        if (!hadTrades) {
+          return `<div class="holder-table-row">
+            <div class="col-name" style="color:${accentColor}">${name(who)}</div>
+            <div class="col-empty" style="grid-column: 2 / -1; color: var(--muted); font-size: 12px;">無持倉</div>
+          </div>`;
+        }
       }
-      if (!p) return `<div class="holder-pane"><div class="holder-name" style="color:${who === 'A' ? 'var(--a-color)' : 'var(--b-color)'}">${name(who)}</div><div style="font-size:12px;color:var(--muted)">無持倉</div></div>`;
+      if (!p) {
+        return `<div class="holder-table-row">
+          <div class="col-name" style="color:${accentColor}">${name(who)}</div>
+          <div class="col-empty" style="grid-column: 2 / -1; color: var(--muted); font-size: 12px;">無持倉</div>
+        </div>`;
+      }
 
       const avg = p.qty > 0 ? p.cost / p.qty : 0;
       
@@ -1401,18 +1461,15 @@ function renderPositions() {
       const unr = cp && p.qty > 0 ? (cp * p.qty - estimatedSellFee - estimatedSellTax) - p.cost : null;
 
       const unrealizedBlock = unr !== null
-        ? `<div class="holder-stat">
-            <div class="holder-stat-label">未實現損益</div>
-            <div class="holder-stat-val" style="color:${pnlColor(unr)}">${unr >= 0 ? '+' : ''}${Math.round(unr).toLocaleString()} 元</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace">現 ${cp} ／ 均 ${avg.toFixed(2)} ／ 差 ${(cp - avg) >= 0 ? '+' : ''}${(cp - avg).toFixed(2)} ／ 估費 $${estimatedSellFee} ／ 估稅 $${estimatedSellTax}</div>
-          </div>`
-        : p.qty > 0 ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">← 按「抓取現價」計算</div>` : '';
+        ? `<div class="holder-table-details">現 ${cp} ／ 差 ${(cp - avg) >= 0 ? '+' : ''}${(cp - avg).toFixed(2)} ／ 估費 $${estimatedSellFee} ／ 估稅 $${estimatedSellTax}</div>`
+        : p.qty > 0 ? `<div class="holder-table-details" style="color:var(--muted)">← 按「抓取現價」計算未實現損益</div>` : '';
 
-      return `<div class="holder-pane">
-        <div class="holder-name" style="color:${who === 'A' ? 'var(--a-color)' : 'var(--b-color)'}">${name(who)}</div>
-        <div class="holder-stat"><div class="holder-stat-label">持股數</div><div class="holder-stat-val">${p.qty > 0 ? p.qty.toLocaleString() + ' 股' : '已出清'}</div></div>
-        ${p.qty > 0 ? `<div class="holder-stat"><div class="holder-stat-label">均攤成本</div><div class="holder-stat-val">${avg.toFixed(2)} 元</div></div>` : ''}
-        <div class="holder-stat"><div class="holder-stat-label">已實現損益</div><div class="holder-stat-val" style="color:${pnlColor(p.realized)}">${p.realized >= 0 ? '+' : ''}${Math.round(p.realized).toLocaleString()} 元</div></div>
+      return `<div class="holder-table-row">
+        <div class="col-name" style="color:${accentColor}">${name(who)}</div>
+        <div class="col-val">${p.qty > 0 ? p.qty.toLocaleString() : '—'}</div>
+        <div class="col-val">${p.qty > 0 ? avg.toFixed(2) : '—'}</div>
+        <div class="col-val" style="color:${pnlColor(unr ?? 0)}">${unr !== null ? (unr >= 0 ? '+' : '') + Math.round(unr).toLocaleString() : '—'}</div>
+        <div class="col-val" style="color:${pnlColor(p.realized)}">${p.realized >= 0 ? '+' : ''}${Math.round(p.realized).toLocaleString()}</div>
         ${unrealizedBlock}
       </div>`;
     };
@@ -1425,23 +1482,35 @@ function renderPositions() {
         ? `<span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--text)">${cp.toFixed(2)} 元</span>`
         : `<span style="color:var(--muted);font-size:14px;font-family:'DM Mono',monospace">— 尚無現價</span>`;
 
-      const bodyContent = paneHTML(pA, 'A', sym) + paneHTML(pB, 'B', sym);
+      const tableContent = `
+        <div class="holder-table">
+          <div class="holder-table-row header-row">
+            <div class="col-name">成員</div>
+            <div class="col-qty">持股</div>
+            <div class="col-avg">均成本</div>
+            <div class="col-unreal">未實現</div>
+            <div class="col-real">已實現</div>
+          </div>
+          ${paneRowHTML(pA, 'A', sym)}
+          ${paneRowHTML(pB, 'B', sym)}
+        </div>
+      `;
 
       return `<div class="stock-card">
         <div class="stock-card-header">
-          <div class="stock-sym">${sym} <span style="font-size:14px;color:var(--muted);font-weight:normal;margin-left:6px">${stockNames[sym] || ''}</span></div>
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            ${priceHeader}
-            <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:13px;padding:4px 10px">⟳ 抓取現價</button>
-            <div style="display:flex;align-items:center;gap:4px">
-              <input type="number" step="0.01" placeholder="手動輸入" id="manual-${sym}"
-                style="width:96px;padding:5px 8px;font-size:14px;font-family:'DM Mono',monospace"
-                onkeydown="if(event.key==='Enter')saveManual('${sym}')">
-              <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:13px;padding:4px 10px">存</button>
-            </div>
+          <div class="stock-sym">${sym}<span>${stockNames[sym] || ''}</span></div>
+          ${priceHeader}
+        </div>
+        <div class="stock-card-body">${tableContent}</div>
+        <div class="stock-card-actions">
+          <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:13px">⟳ 抓取現價</button>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="number" step="0.01" placeholder="現價" id="manual-${sym}"
+              style="width:75px;padding:5px 8px;font-size:13px;font-family:'DM Mono',monospace"
+              onkeydown="if(event.key==='Enter')saveManual('${sym}')">
+            <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:13px;padding:5px 10px">✓</button>
           </div>
         </div>
-        <div class="stock-card-body">${bodyContent}</div>
       </div>`;
     }).join('');
   }
