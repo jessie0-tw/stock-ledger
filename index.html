@@ -81,13 +81,13 @@ a { color: inherit; text-decoration: none; }
 .neutral { color: var(--text); }
 
 /* V4 specific metrics layout */
-.metric-card-total-cost { grid-column: 1 / -1; background: transparent; border: none; padding: 0.5rem 0 1rem 0; text-align: center; }
-.metric-card-total-cost .metric-label { font-size: 11px; margin-bottom: 4px; }
-.metric-card-total-cost .metric-value { font-size: 28px; font-weight: 600; }
+.metric-card-total-cost { grid-column: 1 / -1; background: transparent; border: none; padding: 0 0 1rem 0; text-align: center; }
+.metric-card-total-cost .metric-label { font-size: 11px; margin-bottom: 6px; }
+.metric-card-total-cost .metric-value { font-size: 24px; font-weight: 600; }
 
-.metric-card-total-pnl { grid-column: 1 / -1; text-align: center; padding: 1.5rem; margin-top: 4px; }
-.metric-card-total-pnl .metric-label { font-size: 14px; margin-bottom: 8px; }
-.metric-card-total-pnl .metric-value { font-size: 32px; font-weight: 600; }
+.metric-card-total-pnl { grid-column: 1 / -1; text-align: center; padding: 1.25rem; margin-top: 4px; }
+.metric-card-total-pnl .metric-label { font-size: 12px; margin-bottom: 6px; }
+.metric-card-total-pnl .metric-value { font-size: 28px; font-weight: 600; }
 
 /* Table */
 .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
@@ -310,17 +310,17 @@ select option { background: var(--surface2); }
 /* Add Button (V4 specific) */
 .fab-add { position: relative; }
 .fab-inner { 
-  width: 52px; height: 48px; 
-  background: var(--surface2); 
+  width: 48px; height: 48px; 
+  background: #064E3B; 
   border-radius: 12px;
   display: flex; flex-direction: column; align-items: center; justify-content: center; 
-  margin-top: -12px; margin-bottom: 2px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  border-top: 1px solid rgba(16, 185, 129, 0.3); /* Subtle green glow on top edge */
+  margin-top: -16px; margin-bottom: 2px;
+  box-shadow: 0 4px 12px rgba(6,78,59,0.5);
+  border-top: 1px solid rgba(16, 185, 129, 0.4);
 }
-.fab-inner svg { width: 24px; height: 24px; stroke: var(--accent); stroke-width: 2.5px; margin-bottom: 0 !important; }
-.nav-item.fab-add span { font-size: 10px; color: var(--accent); margin-top: 4px; font-weight: 500; }
-.nav-item.fab-add.active .fab-inner { background: #26354c; border-top-color: var(--accent); }
+.fab-inner svg { width: 22px; height: 22px; stroke: #10B981; stroke-width: 2.5px; margin-bottom: 0 !important; }
+.nav-item.fab-add span { font-size: 10px; color: #10B981; margin-top: 2px; font-weight: 500; }
+.nav-item.fab-add.active .fab-inner { background: #065F46; border-top-color: #34D399; }
 
 @media (max-width: 768px) {
   .app { grid-template-columns: 1fr; }
@@ -335,8 +335,10 @@ select option { background: var(--surface2); }
   .page-header > div:last-child { width: 100%; }
   .page-header > div:last-child button { width: 100%; justify-content: center; }
   #sec-dashboard .page-header:not(.dash-header-v4) { display: none; }
-  .dash-title-v4 { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); letter-spacing: 0.05em; }
-  .dash-sync-v4 svg { width: 20px; height: 20px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .page-header.dash-header-v4 { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: 100%; position: relative; margin-bottom: 1.5rem; margin-top: 0.5rem; gap: 0; }
+  .dash-title-v4 { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); letter-spacing: 0.05em; text-align: center; }
+  .dash-sync-v4 { display: flex; align-items: center; justify-content: flex-end; }
+  .dash-sync-v4 svg { width: 18px; height: 18px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .desktop-only { display: none !important; }
 
   /* Mobile chart fixes */
@@ -411,10 +413,10 @@ select option { background: var(--surface2); }
 
     <!-- Dashboard -->
     <div class="section active" id="sec-dashboard">
-      <div class="page-header dash-header-v4" style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: 100%; margin-bottom: 2rem; margin-top: 0.5rem;">
+      <div class="page-header dash-header-v4">
         <div></div>
-        <div class="dash-title-v4" style="text-align: center;">持股分帳本</div>
-        <div class="dash-sync-v4" id="sync-icon-v4" style="display: flex; justify-content: flex-end;">
+        <div class="dash-title-v4">持股分帳本</div>
+        <div class="dash-sync-v4" id="sync-icon-v4">
           <svg viewBox="0 0 24 24"><path d="M17.5 19c2.5 0 4.5-2 4.5-4.5a4.5 4.5 0 0 0-4.08-4.47A7 7 0 0 0 4.58 11.5 5 5 0 0 0 6 21h10z"></path></svg>
         </div>
       </div>
@@ -1040,32 +1042,24 @@ function renderDashboard() {
       <div class="metric-value neutral">$${Math.round(totalCost).toLocaleString()}</div>
     </div>
     
-    <div class="metric-card accent">
+    <div class="metric-card">
       <div class="metric-label">${settings.nameA} 未實現損益</div>
       <div class="metric-value ${unrealA >= 0 ? 'pos' : 'neg'}">${unrealA >= 0 ? '+' : ''}$${Math.round(unrealA).toLocaleString()}</div>
     </div>
-    <div class="metric-card accent">
+    <div class="metric-card">
       <div class="metric-label">${settings.nameA} 已實現損益</div>
       <div class="metric-value ${realA >= 0 ? 'pos' : 'neg'}">${realA >= 0 ? '+' : ''}$${Math.round(realA).toLocaleString()}</div>
     </div>
     
-    <div class="metric-card accent">
+    <div class="metric-card">
       <div class="metric-label">${settings.nameB} 未實現損益</div>
       <div class="metric-value ${unrealB >= 0 ? 'pos' : 'neg'}">${unrealB >= 0 ? '+' : ''}$${Math.round(unrealB).toLocaleString()}</div>
     </div>
-    <div class="metric-card accent">
+    <div class="metric-card">
       <div class="metric-label">${settings.nameB} 已實現損益</div>
       <div class="metric-value ${realB >= 0 ? 'pos' : 'neg'}">${realB >= 0 ? '+' : ''}$${Math.round(realB).toLocaleString()}</div>
     </div>
     
-    <div class="metric-card">
-      <div class="metric-label">合計未實現</div>
-      <div class="metric-value ${totalUnreal >= 0 ? 'pos' : 'neg'}">${totalUnreal >= 0 ? '+' : ''}$${Math.round(totalUnreal).toLocaleString()}</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">合計已實現</div>
-      <div class="metric-value ${totalReal >= 0 ? 'pos' : 'neg'}">${totalReal >= 0 ? '+' : ''}$${Math.round(totalReal).toLocaleString()}</div>
-    </div>
     <div class="metric-card metric-card-total-pnl">
       <div class="metric-label">合計總損益</div>
       <div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${totalPnl >= 0 ? '+' : ''}$${Math.round(totalPnl).toLocaleString()}</div>
