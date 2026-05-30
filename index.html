@@ -480,18 +480,11 @@ select option { background: var(--surface2); }
 
     <!-- Add Trade -->
     <div class="section" id="sec-add">
-      <div class="page-header dash-header-v4" style="display: flex; flex-direction: row; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 0.5rem; margin-top: 0.5rem;">
-        <div style="display: flex; flex-direction: column; align-items: flex-start;">
-          <div class="dash-title-v4" style="text-align: left; line-height: 1; margin-top: 4px; font-size: 24px; font-weight: 600;">新增交易</div>
-          <div id="add-trade-date-display" style="font-size: 13px; color: var(--text-muted); margin-top: 6px; text-align: left; white-space: nowrap;"></div>
-        </div>
+      <div class="page-header" style="display: flex; justify-content: center; align-items: center; width: 100%; margin-bottom: 1rem; margin-top: 0.5rem;">
+        <div class="dash-title-v4" style="text-align: center; line-height: 1; font-size: 24px; font-weight: 600;">新增交易</div>
       </div>
       <div class="form-card">
         <div class="add-trade-grid">
-          <div class="form-group">
-            <label class="field-label">股票代號</label>
-            <input id="f-sym" type="text" placeholder="例：2330" autocomplete="off">
-          </div>
           <div class="form-group">
             <label class="field-label">交易人</label>
             <div class="toggle-group-custom" id="toggle-who">
@@ -500,7 +493,6 @@ select option { background: var(--surface2); }
             </div>
             <input type="hidden" id="f-who" value="A">
           </div>
-          
           <div class="form-group">
             <label class="field-label">買 / 賣</label>
             <div class="toggle-group-custom" id="toggle-side">
@@ -508,6 +500,11 @@ select option { background: var(--surface2); }
               <button type="button" class="toggle-btn" onclick="setToggleSide('sell')">賣出</button>
             </div>
             <input type="hidden" id="f-side" value="buy">
+          </div>
+          
+          <div class="form-group">
+            <label class="field-label">股票代號</label>
+            <input id="f-sym" type="text" placeholder="例：2330" autocomplete="off">
           </div>
           <div class="form-group">
             <label class="field-label">股數（股）</label>
@@ -519,11 +516,6 @@ select option { background: var(--surface2); }
             <input id="f-price" type="number" step="0.01" placeholder="600">
           </div>
           <div class="form-group">
-            <label class="field-label">日期</label>
-            <input id="f-date" type="date">
-          </div>
-          
-          <div class="form-group" style="grid-column: 1 / -1;">
             <label class="field-label">備註（選填）</label>
             <input id="f-note" type="text" placeholder="波段操作、停損...">
           </div>
