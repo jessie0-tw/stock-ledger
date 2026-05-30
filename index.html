@@ -81,11 +81,7 @@ a { color: inherit; text-decoration: none; }
 .neutral { color: var(--text); }
 
 /* V4 specific metrics layout */
-.metric-card-total-cost { grid-column: 1 / -1; background: transparent; border: none; padding: 0 0 1rem 0; text-align: center; }
-.metric-card-total-cost .metric-label { font-size: 11px; margin-bottom: 6px; color: #475569; }
-.metric-card-total-cost .metric-value { color: #475569 !important; }
-
-.metric-card-total-pnl { grid-column: 1 / -1; text-align: center; padding: 1.25rem; margin-top: 4px; }
+.metric-card-total-pnl { grid-column: 1 / -1; text-align: center; padding: 1.5rem; margin-top: 0; }
 .metric-card-total-pnl .metric-label { font-size: 12px; margin-bottom: 6px; }
 .metric-card-total-pnl .metric-value { font-size: 28px; font-weight: 600; }
 
@@ -1048,11 +1044,6 @@ function renderDashboard() {
   };
   
   document.getElementById('dash-metrics').innerHTML = `
-    <div class="metric-card metric-card-total-cost">
-      <div class="metric-label">總持倉成本</div>
-      <div class="metric-value neutral">$${Math.round(Math.abs(totalCost)).toLocaleString()}</div>
-    </div>
-    
     <div class="metric-card">
       <div class="metric-label">${settings.nameA} 未實現損益</div>
       <div class="metric-value ${unrealA >= 0 ? 'pos' : 'neg'}">${formatMoney(unrealA)}</div>
@@ -1074,6 +1065,7 @@ function renderDashboard() {
     <div class="metric-card metric-card-total-pnl">
       <div class="metric-label">合計總損益</div>
       <div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${formatMoney(totalPnl)}</div>
+      <div class="metric-sub" style="margin-top: 10px; color: #64748B; font-size: 12px;">總持倉成本 $${Math.round(Math.abs(totalCost)).toLocaleString()}</div>
     </div>
   `;
   renderCharts(costA, costB, unrealA, unrealB, realA, realB);
