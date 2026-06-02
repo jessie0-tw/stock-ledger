@@ -382,8 +382,8 @@ select option { background: var(--surface2); }
   .chart-grid { display: flex; flex-direction: column; }
   .chart-card { min-height: 250px; }
   .chart-wrap { height: 180px; }
-  .chart-dual { flex-direction: column; height: auto; gap: 8px; }
-  .chart-dual > div { flex: none !important; }
+  .chart-dual { flex-direction: row; height: auto; gap: 8px; }
+  .chart-dual > div { flex: 1 !important; min-width: 0; }
   #chart-cost-a-container, #chart-cost-b-container { height: 140px !important; }
   .chart-card { padding: 1rem 0.85rem; }
   
