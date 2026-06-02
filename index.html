@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>持股分帳本 · Stock Ledger</title>
 <meta name="description" content="共用股票帳戶分帳追蹤工具，獨立計算兩人持股成本與損益。">
 <!-- PWA -->
@@ -10,7 +10,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="持股分帳本">
-<meta name="theme-color" content="#0f0f0f">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -87,6 +86,38 @@ a { color: inherit; text-decoration: none; }
 
 /* Table */
 .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+
+/* Mobile trade cards for history */
+.history-mobile-cards { display: none; flex-direction: column; gap: 10px; padding: 4px 0; }
+.trade-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: border-color 0.15s; }
+.trade-card-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px 8px; }
+.trade-card-sym { font-family: 'DM Serif Display', serif; font-size: 22px; display: inline-flex; align-items: baseline; gap: 6px; }
+.trade-card-sym-name { font-size: 12px; color: var(--muted); font-family: 'Noto Sans TC', sans-serif; font-weight: normal; }
+.trade-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.trade-card-date { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); }
+.trade-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--border); }
+.trade-card-cell { padding: 10px 14px; display: flex; flex-direction: column; gap: 3px; }
+.trade-card-cell:not(:last-child) { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.trade-card-cell:nth-child(2n+1):last-child { grid-column: 1 / -1; border-right: none; }
+.trade-card-cell-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; }
+.trade-card-cell-val { font-family: 'DM Mono', monospace; font-size: 15px; }
+.trade-card-cell-sub { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.4; }
+.trade-card-footer { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.15); }
+.trade-card-note { font-size: 13px; color: var(--muted); font-style: italic; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Edit Modal */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: center; justify-content: center; padding: 1rem; }
+.modal-backdrop.open { display: flex; }
+.modal-box { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius-lg); width: 100%; max-width: 520px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); animation: modal-in 0.2s ease; overflow: hidden; }
+@keyframes modal-in { from { opacity:0; transform: translateY(16px) scale(0.97); } to { opacity:1; transform: none; } }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px 14px; border-bottom: 1px solid var(--border); }
+.modal-title { font-size: 17px; font-weight: 600; font-family: 'Noto Sans TC', sans-serif; }
+.modal-close { background: transparent; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 6px; line-height: 1; transition: color 0.15s, background 0.15s; }
+.modal-close:hover { color: var(--text); background: var(--surface2); }
+.modal-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.modal-footer { padding: 14px 22px 18px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid var(--border); }
+@media (max-width: 768px) { .modal-grid { grid-template-columns: 1fr; } .modal-footer { flex-direction: column-reverse; } .modal-footer button { width: 100%; justify-content: center; } }
 .table-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
 .table-title { font-size: 15px; font-weight: 500; }
 table { width: 100%; border-collapse: collapse; font-size: 15px; }
@@ -108,10 +139,10 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .form-group { display: flex; flex-direction: column; gap: 6px; }
 label.field-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; }
 input, select, textarea { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 15px; font-family: 'Noto Sans TC', sans-serif; outline: none; width: 100%; transition: border-color 0.15s; }
-.form-group input:focus, .form-group select:focus { border-color: var(--primary); outline: none; }
+.form-group input:focus, .form-group select:focus { border-color: var(--accent); outline: none; }
 .toggle-group-custom { display: flex; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 4px; height: 42px; border: 1px solid var(--border); }
-.toggle-group-custom .toggle-btn { flex: 1; border-radius: 6px; font-size: 14px; font-weight: 600; color: var(--text-muted); background: transparent; border: none; transition: all 0.2s; cursor: pointer; }
-.toggle-group-custom .toggle-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.toggle-group-custom .toggle-btn { flex: 1; border-radius: 6px; font-size: 14px; font-weight: 600; color: var(--muted); background: transparent; border: none; transition: all 0.2s; cursor: pointer; }
+.toggle-group-custom .toggle-btn.active { background: rgba(212,168,83,0.15); color: var(--a-color); font-weight: 700; }
 .add-trade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 select option { background: var(--surface2); }
 
@@ -126,7 +157,7 @@ select option { background: var(--surface2); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Chart area */
-.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 2rem; }
+.chart-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 2rem; }
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; overflow: hidden; }
 .chart-title { font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 1rem; }
 .chart-wrap { position: relative; height: 220px; }
@@ -346,12 +377,56 @@ select option { background: var(--surface2); }
   .metric-value { font-size: 26px; }
   .metrics-row { grid-template-columns: 1fr 1fr; gap: 10px; }
   .metric-card { padding: 0.9rem; }
+  
+  /* Mobile chart fixes */
+  .chart-grid { display: flex; flex-direction: column; }
+  .chart-card { min-height: 250px; }
   .chart-wrap { height: 180px; }
   .chart-dual { flex-direction: column; height: auto; gap: 8px; }
   .chart-dual > div { flex: none !important; }
   #chart-cost-a-container, #chart-cost-b-container { height: 140px !important; }
   .chart-card { padding: 1rem 0.85rem; }
+  
   #sync-status-bar { margin-bottom: 0.75rem; }
+
+  /* Mobile history filters */
+  #sec-history .page-header { gap: 8px; }
+  .history-filters { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; }
+  .history-filters select { flex: 1 1 calc(50% - 3px); min-width: 0; font-size: 13px; padding: 8px 10px; }
+
+  /* Hide desktop table, show mobile cards */
+  .history-desktop-table { display: none !important; }
+  .history-mobile-cards { display: flex !important; }
+  /* 6-item mobile nav */
+  .mobile-nav .nav-item { font-size: 10px; }
+  .mobile-nav .nav-item svg { width: 20px; height: 20px; }
+}
+
+/* ── Cash Flow / Settlement ─────────────────────────────── */
+.settlement-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.settlement-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.settlement-value { font-size: 26px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+.settlement-meta { font-size: 13px; color: var(--muted); margin-top: 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cf-list { display: flex; flex-direction: column; gap: 8px; }
+.cf-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; gap: 10px; transition: border-color 0.15s; flex-wrap: wrap; }
+.cf-item:hover { border-color: var(--border2); }
+.cf-date { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); min-width: 82px; flex-shrink: 0; }
+.cf-direction { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.cf-cat { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 99px; font-size: 11px; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+.cf-cat-代墊買股 { background: rgba(212,168,83,0.12); color: var(--a-color); border: 1px solid rgba(212,168,83,0.25); }
+.cf-cat-還款 { background: rgba(16,185,129,0.12); color: #10B981; border: 1px solid rgba(16,185,129,0.25); }
+.cf-cat-提款 { background: rgba(91,155,213,0.12); color: var(--b-color); border: 1px solid rgba(91,155,213,0.25); }
+.cf-cat-其他 { background: rgba(148,163,184,0.12); color: var(--muted); border: 1px solid rgba(148,163,184,0.25); }
+.cf-cat-贈與 { background: rgba(148,163,184,0.12); color: var(--muted); border: 1px solid rgba(148,163,184,0.25); }
+.cf-note { font-size: 13px; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.cf-amount { font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 600; flex-shrink: 0; }
+/* Category selector button active state in cashflow modal */
+.cf-cat-btn-group .btn.active,
+#cf-cat-btn-代墊買股.active, #cf-cat-btn-還款.active, #cf-cat-btn-提款.active, #cf-cat-btn-贈與.active {
+  background: rgba(212,168,83,0.15);
+  border-color: rgba(212,168,83,0.5);
+  color: var(--a-color);
+  font-weight: 500;
 }
 </style>
 </head>
@@ -377,6 +452,10 @@ select option { background: var(--surface2); }
     <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
     <span>明細</span>
   </div>
+  <div class="nav-item" onclick="switchSection('cashflow', this)">
+    <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+    <span>款項</span>
+  </div>
   <div class="nav-item" onclick="switchSection('settings', this)">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
     <span>設定</span>
@@ -396,6 +475,7 @@ select option { background: var(--surface2); }
       <div class="nav-item" id="nav-positions" onclick="switchSection('positions', this)"><span class="nav-icon">◈</span> 持股分析</div>
       <div class="nav-item" id="nav-add" onclick="switchSection('add', this)"><span class="nav-icon">＋</span> 新增交易</div>
       <div class="nav-item" id="nav-history" onclick="switchSection('history', this)"><span class="nav-icon">≡</span> 交易明細</div>
+      <div class="nav-item" id="nav-cashflow" onclick="switchSection('cashflow', this)"><span class="nav-icon">💰</span> 款項記錄</div>
       <div class="nav-section">系統</div>
       <div class="nav-item" id="nav-settings" onclick="switchSection('settings', this)"><span class="nav-icon">⚙</span> 系統設定</div>
     </nav>
@@ -444,20 +524,6 @@ select option { background: var(--surface2); }
               </div>
             </div>
           </div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">損益比較</div>
-          <div class="chart-wrap"><canvas id="chart-pnl"></canvas></div>
-        </div>
-      </div>
-      <div class="chart-grid">
-        <div class="chart-card">
-          <div class="chart-title">各股票持股成本（依人員）</div>
-          <div class="chart-wrap"><canvas id="chart-bar"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">交易量時間軸</div>
-          <div class="chart-wrap"><canvas id="chart-timeline"></canvas></div>
         </div>
       </div>
     </div>
@@ -531,7 +597,7 @@ select option { background: var(--surface2); }
     <div class="section" id="sec-history">
       <div class="page-header">
         <div><div class="page-title">交易明細</div></div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div class="history-filters" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <select id="filter-who" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
             <option value="">全部人員</option>
             <option value="A" id="filter-a">人員 A</option>
@@ -630,6 +696,11 @@ select option { background: var(--surface2); }
           <button class="btn" onclick="importCSV('replace')" id="btn-import-replace">覆蓋匯入</button>
         </div>
       </div>
+      <div class="form-card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:12px">款項記錄備份 (匯出 CSV)</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">將所有資金往來款項記錄（代墊、還款、提款）匯出為 CSV 檔案備份。</div>
+        <button class="btn btn-primary" onclick="exportCashFlowCSV()" id="btn-export-cf">⬇ 下載款項 CSV</button>
+      </div>
       <div class="form-card" style="border-color:rgba(224,92,92,0.3)">
         <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--red)">清除所有資料</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:16px">這個動作會完全刪除本機與雲端的交易紀錄且無法復原，請務必先下載 CSV 備份！</div>
@@ -637,10 +708,159 @@ select option { background: var(--surface2); }
       </div>
     </div>
 
+    <!-- Cash Flow -->
+    <div class="section" id="sec-cashflow">
+      <div class="page-header">
+        <div><div class="page-title">款項記錄</div><div class="page-sub">資金往來與結算</div></div>
+        <button class="btn btn-primary btn-sm" onclick="openCashFlowModal()" id="btn-open-cf-modal">＋ 新增款項</button>
+      </div>
+      <div id="settlement-card-wrap"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;">
+        <select id="cf-filter-who" onchange="renderCashFlow()" style="width:auto;padding:6px 10px;font-size:12px">
+          <option value="">全部人員</option>
+          <option value="A" id="cf-filter-a">人員 A</option>
+          <option value="B" id="cf-filter-b">人員 B</option>
+        </select>
+        <select id="cf-filter-cat" onchange="renderCashFlow()" style="width:auto;padding:6px 10px;font-size:12px">
+          <option value="">全部分類</option>
+          <option value="代墊買股">代墊買股</option>
+          <option value="還款">還款</option>
+          <option value="提款">提款</option>
+          <option value="贈與">贈與</option>
+        </select>
+        <select id="cf-filter-sort" onchange="renderCashFlow()" style="width:auto;padding:6px 10px;font-size:12px">
+          <option value="desc">日期：新 ➜ 舊</option>
+          <option value="asc">日期：舊 ➜ 新</option>
+        </select>
+      </div>
+      <div id="cf-list-body"><div class="empty">尚無款項記錄，點擊右上角「＋ 新增款項」開始記錄</div></div>
+    </div>
+
   </main>
 </div>
 
 <div id="toast"></div>
+
+<!-- Edit Trade Modal -->
+<div class="modal-backdrop" id="edit-modal" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">✏️ 編輯交易</div>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id">
+      <div class="modal-grid">
+        <div class="form-group">
+          <label class="field-label">交易日期</label>
+          <input id="edit-date" type="date">
+        </div>
+        <div class="form-group">
+          <label class="field-label">股票代號</label>
+          <input id="edit-sym" type="text" placeholder="例：2330" autocomplete="off" style="text-transform:uppercase">
+        </div>
+      </div>
+      <div class="modal-grid">
+        <div class="form-group">
+          <label class="field-label">交易人</label>
+          <div class="toggle-group-custom" id="edit-toggle-who">
+            <button type="button" class="toggle-btn active" onclick="setEditToggleWho('A')" id="edit-btn-a">人員 A</button>
+            <button type="button" class="toggle-btn" onclick="setEditToggleWho('B')" id="edit-btn-b">人員 B</button>
+          </div>
+          <input type="hidden" id="edit-who" value="A">
+        </div>
+        <div class="form-group">
+          <label class="field-label">買 / 賣</label>
+          <div class="toggle-group-custom" id="edit-toggle-side">
+            <button type="button" class="toggle-btn active" onclick="setEditToggleSide('buy')" id="edit-btn-buy">買進</button>
+            <button type="button" class="toggle-btn" onclick="setEditToggleSide('sell')" id="edit-btn-sell">賣出</button>
+          </div>
+          <input type="hidden" id="edit-side" value="buy">
+        </div>
+      </div>
+      <div class="modal-grid">
+        <div class="form-group">
+          <label class="field-label">股數（股）</label>
+          <input id="edit-qty" type="number" placeholder="1000" min="1">
+        </div>
+        <div class="form-group">
+          <label class="field-label">成交價（元）</label>
+          <input id="edit-price" type="number" step="0.01" placeholder="600">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="field-label">備註（選填）</label>
+        <input id="edit-note" type="text" placeholder="波段操作、停損...">
+      </div>
+      <div style="font-size:12px;color:var(--muted);background:rgba(212,168,83,0.06);border:1px solid rgba(212,168,83,0.2);border-radius:var(--radius);padding:10px 14px;line-height:1.7">
+        💡 儲存後將依新數據自動重新計算手續費與交易稅
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeEditModal()" id="btn-edit-cancel">取消</button>
+      <button class="btn btn-primary" onclick="saveEdit()" id="btn-edit-save">✓ 儲存變更</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cash Flow Modal -->
+<div class="modal-backdrop" id="cashflow-modal" onclick="if(event.target===this)closeCashFlowModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">💰 新增款項記錄</div>
+      <button class="modal-close" onclick="closeCashFlowModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="field-label">日期</label>
+          <input id="cf-date" type="date">
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="field-label">分類</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button type="button" class="btn active" id="cf-cat-btn-代墊買股" onclick="setCfCategory('代墊買股')" style="justify-content:center;font-size:14px">代墊買股</button>
+            <button type="button" class="btn" id="cf-cat-btn-還款" onclick="setCfCategory('還款')" style="justify-content:center;font-size:14px">還款</button>
+            <button type="button" class="btn" id="cf-cat-btn-提款" onclick="setCfCategory('提款')" style="justify-content:center;font-size:14px">提款</button>
+            <button type="button" class="btn" id="cf-cat-btn-贈與" onclick="setCfCategory('贈與')" style="justify-content:center;font-size:14px">贈與</button>
+          </div>
+          <input type="hidden" id="cf-category" value="代墊買股">
+        </div>
+      </div>
+      <div class="modal-grid" id="cf-from-to-wrap">
+        <div class="form-group">
+          <label class="field-label">付款人</label>
+          <div class="toggle-group-custom" id="cf-toggle-from">
+            <button type="button" class="toggle-btn active" onclick="setCfToggle('from','A')" id="cf-from-btn-a"><span id="cf-from-a-lbl">人員 A</span></button>
+            <button type="button" class="toggle-btn" onclick="setCfToggle('from','B')" id="cf-from-btn-b"><span id="cf-from-b-lbl">人員 B</span></button>
+          </div>
+          <input type="hidden" id="cf-from" value="A">
+        </div>
+        <div class="form-group" id="cf-to-group">
+          <label class="field-label">收款人</label>
+          <div class="toggle-group-custom" id="cf-toggle-to">
+            <button type="button" class="toggle-btn" onclick="setCfToggle('to','A')" id="cf-to-btn-a"><span id="cf-to-a-lbl">人員 A</span></button>
+            <button type="button" class="toggle-btn active" onclick="setCfToggle('to','B')" id="cf-to-btn-b"><span id="cf-to-b-lbl">人員 B</span></button>
+          </div>
+          <input type="hidden" id="cf-to" value="B">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="field-label">金額（元）</label>
+        <input id="cf-amount" type="number" min="1" step="1" placeholder="輸入金額">
+      </div>
+      <div class="form-group">
+        <label class="field-label">備註（選填）</label>
+        <input id="cf-note" type="text" placeholder="說明款項用途...">
+        <div id="cf-recent-trades" style="display:none; flex-wrap:wrap; gap:6px; margin-top:8px;"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeCashFlowModal()" id="btn-cf-cancel">取消</button>
+      <button class="btn btn-primary" onclick="addCashFlow()" id="btn-cf-add">確認新增</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ── Firebase Cloud Sync Configuration (Optional) ──────
@@ -663,6 +883,7 @@ let lastSyncTimestamp = 0;
 
 // ── State ──────────────────────────────────────────────
 let trades = [];
+let cashFlows = [];
 let prices = {};
 let stockNames = {}; // 股票中文名稱對照表
 let settings = { nameA: '人員 A', nameB: '人員 B' };
@@ -677,6 +898,7 @@ function save() {
     localStorage.setItem('slt_prices', JSON.stringify(prices));
     localStorage.setItem('slt_settings', JSON.stringify(settings));
     localStorage.setItem('slt_stock_names', JSON.stringify(stockNames));
+    localStorage.setItem('slt_cash_flows', JSON.stringify(cashFlows));
   } catch(e) { console.warn('localStorage save failed', e); }
 
   // 同時推送到雲端資料庫
@@ -722,6 +944,7 @@ function load() {
   try { prices = JSON.parse(localStorage.getItem('slt_prices') || '{}'); } catch(e) { prices = {}; }
   try { settings = { nameA:'人員 A', nameB:'人員 B', ...JSON.parse(localStorage.getItem('slt_settings') || '{}') }; } catch(e) {}
   try { stockNames = JSON.parse(localStorage.getItem('slt_stock_names') || '{}'); } catch(e) { stockNames = {}; }
+  try { cashFlows = JSON.parse(localStorage.getItem('slt_cash_flows') || '[]'); } catch(e) { cashFlows = []; }
 
   if (backfillTrades()) {
     save();
@@ -779,6 +1002,7 @@ function setupFirebaseListener() {
         if (data.settings) {
           settings = { ...settings, ...data.settings };
         }
+        cashFlows = data.cashFlows || [];
         
         const migrated = backfillTrades();
         lastSyncTimestamp = data.timestamp;
@@ -789,6 +1013,7 @@ function setupFirebaseListener() {
           localStorage.setItem('slt_prices', JSON.stringify(prices));
           localStorage.setItem('slt_settings', JSON.stringify(settings));
           localStorage.setItem('slt_stock_names', JSON.stringify(stockNames));
+          localStorage.setItem('slt_cash_flows', JSON.stringify(cashFlows));
         } catch (e) {
           console.warn('localStorage save failed', e);
         }
@@ -798,6 +1023,7 @@ function setupFirebaseListener() {
         renderDashboard();
         renderPositions();
         refreshFilters();
+        renderCashFlow();
         
         isSyncingFromCloud = false;
         
@@ -830,6 +1056,7 @@ function uploadToCloud() {
     prices: prices,
     stockNames: stockNames,
     settings: settings,
+    cashFlows: cashFlows,
     timestamp: now
   }).catch((error) => {
     console.error("資料上傳至雲端失敗:", error);
@@ -857,6 +1084,17 @@ function applyNames() {
   if (elB) elB.textContent = settings.nameB;
   document.getElementById('filter-a').textContent = settings.nameA;
   document.getElementById('filter-b').textContent = settings.nameB;
+  const cfA = document.getElementById('cf-filter-a');
+  const cfB = document.getElementById('cf-filter-b');
+  if (cfA) cfA.textContent = settings.nameA;
+  if (cfB) cfB.textContent = settings.nameB;
+  const cfFromA = document.getElementById('cf-from-a-lbl');
+  if (cfFromA) {
+    cfFromA.textContent = settings.nameA;
+    document.getElementById('cf-from-b-lbl').textContent = settings.nameB;
+    document.getElementById('cf-to-a-lbl').textContent = settings.nameA;
+    document.getElementById('cf-to-b-lbl').textContent = settings.nameB;
+  }
   const sa = document.getElementById('set-name-a'), sb = document.getElementById('set-name-b');
   if (sa) sa.value = settings.nameA;
   if (sb) sb.value = settings.nameB;
@@ -904,6 +1142,7 @@ function switchSection(id, el) {
   if (id === 'dashboard') renderDashboard();
   if (id === 'positions') renderPositions();
   if (id === 'history') renderHistory();
+  if (id === 'cashflow') renderCashFlow();
 }
 
 // ── Calculations ───────────────────────────────────────
@@ -1058,18 +1297,20 @@ function renderDashboard() {
       <div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${formatMoney(totalPnl)}</div>
       <div class="metric-sub" style="margin-top: 10px; color: #64748B; font-size: 12px;">總持倉成本 $${Math.round(Math.abs(totalCost)).toLocaleString()}</div>
     </div>
+    ${renderSettlementMetricCard()}
   `;
-  renderCharts(costA, costB, unrealA, unrealB, realA, realB);
+  renderCharts();
 }
 
-function renderCharts(costA, costB, unrealA, unrealB, realA, realB) {
+function renderCharts() {
+  const dash = document.getElementById('sec-dashboard');
+  if (!dash || !dash.classList.contains('active')) return;
+
   const chartOpts = {
     responsive: true, maintainAspectRatio: false,
     color: '#94A3B8',
     plugins: { legend: { labels: { color: '#94A3B8', font: { size: 11, family: 'Space Grotesk' }, boxWidth: 12 } } },
   };
-  const gridColor = 'rgba(255,255,255,0.05)';
-  const tickColor = '#94A3B8';
 
   Object.values(charts).forEach(c => { try { c.destroy(); } catch(e) {} });
   charts = {};
@@ -1153,81 +1394,11 @@ function renderCharts(costA, costB, unrealA, unrealB, realA, realB) {
   } else {
     containerB.innerHTML = '<div style="display:flex; align-items:center; justify-content:center; height:100%; font-size:13px; color:var(--muted); font-family:sans-serif;">無持倉</div>';
   }
-
-  // PnL bar (Clustered: Realized vs Unrealized P&L)
-  charts.pnl = new Chart(document.getElementById('chart-pnl'), {
-    type: 'bar',
-    data: {
-      labels: [settings.nameA, settings.nameB],
-      datasets: [
-        {
-          label: '未實現損益',
-          data: [unrealA, unrealB],
-          backgroundColor: [
-            unrealA >= 0 ? 'rgba(76,175,125,0.75)' : 'rgba(224,92,92,0.75)',
-            unrealB >= 0 ? 'rgba(76,175,125,0.75)' : 'rgba(224,92,92,0.75)'
-          ],
-          borderRadius: 6, borderSkipped: false
-        },
-        {
-          label: '已實現損益',
-          data: [realA, realB],
-          backgroundColor: [
-            realA >= 0 ? 'rgba(212,168,83,0.75)' : 'rgba(224,92,92,0.75)',
-            realB >= 0 ? 'rgba(212,168,83,0.75)' : 'rgba(224,92,92,0.75)'
-          ],
-          borderRadius: 6, borderSkipped: false
-        }
-      ]
-    },
-    options: {
-      ...chartOpts,
-      plugins: {
-        legend: {
-          display: true,
-          labels: { color: '#888', font: { size: 11, family: 'DM Mono' }, boxWidth: 12 }
-        }
-      },
-      scales: {
-        x: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } },
-        y: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } }
-      }
-    }
-  });
-
-  // Bar chart by stock
-  const syms = [...new Set(Object.values(pos).map(p => p.sym))];
-  const dataA = syms.map(s => { const p = pos[s + '_A']; return p ? Math.round(p.cost) : 0; });
-  const dataB = syms.map(s => { const p = pos[s + '_B']; return p ? Math.round(p.cost) : 0; });
-  charts.bar = new Chart(document.getElementById('chart-bar'), {
-    type: 'bar',
-    data: {
-      labels: syms,
-      datasets: [
-        { label: settings.nameA, data: dataA, backgroundColor: 'rgba(212,168,83,0.75)', borderRadius: 4, borderSkipped: false },
-        { label: settings.nameB, data: dataB, backgroundColor: 'rgba(91,155,213,0.75)', borderRadius: 4, borderSkipped: false }
-      ]
-    },
-    options: { ...chartOpts, scales: { x: { stacked: false, ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } }, y: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 11 } }, grid: { color: gridColor } } } }
-  });
-
-  // Timeline
-  const byDate = {};
-  trades.forEach(t => { byDate[t.date] = (byDate[t.date] || 0) + t.qty * t.price; });
-  const dates = Object.keys(byDate).sort();
-  charts.timeline = new Chart(document.getElementById('chart-timeline'), {
-    type: 'line',
-    data: {
-      labels: dates,
-      datasets: [{ label: '交易金額', data: dates.map(d => Math.round(byDate[d])), borderColor: 'rgba(212,168,83,0.85)', backgroundColor: 'rgba(212,168,83,0.08)', fill: true, tension: 0.35, pointRadius: 3, pointBackgroundColor: 'rgba(212,168,83,0.85)' }]
-    },
-    options: { ...chartOpts, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 10 }, maxTicksLimit: 6 }, grid: { color: gridColor } }, y: { ticks: { color: tickColor, font: { family: 'DM Mono', size: 10 } }, grid: { color: gridColor } } } }
-  });
 }
 
 // ── Price Fetch (TWSE / TPEx) ──────────────────────────
-// 多重策略：直接 → allorigins → corsproxy.io → codetabs → 手動
-// 在 https:// (GitHub Pages) 環境下，allorigins 等 proxy 可正常使用
+// 多重策略：TWSE/TPEX 官方批量資料（主力）→ Yahoo Finance → TWSE MIS 直連
+// 2026/06 更新：改用 TWSE 官方 RWD API（有 CORS *，有中文名稱）為主
 
 async function parseTWSEResponse(data) {
   const arr = data?.msgArray;
@@ -1241,6 +1412,120 @@ async function parseTWSEResponse(data) {
   return { price, prev, change, name: item.n || '' };
 }
 
+// ── 批量預載中文名稱與收盤價（TWSE/TPEX 官方 API，有 CORS *） ──
+let _twseNameCache = null;  // { sym: { price, name, change, prev } }
+
+async function loadTWSEBulkData() {
+  if (_twseNameCache) return _twseNameCache;
+  _twseNameCache = {};
+  try {
+    // 上市（TSE）- www.twse.com.tw/rwd 支援 CORS Access-Control-Allow-Origin: *
+    const res = await fetch('https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY_ALL', {
+      signal: AbortSignal.timeout(10000)
+    });
+    if (res.ok) {
+      const d = await res.json();
+      if (d.stat === 'OK' && d.data) {
+        // fields: ['證券代號','證券名稱','成交股數','成交金額','開盤價','最高價','最低價','收盤價','漲跌價差','成交筆數']
+        for (const row of d.data) {
+          const sym = row[0]?.trim();
+          const name = row[1]?.trim();
+          const closeRaw = row[7]?.replace(/,/g, '');
+          const changeRaw = row[8]?.trim();  // e.g. " 0.00" "+60.00" "-5.00"
+          const close = parseFloat(closeRaw);
+          if (sym && name && !isNaN(close) && close > 0) {
+            const changeAmt = parseFloat(changeRaw?.replace(/[^0-9.]/g, '') || '0');
+            const isNeg = changeRaw && changeRaw.includes('-');
+            const prev = isNeg ? close + changeAmt : Math.max(0, close - changeAmt);
+            const changePct = prev > 0 ? ((close - prev) / prev * 100) : null;
+            _twseNameCache[sym] = { price: close, name, change: changePct, prev };
+          }
+        }
+      }
+    }
+  } catch(e) {
+    console.log('[名稱快取] TWSE 批量載入失敗:', e.message);
+  }
+  try {
+    // 上櫃（TPEx/OTC）- openapi.tpex 有 CORS
+    const res2 = await fetch('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes', {
+      signal: AbortSignal.timeout(10000)
+    });
+    if (res2.ok) {
+      const arr = await res2.json();
+      if (Array.isArray(arr)) {
+        for (const item of arr) {
+          const sym = item.SecuritiesCompanyCode?.trim();
+          const name = item.CompanyName?.trim();
+          const close = parseFloat(item.Close);
+          if (sym && name && !isNaN(close) && close > 0) {
+            const changeAmt = parseFloat(item.Change || '0');
+            const prev = close - changeAmt;
+            const changePct = prev > 0 ? (changeAmt / prev * 100) : null;
+            _twseNameCache[sym] = { price: close, name, change: changePct, prev };
+          }
+        }
+      }
+    }
+  } catch(e) {
+    console.log('[名稱快取] TPEX 批量載入失敗:', e.message);
+  }
+  console.log(`[名稱快取] 已載入 ${Object.keys(_twseNameCache).length} 支股票資料`);
+  return _twseNameCache;
+}
+
+// 盤中即時 Yahoo Finance（有 CORS，有 rate limit）
+async function fetchViaYahooDirect(sym) {
+  const suffixes = ['.TW', '.TWO'];
+  for (const suf of suffixes) {
+    try {
+      const url = `https://query2.finance.yahoo.com/v8/finance/chart/${sym}${suf}?interval=1d&range=5d&corsDomain=finance.yahoo.com`;
+      const res = await fetch(url, {
+        signal: AbortSignal.timeout(8000),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const meta = data?.chart?.result?.[0]?.meta;
+      if (!meta) continue;
+      const price = meta.regularMarketPrice || meta.previousClose;
+      const prev = meta.previousClose;
+      if (!price || isNaN(price) || price <= 0) continue;
+      const change = prev ? ((price - prev) / prev * 100) : null;
+      // Yahoo 的名稱通常是英文，優先保留中文（若已快取）
+      const name = stockNames[sym] || meta.shortName || sym;
+      return { price, prev, change, name };
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
+// 策略 2：Yahoo Finance 備用端點（query1）
+async function fetchViaYahooQuery1(sym) {
+  const suffixes = ['.TW', '.TWO'];
+  for (const suf of suffixes) {
+    try {
+      const url = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}${suf}?interval=1d&range=5d&corsDomain=finance.yahoo.com`;
+      const res = await fetch(url, {
+        signal: AbortSignal.timeout(8000),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const meta = data?.chart?.result?.[0]?.meta;
+      if (!meta) continue;
+      const price = meta.regularMarketPrice || meta.previousClose;
+      const prev = meta.previousClose;
+      if (!price || isNaN(price) || price <= 0) continue;
+      const change = prev ? ((price - prev) / prev * 100) : null;
+      const name = stockNames[sym] || meta.shortName || sym;
+      return { price, prev, change, name };
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
+// 策略 3：TWSE MIS 直連（盤中可用，但有 CORS 限制，視瀏覽器/環境而定）
 async function fetchTWSEDirect(sym) {
   const exCh = `tse_${sym}.tw|otc_${sym}.tw`;
   const url = `https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=${exCh}&json=1&delay=0&_=${Date.now()}`;
@@ -1252,64 +1537,37 @@ async function fetchTWSEDirect(sym) {
   return parseTWSEResponse(await res.json());
 }
 
+// 策略 4：allorigins proxy（備用，若服務恢復可用）
 async function fetchViaAllorigins(sym) {
   const target = encodeURIComponent(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${sym}.tw|otc_${sym}.tw&json=1&delay=0&_=${Date.now()}`);
   const url = `https://api.allorigins.win/get?url=${target}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
   if (!res.ok) throw new Error('allorigins HTTP ' + res.status);
   const outer = await res.json();
   if (!outer.contents) throw new Error('no contents');
   return parseTWSEResponse(JSON.parse(outer.contents));
 }
 
-async function fetchViaCorsproxy(sym) {
-  const target = encodeURIComponent(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${sym}.tw|otc_${sym}.tw&json=1&delay=0`);
-  const url = `https://corsproxy.io/?${target}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-  if (!res.ok) throw new Error('corsproxy HTTP ' + res.status);
-  return parseTWSEResponse(await res.json());
-}
-
-async function fetchViaCodetabs(sym) {
-  const target = encodeURIComponent(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${sym}.tw|otc_${sym}.tw&json=1&delay=0`);
-  const url = `https://api.codetabs.com/v1/proxy?quest=${target}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-  if (!res.ok) throw new Error('codetabs HTTP ' + res.status);
-  return parseTWSEResponse(await res.json());
-}
-
-// Yahoo Finance fallback（支援台股 .TW / .TWO）
-async function fetchViaYahooProxy(sym) {
-  // 嘗試上市 (.TW) 和上櫃 (.TWO)
-  const suffixes = ['.TW', '.TWO'];
-  for (const suf of suffixes) {
-    try {
-      const target = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}${suf}?interval=1d&range=1d`);
-      const url = `https://api.allorigins.win/get?url=${target}`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-      if (!res.ok) continue;
-      const outer = await res.json();
-      if (!outer.contents) continue;
-      const data = JSON.parse(outer.contents);
-      const meta = data?.chart?.result?.[0]?.meta;
-      if (!meta) continue;
-      const price = meta.regularMarketPrice || meta.previousClose;
-      const prev = meta.previousClose;
-      if (!price || isNaN(price)) continue;
-      const change = prev ? ((price - prev) / prev * 100) : null;
-      return { price, prev, change, name: meta.shortName || sym };
-    } catch(e) { continue; }
-  }
-  return null;
-}
-
 async function fetchPrice(sym) {
+  // 主力策略：從 TWSE/TPEX 官方批量資料取得（有 CORS *、有中文名稱、今日收盤價）
+  try {
+    const cache = await loadTWSEBulkData();
+    if (cache[sym]) {
+      const { price, name, change, prev } = cache[sym];
+      if (name) stockNames[sym] = name;  // 更新中文名稱快取
+      console.log(`[${sym}] 成功 via TWSE/TPEX 官方資料: ${price} (${name})`);
+      return { price, prev, change, name };
+    }
+  } catch(e) {
+    console.log(`[${sym}] 官方批量資料失敗: ${e.message}`);
+  }
+
+  // 批量資料找不到（新上市、權證等），改用逐一查詢
   const strategies = [
-    { name: '直接連接', fn: () => fetchTWSEDirect(sym) },
+    { name: 'Yahoo Finance (query2)', fn: () => fetchViaYahooDirect(sym) },
+    { name: 'Yahoo Finance (query1)', fn: () => fetchViaYahooQuery1(sym) },
+    { name: 'TWSE MIS 直連', fn: () => fetchTWSEDirect(sym) },
     { name: 'Proxy (allorigins)', fn: () => fetchViaAllorigins(sym) },
-    { name: 'Proxy (corsproxy)', fn: () => fetchViaCorsproxy(sym) },
-    { name: 'Proxy (codetabs)', fn: () => fetchViaCodetabs(sym) },
-    { name: 'Yahoo Finance', fn: () => fetchViaYahooProxy(sym) },
   ];
 
   for (const s of strategies) {
@@ -1317,6 +1575,7 @@ async function fetchPrice(sym) {
       const r = await s.fn();
       if (r && r.price > 0) {
         console.log(`[${sym}] 成功 via ${s.name}: ${r.price}`);
+        if (r.name) stockNames[sym] = r.name;
         return r;
       }
     } catch(e) {
@@ -1731,11 +1990,20 @@ function renderHistory() {
     return;
   }
   
-  document.getElementById('history-body').innerHTML = `
-    <table>
+  // Build desktop table HTML
+  const tableHTML = `
+    <table class="history-desktop-table">
       <thead><tr><th>日期</th><th>股票</th><th>交易人</th><th>買/賣</th><th>股數</th><th>成交價</th><th>金額 (收支)</th><th>備註</th><th></th></tr></thead>
       <tbody>
-        ${filtered.map(t => `<tr>
+        ${filtered.map(t => {
+          const amt = Math.round(t.qty * t.price);
+          const fee = t.fee || 0;
+          const tax = t.tax || 0;
+          const net = t.side === 'buy' ? amt + fee : amt - fee - tax;
+          const netSub = t.side === 'buy'
+            ? `單價 $${amt.toLocaleString()} + 手續費 $${fee}`
+            : `單價 $${amt.toLocaleString()} - 手續費 $${fee} - 稅 $${tax}`;
+          return `<tr>
           <td style="font-family:'DM Mono',monospace;font-size:14px">${t.date}</td>
           <td style="font-weight:500">${t.sym} <span style="font-size:13px;color:var(--muted);font-weight:normal;margin-left:4px">${stockNames[t.sym] || ''}</span></td>
           <td><span class="badge badge-${t.who.toLowerCase()}">${name(t.who)}</span></td>
@@ -1743,27 +2011,417 @@ function renderHistory() {
           <td style="font-family:'DM Mono',monospace">${t.qty.toLocaleString()}</td>
           <td style="font-family:'DM Mono',monospace">${t.price}</td>
           <td style="font-family:'DM Mono',monospace;line-height:1.3">
-            ${(() => {
-              const amt = Math.round(t.qty * t.price);
-              const fee = t.fee || 0;
-              const tax = t.tax || 0;
-              if (t.side === 'buy') {
-                const net = amt + fee;
-                return `<div>$${net.toLocaleString()}</div>
-                        <div style="font-size:12px;color:var(--muted)">單價 $${amt.toLocaleString()} + 手續費 $${fee}</div>`;
-              } else {
-                const net = amt - fee - tax;
-                return `<div>$${net.toLocaleString()}</div>
-                        <div style="font-size:12px;color:var(--muted)">單價 $${amt.toLocaleString()} - 手續費 $${fee} - 稅 $${tax}</div>`;
-              }
-            })()}
+            <div>$${net.toLocaleString()}</div>
+            <div style="font-size:12px;color:var(--muted)">${netSub}</div>
           </td>
           <td style="color:var(--muted);font-size:14px">${t.note || '—'}</td>
-          <td><button class="btn btn-ghost" onclick="deleteTrade(${t.id})">✕</button></td>
-        </tr>`).join('')}
+          <td><button class="btn btn-ghost" style="padding:6px 8px;font-size:13px" onclick="openEditModal(${t.id})" title="編輯">✏️</button><button class="btn btn-ghost" onclick="deleteTrade(${t.id})">✕</button></td>
+        </tr>`;
+        }).join('')}
       </tbody>
     </table>`;
+
+  // Build mobile cards HTML
+  const cardsHTML = `
+    <div class="history-mobile-cards">
+      ${filtered.map(t => {
+        const amt = Math.round(t.qty * t.price);
+        const fee = t.fee || 0;
+        const tax = t.tax || 0;
+        const net = t.side === 'buy' ? amt + fee : amt - fee - tax;
+        const netSub = t.side === 'buy'
+          ? `$${amt.toLocaleString()} + 手續費 $${fee}`
+          : `$${amt.toLocaleString()} - 手續費 $${fee} - 稅 $${tax}`;
+        const isBuy = t.side === 'buy';
+        return `
+        <div class="trade-card">
+          <div class="trade-card-header">
+            <div>
+              <div class="trade-card-sym">${t.sym}<span class="trade-card-sym-name">${stockNames[t.sym] || ''}</span></div>
+              <div style="margin-top:3px;display:flex;gap:6px;align-items:center">
+                <span class="badge badge-${t.who.toLowerCase()}">${name(t.who)}</span>
+                <span class="${isBuy ? 'tag-buy' : 'tag-sell'}">${isBuy ? '▲ 買進' : '▼ 賣出'}</span>
+              </div>
+            </div>
+            <div class="trade-card-right">
+              <div class="trade-card-date">${t.date}</div>
+              <div style="display:flex;gap:4px">
+                <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px" onclick="openEditModal(${t.id})" title="編輯">✏️</button>
+                <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px" onclick="deleteTrade(${t.id})">✕</button>
+              </div>
+            </div>
+          </div>
+          <div class="trade-card-body">
+            <div class="trade-card-cell">
+              <div class="trade-card-cell-label">股數</div>
+              <div class="trade-card-cell-val">${t.qty.toLocaleString()}</div>
+            </div>
+            <div class="trade-card-cell">
+              <div class="trade-card-cell-label">成交價</div>
+              <div class="trade-card-cell-val">$${Number(t.price).toLocaleString()}</div>
+            </div>
+            <div class="trade-card-cell" style="grid-column: 1 / -1; border-right: none;">
+              <div class="trade-card-cell-label">金額 (收支)</div>
+              <div class="trade-card-cell-val" style="color:${isBuy ? 'var(--red)' : 'var(--green)'}">${isBuy ? '-' : '+'}$${net.toLocaleString()}</div>
+              <div class="trade-card-cell-sub">${netSub}</div>
+            </div>
+          </div>
+          ${t.note ? `<div class="trade-card-footer">
+            <span class="trade-card-note">📝 ${t.note}</span>
+          </div>` : ''}
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  document.getElementById('history-body').innerHTML = tableHTML + cardsHTML;
 }
+
+// ── Cash Flow / Settlement ──────────────────────────────
+function getSettlement() {
+  // positive = B owes A; negative = A owes B
+  let net = 0;
+  cashFlows.forEach(cf => {
+    if (cf.from === 'A' && cf.to === 'B') net += cf.amount;
+    else if (cf.from === 'B' && cf.to === 'A') net -= cf.amount;
+  });
+  return net;
+}
+
+function renderSettlementMetricCard() {
+  if (!cashFlows.length) return '';
+  const net = getSettlement();
+  if (net === 0) {
+    return `<div class="metric-card" style="grid-column:1/-1;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.25)">
+      <div class="metric-label">⚖️ 款項結算</div>
+      <div class="metric-value" style="color:var(--green);font-size:20px">✓ 已結清</div>
+      <div class="metric-sub" style="margin-top:4px">雙方款項已結清</div>
+    </div>`;
+  }
+  const debtorName = net > 0 ? settings.nameB : settings.nameA;
+  const creditorName = net > 0 ? settings.nameA : settings.nameB;
+  const debtorKey = net > 0 ? 'b' : 'a';
+  const creditorKey = net > 0 ? 'a' : 'b';
+  return `<div class="metric-card" style="grid-column:1/-1;background:rgba(239,68,68,0.04);border-color:rgba(239,68,68,0.2)">
+    <div class="metric-label">⚖️ 款項結算</div>
+    <div class="metric-value neg" style="font-size:22px">$${Math.abs(net).toLocaleString()}</div>
+    <div class="metric-sub" style="margin-top:6px;display:flex;align-items:center;gap:6px;justify-content:center;flex-wrap:wrap">
+      <span class="badge badge-${debtorKey}">${debtorName}</span> 尚欠 <span class="badge badge-${creditorKey}">${creditorName}</span>
+    </div>
+  </div>`;
+}
+
+function renderSettlementCard() {
+  const container = document.getElementById('settlement-card-wrap');
+  if (!container) return;
+  if (!cashFlows.length) {
+    container.innerHTML = `<div class="settlement-card" style="background:rgba(212,168,83,0.04);border-color:rgba(212,168,83,0.15)">
+      <div>
+        <div class="settlement-label">⚖️ 目前結算</div>
+        <div class="settlement-value" style="color:var(--muted);font-size:18px">尚無款項記錄</div>
+      </div>
+    </div>`;
+    return;
+  }
+  const net = getSettlement();
+  const total = cashFlows.reduce((s, cf) => s + cf.amount, 0);
+  let valueHTML, metaHTML;
+  if (net === 0) {
+    valueHTML = `<div class="settlement-value" style="color:var(--green)">✓ 已結清</div>`;
+    metaHTML = `<div class="settlement-meta">雙方款項已全數結清</div>`;
+  } else {
+    const debtorName = net > 0 ? settings.nameB : settings.nameA;
+    const creditorName = net > 0 ? settings.nameA : settings.nameB;
+    const debtorKey = net > 0 ? 'b' : 'a';
+    const creditorKey = net > 0 ? 'a' : 'b';
+    valueHTML = `<div class="settlement-value" style="color:var(--red)">$${Math.abs(net).toLocaleString()} 元</div>`;
+    metaHTML = `<div class="settlement-meta"><span class="badge badge-${debtorKey}">${debtorName}</span> 尚欠 <span class="badge badge-${creditorKey}">${creditorName}</span></div>`;
+  }
+  container.innerHTML = `<div class="settlement-card">
+    <div>
+      <div class="settlement-label">⚖️ 目前結算</div>
+      ${valueHTML}
+      ${metaHTML}
+    </div>
+    <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+      <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace">${cashFlows.length} 筆 ／ 合計 $${total.toLocaleString()}</div>
+      <button class="btn btn-sm" onclick="exportCashFlowCSV()" style="font-size:12px">⬇ 匯出 CSV</button>
+    </div>
+  </div>`;
+}
+
+function renderCashFlow() {
+  renderSettlementCard();
+  const whoF = document.getElementById('cf-filter-who')?.value || '';
+  const catF = document.getElementById('cf-filter-cat')?.value || '';
+  const sortF = document.getElementById('cf-filter-sort')?.value || 'desc';
+  let filtered = [...cashFlows];
+  if (whoF) filtered = filtered.filter(cf => cf.from === whoF || cf.to === whoF);
+  if (catF) filtered = filtered.filter(cf => cf.category === catF);
+  if (sortF === 'asc') filtered.sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id);
+  else filtered.sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+  const container = document.getElementById('cf-list-body');
+  if (!container) return;
+  if (!filtered.length) {
+    container.innerHTML = '<div class="empty">沒有符合條件的款項記錄</div>';
+    return;
+  }
+  container.innerHTML = `<div class="cf-list">${filtered.map(cf => {
+    const fromName = cf.from === 'A' ? settings.nameA : cf.from === 'B' ? settings.nameB : '外部';
+    const toName   = cf.to   === 'A' ? settings.nameA : cf.to   === 'B' ? settings.nameB : '帳戶外';
+    const fromKey  = cf.from === 'A' ? 'a' : 'b';
+    const toKey    = cf.to   === 'A' ? 'a' : cf.to === 'B' ? 'b' : '';
+    const toPart = (cf.to === 'external' || !cf.to)
+      ? `<span style="color:var(--muted);font-size:13px;font-family:'DM Mono',monospace">${toName}</span>`
+      : `<span class="badge badge-${toKey}">${toName}</span>`;
+    return `<div class="cf-item">
+      <div class="cf-date">${cf.date}</div>
+      <div class="cf-direction">
+        <span class="badge badge-${fromKey}">${fromName}</span>
+        <span style="color:var(--muted);font-size:14px">→</span>
+        ${toPart}
+      </div>
+      <span class="cf-cat cf-cat-${cf.category}">${cf.category}</span>
+      <span class="cf-note">${cf.note || ''}</span>
+      <div class="cf-amount">$${cf.amount.toLocaleString()}</div>
+      <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px;flex-shrink:0" onclick="deleteCashFlow(${cf.id})" title="刪除">✕</button>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function openCashFlowModal() {
+  document.getElementById('cf-date').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('cf-amount').value = '';
+  document.getElementById('cf-note').value = '';
+  document.getElementById('cf-from-a-lbl').textContent = settings.nameA;
+  document.getElementById('cf-from-b-lbl').textContent = settings.nameB;
+  document.getElementById('cf-to-a-lbl').textContent = settings.nameA;
+  document.getElementById('cf-to-b-lbl').textContent = settings.nameB;
+  setCfCategory('代墊買股'); // reset to default and trigger cat change
+  document.getElementById('cashflow-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCashFlowModal() {
+  document.getElementById('cashflow-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function setCfToggle(field, val) {
+  document.getElementById('cf-' + field).value = val;
+  const idA = field === 'from' ? 'cf-from-btn-a' : 'cf-to-btn-a';
+  const idB = field === 'from' ? 'cf-from-btn-b' : 'cf-to-btn-b';
+  document.getElementById(idA).classList.toggle('active', val === 'A');
+  document.getElementById(idB).classList.toggle('active', val === 'B');
+}
+
+function setCfCategory(cat) {
+  document.getElementById('cf-category').value = cat;
+  // update button active states
+  ['代墊買股', '還款', '提款', '贈與'].forEach(c => {
+    const btn = document.getElementById('cf-cat-btn-' + c);
+    if (btn) btn.classList.toggle('active', c === cat);
+  });
+  onCfCatChange();
+}
+
+function onCfCatChange() {
+  const cat = document.getElementById('cf-category').value;
+  // Auto-preset direction based on category (user can still override)
+  if (cat === '代墊買股') {
+    setCfToggle('from', 'A'); setCfToggle('to', 'B');
+  } else if (cat === '還款') {
+    setCfToggle('from', 'B'); setCfToggle('to', 'A');
+  } else if (cat === '提款') {
+    setCfToggle('from', 'B');
+    document.getElementById('cf-to').value = 'external';
+    // unselect both 'to' buttons visually for external
+    document.getElementById('cf-to-btn-a').classList.remove('active');
+    document.getElementById('cf-to-btn-b').classList.remove('active');
+  }
+  // 贈與: keep current selection, no auto-preset
+  
+  renderCfRecentTrades();
+}
+
+function renderCfRecentTrades() {
+  const container = document.getElementById('cf-recent-trades');
+  if (!container) return;
+  const cat = document.getElementById('cf-category').value;
+  if (cat !== '代墊買股') {
+    container.style.display = 'none';
+    return;
+  }
+  
+  // 取得最近的 5 筆交易（優先顯示買進）
+  const recentTrades = [...trades]
+    .sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id)
+    .slice(0, 5);
+    
+  if (recentTrades.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  container.style.display = 'flex';
+  container.innerHTML = recentTrades.map(t => {
+    const name = stockNames[t.sym] || '';
+    const sideLabel = t.side === 'buy' ? '買進' : '賣出';
+    const text = `${t.sym} ${name} ${sideLabel} ${t.qty}股`.trim();
+    const amount = (t.qty * t.price) + (t.fee || 0) + (t.tax || 0);
+    return `<button type="button" class="btn btn-ghost" style="padding:4px 8px; font-size:12px; border:1px solid var(--border2); color:var(--text);" onclick="fillCfFromTrade('${text}', ${amount})">${text}</button>`;
+  }).join('');
+}
+
+function fillCfFromTrade(note, amount) {
+  document.getElementById('cf-note').value = note;
+  document.getElementById('cf-amount').value = Math.round(amount);
+}
+
+function addCashFlow() {
+  const date = document.getElementById('cf-date').value;
+  const from = document.getElementById('cf-from').value;
+  const to = document.getElementById('cf-to').value;
+  const amount = Math.round(parseFloat(document.getElementById('cf-amount').value));
+  const category = document.getElementById('cf-category').value;
+  const note = document.getElementById('cf-note').value.trim();
+  if (!date) { toast('請選擇日期', 'error'); return; }
+  if (!amount || amount <= 0) { toast('請輸入有效金額', 'error'); return; }
+  cashFlows.push({ id: Date.now(), date, from, to, amount, category, note });
+  save();
+  closeCashFlowModal();
+  renderCashFlow();
+  renderDashboard();
+  toast(`✓ 已新增「${category}」記錄 $${amount.toLocaleString()} 元`);
+}
+
+function deleteCashFlow(id) {
+  if (!confirm('確定刪除這筆款項記錄？')) return;
+  cashFlows = cashFlows.filter(cf => cf.id !== id);
+  save();
+  renderCashFlow();
+  renderDashboard();
+  toast('已刪除款項記錄');
+}
+
+// ── Cash Flow CSV ───────────────────────────────────────
+function cashFlowsToCSV() {
+  const header = 'date,from,to,amount,category,note';
+  const rows = cashFlows.map(cf => [
+    cf.date, cf.from, cf.to || '', cf.amount, cf.category,
+    (cf.note || '').replace(/,/g, '，')
+  ].join(','));
+  return header + '\n' + rows.join('\n');
+}
+
+function exportCashFlowCSV() {
+  if (!cashFlows.length) { toast('尚無款項記錄可匯出', 'error'); return; }
+  const bom = '\uFEFF';
+  const blob = new Blob([bom + cashFlowsToCSV()], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '款項記錄_' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('已下載款項 CSV');
+}
+
+// ── Edit Trade Modal ───────────────────────────────────
+function openEditModal(id) {
+  const t = trades.find(t => t.id === id);
+  if (!t) return;
+  document.getElementById('edit-id').value = id;
+  document.getElementById('edit-date').value = t.date;
+  document.getElementById('edit-sym').value = t.sym;
+  document.getElementById('edit-qty').value = t.qty;
+  document.getElementById('edit-price').value = t.price;
+  document.getElementById('edit-note').value = t.note || '';
+  setEditToggleWho(t.who);
+  setEditToggleSide(t.side);
+  // update person button labels
+  document.getElementById('edit-btn-a').textContent = settings.nameA;
+  document.getElementById('edit-btn-b').textContent = settings.nameB;
+  document.getElementById('edit-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function setEditToggleWho(val) {
+  document.getElementById('edit-who').value = val;
+  document.getElementById('edit-btn-a').classList.toggle('active', val === 'A');
+  document.getElementById('edit-btn-b').classList.toggle('active', val === 'B');
+}
+
+function setEditToggleSide(val) {
+  document.getElementById('edit-side').value = val;
+  document.getElementById('edit-btn-buy').classList.toggle('active', val === 'buy');
+  document.getElementById('edit-btn-sell').classList.toggle('active', val === 'sell');
+}
+
+function saveEdit() {
+  const id = parseInt(document.getElementById('edit-id').value);
+  const sym = document.getElementById('edit-sym').value.trim().toUpperCase();
+  const who = document.getElementById('edit-who').value;
+  const side = document.getElementById('edit-side').value;
+  const qty = parseFloat(document.getElementById('edit-qty').value);
+  const price = parseFloat(document.getElementById('edit-price').value);
+  const date = document.getElementById('edit-date').value;
+  const note = document.getElementById('edit-note').value.trim();
+
+  if (!sym) { toast('請輸入股票代號', 'error'); return; }
+  if (!qty || qty <= 0) { toast('請輸入有效股數', 'error'); return; }
+  if (!price || price <= 0) { toast('請輸入有效成交價', 'error'); return; }
+  if (!date) { toast('請選擇日期', 'error'); return; }
+
+  // Recalculate fee and tax based on updated values
+  const amount = qty * price;
+  const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
+  const minFee = settings.minFee !== undefined ? settings.minFee : 1;
+  const fee = Math.max(minFee, Math.round(amount * 0.001425 * discount));
+
+  let taxRate = 0.003;
+  if (sym.startsWith('00')) {
+    taxRate = 0.001;
+  } else if (side === 'sell') {
+    const isDayTrade = trades.some(t => t.id !== id && t.sym === sym && t.who === who && t.date === date && t.side === 'buy');
+    if (isDayTrade) taxRate = 0.0015;
+  }
+  const tax = side === 'sell' ? Math.round(amount * taxRate) : 0;
+
+  const idx = trades.findIndex(t => t.id === id);
+  if (idx === -1) { toast('找不到該筆交易', 'error'); return; }
+
+  trades[idx] = { ...trades[idx], sym, who, side, qty, price, date, note, fee, tax };
+  save();
+  
+  // 背景自動抓取該股票的最新現價與中文名稱 (若為新股票)
+  if (!prices[sym] || !stockNames[sym]) {
+    fetchPrice(sym).then(r => {
+      if (r) {
+        prices[sym] = r.price;
+        if (r.name) stockNames[sym] = r.name.trim();
+        save();
+        renderDashboard();
+        renderPositions();
+        refreshFilters();
+      }
+    });
+  }
+  
+  renderHistory();
+  renderDashboard();
+  renderPositions();
+  refreshFilters();
+  closeEditModal();
+  toast(`✓ 已更新 ${sym} 交易記錄`, 'success');
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeEditModal(); closeCashFlowModal(); } });
 
 function deleteTrade(id) {
   if (!confirm('確定刪除這筆交易？')) return;
