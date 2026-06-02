@@ -606,6 +606,11 @@ select option { background: var(--surface2); }
           <select id="filter-sym" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
             <option value="">全部股票</option>
           </select>
+          <select id="filter-side" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
+            <option value="">全部買賣</option>
+            <option value="buy">買進</option>
+            <option value="sell">賣出</option>
+          </select>
           <select id="filter-range" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
             <option value="">全部時間</option>
             <option value="this-month">當月</option>
@@ -1952,6 +1957,7 @@ function renderHistory() {
   refreshFilters();
   const whoF = document.getElementById('filter-who').value;
   const symF = document.getElementById('filter-sym').value;
+  const sideF = document.getElementById('filter-side').value;
   const rangeF = document.getElementById('filter-range').value;
   const sortF = document.getElementById('filter-sort').value;
   
@@ -1975,8 +1981,8 @@ function renderHistory() {
     filtered = filtered.filter(t => t.date >= limitStr);
   }
   
-  // 2. 交易人與股票篩選
-  filtered = filtered.filter(t => (!whoF || t.who === whoF) && (!symF || t.sym === symF));
+  // 2. 交易人、股票與買賣方向篩選
+  filtered = filtered.filter(t => (!whoF || t.who === whoF) && (!symF || t.sym === symF) && (!sideF || t.side === sideF));
   
   // 3. 排序 (新➜舊 或 舊➜新)
   if (sortF === 'asc') {
