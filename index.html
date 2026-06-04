@@ -106,7 +106,7 @@ a { color: inherit; text-decoration: none; }
 .trade-card-note { font-size: 13px; color: var(--muted); font-style: italic; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Edit Modal */
-.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: center; justify-content: center; padding: calc(1rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom)); }
+.modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: center; justify-content: center; padding: calc(1rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom)); }
 .modal-backdrop.open { display: flex; }
 .modal-box { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius-lg); width: 100%; max-width: 520px; max-height: 100%; box-shadow: 0 24px 64px rgba(0,0,0,0.6); animation: modal-in 0.2s ease; overflow-y: auto; }
 @keyframes modal-in { from { opacity:0; transform: translateY(16px) scale(0.97); } to { opacity:1; transform: none; } }
@@ -421,7 +421,7 @@ select option { background: var(--surface2); }
 .cf-note { font-size: 13px; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .cf-amount { font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 600; flex-shrink: 0; }
 /* Category selector button active state in cashflow modal */
-#cf-cat-btn-deposit.active, #cf-cat-btn-withdrawal.active, #cf-cat-btn-dividend.active {
+#cf-cat-btn-deposit.active, #cf-cat-btn-withdrawal.active, #cf-cat-btn-dividend.active, #cf-cat-btn-payment.active {
   background: rgba(212,168,83,0.15);
   border-color: rgba(212,168,83,0.5);
   color: var(--a-color);
@@ -706,7 +706,7 @@ select option { background: var(--surface2); }
       </div>
       <div class="form-card">
         <div style="font-size:13px;font-weight:500;margin-bottom:12px">現金帳備份 (匯出 CSV)</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">將所有現金流水（入金、出金、分潤）匯出為 CSV 檔案備份。</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">將所有現金流水（入金、出金、分潤、代付）匯出為 CSV 檔案備份。</div>
         <button class="btn btn-primary" onclick="exportCashFlowCSV()" id="btn-export-cf">⬇ 下載現金帳 CSV</button>
       </div>
       <div class="form-card" style="border-color:rgba(224,92,92,0.3)">
@@ -734,6 +734,7 @@ select option { background: var(--surface2); }
           <option value="deposit">入金</option>
           <option value="withdrawal">出金</option>
           <option value="dividend">分潤</option>
+          <option value="payment">代付</option>
         </select>
         <select id="cf-filter-sort" onchange="renderCashFlow()" style="width:auto;padding:6px 10px;font-size:12px">
           <option value="desc">日期：新 ➜ 舊</option>
@@ -829,6 +830,7 @@ select option { background: var(--surface2); }
       <button class="modal-close" onclick="closeCashFlowModal()">✕</button>
     </div>
     <div class="modal-body">
+      <input type="hidden" id="cf-id" value="">
       <div class="modal-grid">
         <div class="form-group" style="grid-column:1/-1">
           <label class="field-label">日期</label>
@@ -844,10 +846,11 @@ select option { background: var(--surface2); }
         </div>
         <div class="form-group" style="grid-column:1/-1">
           <label class="field-label">資金類型</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <button type="button" class="btn active" id="cf-cat-btn-deposit" onclick="setCfCategory('deposit')" style="justify-content:center;font-size:14px">入金</button>
             <button type="button" class="btn" id="cf-cat-btn-withdrawal" onclick="setCfCategory('withdrawal')" style="justify-content:center;font-size:14px">出金</button>
             <button type="button" class="btn" id="cf-cat-btn-dividend" onclick="setCfCategory('dividend')" style="justify-content:center;font-size:14px">分潤</button>
+            <button type="button" class="btn" id="cf-cat-btn-payment" onclick="setCfCategory('payment')" style="justify-content:center;font-size:14px">代付</button>
           </div>
           <input type="hidden" id="cf-category" value="deposit">
         </div>
@@ -864,7 +867,7 @@ select option { background: var(--surface2); }
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeCashFlowModal()" id="btn-cf-cancel">取消</button>
-      <button class="btn btn-primary" onclick="addCashFlow()" id="btn-cf-add">確認新增</button>
+      <button class="btn btn-primary" onclick="saveCashFlow()" id="btn-cf-add">儲存紀錄</button>
     </div>
   </div>
 </div>
@@ -2112,7 +2115,7 @@ function getCashBalance(who) {
     if (cf.who === who) {
       if (cf.type === 'deposit' || cf.type === 'dividend') {
         bal += cf.amount;
-      } else if (cf.type === 'withdrawal') {
+      } else if (cf.type === 'withdrawal' || cf.type === 'payment') {
         bal -= cf.amount;
       }
     }
@@ -2185,9 +2188,9 @@ function renderCashFlow() {
   container.innerHTML = `<div class="cf-list">${filtered.map(cf => {
     const whoName = cf.who === 'A' ? settings.nameA : settings.nameB;
     const whoKey  = cf.who === 'A' ? 'a' : 'b';
-    const typeName = cf.type === 'deposit' ? '入金' : cf.type === 'withdrawal' ? '出金' : '分潤';
-    const amountColor = cf.type === 'withdrawal' ? 'var(--red)' : 'var(--green)';
-    const amountSign = cf.type === 'withdrawal' ? '-' : '+';
+    const typeName = cf.type === 'deposit' ? '入金' : cf.type === 'withdrawal' ? '出金' : cf.type === 'payment' ? '代付' : '分潤';
+    const amountColor = cf.type === 'withdrawal' || cf.type === 'payment' ? 'var(--red)' : 'var(--green)';
+    const amountSign = cf.type === 'withdrawal' || cf.type === 'payment' ? '-' : '+';
     return `<div class="cf-item">
       <div class="cf-date">${cf.date}</div>
       <div class="cf-direction">
@@ -2196,12 +2199,16 @@ function renderCashFlow() {
       <span class="cf-cat" style="color:var(--text); background:var(--bg)">${typeName}</span>
       <span class="cf-note">${cf.note || ''}</span>
       <div class="cf-amount" style="color:${amountColor}; font-weight:600">${amountSign}$${cf.amount.toLocaleString()}</div>
-      <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px;flex-shrink:0" onclick="deleteCashFlow(${cf.id})" title="刪除">✕</button>
+      <div style="display:flex; gap:4px;">
+        <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px;flex-shrink:0" onclick="editCashFlow(${cf.id})" title="修改">✎</button>
+        <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px;flex-shrink:0" onclick="deleteCashFlow(${cf.id})" title="刪除">✕</button>
+      </div>
     </div>`;
   }).join('')}</div>`;
 }
 
 function openCashFlowModal() {
+  document.getElementById('cf-id').value = '';
   document.getElementById('cf-date').value = new Date().toISOString().slice(0, 10);
   document.getElementById('cf-amount').value = '';
   document.getElementById('cf-note').value = '';
@@ -2224,7 +2231,7 @@ function setCfToggleWho(val) {
 function setCfCategory(cat) {
   document.getElementById('cf-category').value = cat;
   // update button active states
-  ['deposit', 'withdrawal', 'dividend'].forEach(c => {
+  ['deposit', 'withdrawal', 'dividend', 'payment'].forEach(c => {
     const btn = document.getElementById('cf-cat-btn-' + c);
     if (btn) btn.classList.toggle('active', c === cat);
   });
@@ -2264,7 +2271,22 @@ function fillCfFromTrade(note, amount) {
   document.getElementById('cf-amount').value = Math.round(amount);
 }
 
-function addCashFlow() {
+function editCashFlow(id) {
+  const cf = cashFlows.find(c => c.id === id);
+  if (!cf) return;
+  document.getElementById('cf-id').value = cf.id;
+  document.getElementById('cf-date').value = cf.date;
+  document.getElementById('cf-amount').value = cf.amount;
+  document.getElementById('cf-note').value = cf.note || '';
+  document.getElementById('cf-who-a-lbl').textContent = settings.nameA;
+  document.getElementById('cf-who-b-lbl').textContent = settings.nameB;
+  setCfToggleWho(cf.who);
+  setCfCategory(cf.type);
+  document.getElementById('cashflow-modal').classList.add('open');
+}
+
+function saveCashFlow() {
+  const idStr = document.getElementById('cf-id').value;
   const date = document.getElementById('cf-date').value;
   const who = document.getElementById('cf-who').value;
   const amount = Math.round(parseFloat(document.getElementById('cf-amount').value));
@@ -2272,13 +2294,24 @@ function addCashFlow() {
   const note = document.getElementById('cf-note').value.trim();
   if (!date) { toast('請選擇日期', 'error'); return; }
   if (!amount || amount <= 0) { toast('請輸入有效金額', 'error'); return; }
-  cashFlows.push({ id: Date.now(), date, who, type, amount, note });
+  
+  if (idStr) {
+    const id = parseInt(idStr);
+    const idx = cashFlows.findIndex(c => c.id === id);
+    if (idx > -1) {
+      cashFlows[idx] = { ...cashFlows[idx], date, who, type, amount, note };
+      toast('✓ 已更新流水帳記錄');
+    }
+  } else {
+    cashFlows.push({ id: Date.now(), date, who, type, amount, note });
+    const typeName = type === 'deposit' ? '入金' : type === 'withdrawal' ? '出金' : type === 'payment' ? '代付' : '分潤';
+    toast(`✓ 已新增「${typeName}」記錄 $${amount.toLocaleString()} 元`);
+  }
+  
   save();
   closeCashFlowModal();
   renderCashFlow();
   renderDashboard();
-  const typeName = type === 'deposit' ? '入金' : type === 'withdrawal' ? '出金' : '分潤';
-  toast(`✓ 已新增「${typeName}」記錄 $${amount.toLocaleString()} 元`);
 }
 
 function deleteCashFlow(id) {
@@ -2296,7 +2329,7 @@ function cashFlowsToCSV() {
   const header = 'date,who,type,amount,note';
   const rows = cashFlows.map(cf => {
     const whoName = cf.who === 'A' ? settings.nameA : settings.nameB;
-    const typeName = cf.type === 'deposit' ? '入金' : cf.type === 'withdrawal' ? '出金' : '分潤';
+    const typeName = cf.type === 'deposit' ? '入金' : cf.type === 'withdrawal' ? '出金' : cf.type === 'payment' ? '代付' : '分潤';
     return [
       cf.date, whoName, typeName, cf.amount,
       (cf.note || '').replace(/,/g, '，')
