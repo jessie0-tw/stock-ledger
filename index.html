@@ -421,8 +421,7 @@ select option { background: var(--surface2); }
 .cf-note { font-size: 13px; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .cf-amount { font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 600; flex-shrink: 0; }
 /* Category selector button active state in cashflow modal */
-.cf-cat-btn-group .btn.active,
-#cf-cat-btn-代墊買股.active, #cf-cat-btn-還款.active, #cf-cat-btn-提款.active, #cf-cat-btn-贈與.active {
+#cf-cat-btn-deposit.active, #cf-cat-btn-withdrawal.active, #cf-cat-btn-dividend.active {
   background: rgba(212,168,83,0.15);
   border-color: rgba(212,168,83,0.5);
   color: var(--a-color);
@@ -454,7 +453,7 @@ select option { background: var(--surface2); }
   </div>
   <div class="nav-item" onclick="switchSection('cashflow', this)">
     <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-    <span>款項</span>
+    <span>流水帳</span>
   </div>
   <div class="nav-item" onclick="switchSection('settings', this)">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -475,7 +474,7 @@ select option { background: var(--surface2); }
       <div class="nav-item" id="nav-positions" onclick="switchSection('positions', this)"><span class="nav-icon">◈</span> 持股分析</div>
       <div class="nav-item" id="nav-add" onclick="switchSection('add', this)"><span class="nav-icon">＋</span> 新增交易</div>
       <div class="nav-item" id="nav-history" onclick="switchSection('history', this)"><span class="nav-icon">≡</span> 交易明細</div>
-      <div class="nav-item" id="nav-cashflow" onclick="switchSection('cashflow', this)"><span class="nav-icon">💰</span> 款項記錄</div>
+      <div class="nav-item" id="nav-cashflow" onclick="switchSection('cashflow', this)"><span class="nav-icon">💰</span> 現金流水帳</div>
       <div class="nav-section">系統</div>
       <div class="nav-item" id="nav-settings" onclick="switchSection('settings', this)"><span class="nav-icon">⚙</span> 系統設定</div>
     </nav>
@@ -706,9 +705,9 @@ select option { background: var(--surface2); }
         </div>
       </div>
       <div class="form-card">
-        <div style="font-size:13px;font-weight:500;margin-bottom:12px">款項記錄備份 (匯出 CSV)</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">將所有資金往來款項記錄（代墊、還款、提款）匯出為 CSV 檔案備份。</div>
-        <button class="btn btn-primary" onclick="exportCashFlowCSV()" id="btn-export-cf">⬇ 下載款項 CSV</button>
+        <div style="font-size:13px;font-weight:500;margin-bottom:12px">現金帳備份 (匯出 CSV)</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">將所有現金流水（入金、出金、分潤）匯出為 CSV 檔案備份。</div>
+        <button class="btn btn-primary" onclick="exportCashFlowCSV()" id="btn-export-cf">⬇ 下載現金帳 CSV</button>
       </div>
       <div class="form-card" style="border-color:rgba(224,92,92,0.3)">
         <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--red)">清除所有資料</div>
@@ -720,8 +719,8 @@ select option { background: var(--surface2); }
     <!-- Cash Flow -->
     <div class="section" id="sec-cashflow">
       <div class="page-header">
-        <div><div class="page-title">款項記錄</div><div class="page-sub">資金往來與結算</div></div>
-        <button class="btn btn-primary btn-sm" onclick="openCashFlowModal()" id="btn-open-cf-modal">＋ 新增款項</button>
+        <div><div class="page-title">現金流水帳</div><div class="page-sub">帳戶可用現金管理</div></div>
+        <button class="btn btn-primary btn-sm" onclick="openCashFlowModal()" id="btn-open-cf-modal">＋ 新增流水紀錄</button>
       </div>
       <div id="settlement-card-wrap"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;">
@@ -732,23 +731,33 @@ select option { background: var(--surface2); }
         </select>
         <select id="cf-filter-cat" onchange="renderCashFlow()" style="width:auto;padding:6px 10px;font-size:12px">
           <option value="">全部分類</option>
-          <option value="代墊買股">代墊買股</option>
-          <option value="還款">還款</option>
-          <option value="提款">提款</option>
-          <option value="贈與">贈與</option>
+          <option value="deposit">入金</option>
+          <option value="withdrawal">出金</option>
+          <option value="dividend">分潤</option>
         </select>
         <select id="cf-filter-sort" onchange="renderCashFlow()" style="width:auto;padding:6px 10px;font-size:12px">
           <option value="desc">日期：新 ➜ 舊</option>
           <option value="asc">日期：舊 ➜ 新</option>
         </select>
       </div>
-      <div id="cf-list-body"><div class="empty">尚無款項記錄，點擊右上角「＋ 新增款項」開始記錄</div></div>
+      <div id="cf-list-body"><div class="empty">尚無紀錄，點擊右上角「＋ 新增流水紀錄」開始記錄</div></div>
     </div>
 
   </main>
 </div>
 
 <div id="toast"></div>
+
+<!-- Confirm Modal -->
+<div class="modal-backdrop" id="confirm-modal" style="z-index: 3000;" onclick="if(event.target===this)closeConfirmModal()">
+  <div class="modal-box" style="max-width: 320px; padding: 1.5rem; text-align: center;">
+    <div id="confirm-message" style="font-size: 15px; margin-bottom: 24px; color: var(--text); line-height: 1.5; font-weight: 400;"></div>
+    <div style="display: flex; gap: 12px; justify-content: center;">
+      <button class="btn btn-ghost" onclick="closeConfirmModal()" style="flex: 1; justify-content: center;">取消</button>
+      <button class="btn btn-primary" id="confirm-ok-btn" onclick="if(confirmCallback)confirmCallback(); closeConfirmModal();" style="flex: 1; justify-content: center; background: var(--red); border-color: var(--red);">確定</button>
+    </div>
+  </div>
+</div>
 
 <!-- Edit Trade Modal -->
 <div class="modal-backdrop" id="edit-modal" onclick="if(event.target===this)closeEditModal()">
@@ -816,7 +825,7 @@ select option { background: var(--surface2); }
 <div class="modal-backdrop" id="cashflow-modal" onclick="if(event.target===this)closeCashFlowModal()">
   <div class="modal-box">
     <div class="modal-header">
-      <div class="modal-title">💰 新增款項記錄</div>
+      <div class="modal-title">💰 新增現金流水</div>
       <button class="modal-close" onclick="closeCashFlowModal()">✕</button>
     </div>
     <div class="modal-body">
@@ -826,32 +835,21 @@ select option { background: var(--surface2); }
           <input id="cf-date" type="date">
         </div>
         <div class="form-group" style="grid-column:1/-1">
-          <label class="field-label">分類</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button type="button" class="btn active" id="cf-cat-btn-代墊買股" onclick="setCfCategory('代墊買股')" style="justify-content:center;font-size:14px">代墊買股</button>
-            <button type="button" class="btn" id="cf-cat-btn-還款" onclick="setCfCategory('還款')" style="justify-content:center;font-size:14px">還款</button>
-            <button type="button" class="btn" id="cf-cat-btn-提款" onclick="setCfCategory('提款')" style="justify-content:center;font-size:14px">提款</button>
-            <button type="button" class="btn" id="cf-cat-btn-贈與" onclick="setCfCategory('贈與')" style="justify-content:center;font-size:14px">贈與</button>
+          <label class="field-label">人員</label>
+          <div class="toggle-group-custom" id="cf-toggle-who">
+            <button type="button" class="toggle-btn active" onclick="setCfToggleWho('A')" id="cf-who-btn-a"><span id="cf-who-a-lbl">人員 A</span></button>
+            <button type="button" class="toggle-btn" onclick="setCfToggleWho('B')" id="cf-who-btn-b"><span id="cf-who-b-lbl">人員 B</span></button>
           </div>
-          <input type="hidden" id="cf-category" value="代墊買股">
+          <input type="hidden" id="cf-who" value="A">
         </div>
-      </div>
-      <div class="modal-grid" id="cf-from-to-wrap">
-        <div class="form-group">
-          <label class="field-label">付款人</label>
-          <div class="toggle-group-custom" id="cf-toggle-from">
-            <button type="button" class="toggle-btn active" onclick="setCfToggle('from','A')" id="cf-from-btn-a"><span id="cf-from-a-lbl">人員 A</span></button>
-            <button type="button" class="toggle-btn" onclick="setCfToggle('from','B')" id="cf-from-btn-b"><span id="cf-from-b-lbl">人員 B</span></button>
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="field-label">資金類型</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <button type="button" class="btn active" id="cf-cat-btn-deposit" onclick="setCfCategory('deposit')" style="justify-content:center;font-size:14px">入金</button>
+            <button type="button" class="btn" id="cf-cat-btn-withdrawal" onclick="setCfCategory('withdrawal')" style="justify-content:center;font-size:14px">出金</button>
+            <button type="button" class="btn" id="cf-cat-btn-dividend" onclick="setCfCategory('dividend')" style="justify-content:center;font-size:14px">分潤</button>
           </div>
-          <input type="hidden" id="cf-from" value="A">
-        </div>
-        <div class="form-group" id="cf-to-group">
-          <label class="field-label">收款人</label>
-          <div class="toggle-group-custom" id="cf-toggle-to">
-            <button type="button" class="toggle-btn" onclick="setCfToggle('to','A')" id="cf-to-btn-a"><span id="cf-to-a-lbl">人員 A</span></button>
-            <button type="button" class="toggle-btn active" onclick="setCfToggle('to','B')" id="cf-to-btn-b"><span id="cf-to-b-lbl">人員 B</span></button>
-          </div>
-          <input type="hidden" id="cf-to" value="B">
+          <input type="hidden" id="cf-category" value="deposit">
         </div>
       </div>
       <div class="form-group">
@@ -860,7 +858,7 @@ select option { background: var(--surface2); }
       </div>
       <div class="form-group">
         <label class="field-label">備註（選填）</label>
-        <input id="cf-note" type="text" placeholder="說明款項用途...">
+        <input id="cf-note" type="text" placeholder="說明資金用途...">
         <div id="cf-recent-trades" style="display:none; flex-wrap:wrap; gap:6px; margin-top:8px;"></div>
       </div>
     </div>
@@ -954,6 +952,10 @@ function load() {
   try { settings = { nameA:'人員 A', nameB:'人員 B', ...JSON.parse(localStorage.getItem('slt_settings') || '{}') }; } catch(e) {}
   try { stockNames = JSON.parse(localStorage.getItem('slt_stock_names') || '{}'); } catch(e) { stockNames = {}; }
   try { cashFlows = JSON.parse(localStorage.getItem('slt_cash_flows') || '[]'); } catch(e) { cashFlows = []; }
+  if (cashFlows.length > 0 && cashFlows[0].from !== undefined) {
+    cashFlows = [];
+    localStorage.setItem('slt_cash_flows', '[]');
+  }
 
   if (backfillTrades()) {
     save();
@@ -1073,6 +1075,25 @@ function uploadToCloud() {
 }
 
 // ── Toast ─────────────────────────────────────────────
+let confirmCallback = null;
+function customConfirm(msg, onConfirm, isDanger = true) {
+  document.getElementById('confirm-message').textContent = msg;
+  const okBtn = document.getElementById('confirm-ok-btn');
+  if (isDanger) {
+    okBtn.style.background = 'var(--red)';
+    okBtn.style.borderColor = 'var(--red)';
+  } else {
+    okBtn.style.background = 'var(--accent)';
+    okBtn.style.borderColor = 'var(--accent)';
+  }
+  confirmCallback = onConfirm;
+  document.getElementById('confirm-modal').classList.add('open');
+}
+function closeConfirmModal() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  confirmCallback = null;
+}
+
 let toastTimer;
 function toast(msg, type = 'success') {
   const el = document.getElementById('toast');
@@ -1097,12 +1118,10 @@ function applyNames() {
   const cfB = document.getElementById('cf-filter-b');
   if (cfA) cfA.textContent = settings.nameA;
   if (cfB) cfB.textContent = settings.nameB;
-  const cfFromA = document.getElementById('cf-from-a-lbl');
-  if (cfFromA) {
-    cfFromA.textContent = settings.nameA;
-    document.getElementById('cf-from-b-lbl').textContent = settings.nameB;
-    document.getElementById('cf-to-a-lbl').textContent = settings.nameA;
-    document.getElementById('cf-to-b-lbl').textContent = settings.nameB;
+  const cfWhoA = document.getElementById('cf-who-a-lbl');
+  if (cfWhoA) {
+    cfWhoA.textContent = settings.nameA;
+    document.getElementById('cf-who-b-lbl').textContent = settings.nameB;
   }
   const sa = document.getElementById('set-name-a'), sb = document.getElementById('set-name-b');
   if (sa) sa.value = settings.nameA;
@@ -1306,7 +1325,7 @@ function renderDashboard() {
       <div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${formatMoney(totalPnl)}</div>
       <div class="metric-sub" style="margin-top: 10px; color: #64748B; font-size: 12px;">總持倉成本 $${Math.round(Math.abs(totalCost)).toLocaleString()}</div>
     </div>
-    ${renderSettlementMetricCard()}
+    ${renderCashBalanceMetricCard()}
   `;
   renderCharts();
 }
@@ -2087,35 +2106,34 @@ function renderHistory() {
 }
 
 // ── Cash Flow / Settlement ──────────────────────────────
-function getSettlement() {
-  // positive = B owes A; negative = A owes B
-  let net = 0;
+function getCashBalance(who) {
+  let bal = 0;
   cashFlows.forEach(cf => {
-    if (cf.from === 'A' && cf.to === 'B') net += cf.amount;
-    else if (cf.from === 'B' && cf.to === 'A') net -= cf.amount;
+    if (cf.who === who) {
+      if (cf.type === 'deposit' || cf.type === 'dividend') {
+        bal += cf.amount;
+      } else if (cf.type === 'withdrawal') {
+        bal -= cf.amount;
+      }
+    }
   });
-  return net;
+  return bal;
 }
 
-function renderSettlementMetricCard() {
-  if (!cashFlows.length) return '';
-  const net = getSettlement();
-  if (net === 0) {
-    return `<div class="metric-card" style="grid-column:1/-1;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.25)">
-      <div class="metric-label">⚖️ 款項結算</div>
-      <div class="metric-value" style="color:var(--green);font-size:20px">✓ 已結清</div>
-      <div class="metric-sub" style="margin-top:4px">雙方款項已結清</div>
-    </div>`;
-  }
-  const debtorName = net > 0 ? settings.nameB : settings.nameA;
-  const creditorName = net > 0 ? settings.nameA : settings.nameB;
-  const debtorKey = net > 0 ? 'b' : 'a';
-  const creditorKey = net > 0 ? 'a' : 'b';
-  return `<div class="metric-card" style="grid-column:1/-1;background:rgba(239,68,68,0.04);border-color:rgba(239,68,68,0.2)">
-    <div class="metric-label">⚖️ 款項結算</div>
-    <div class="metric-value neg" style="font-size:22px">$${Math.abs(net).toLocaleString()}</div>
-    <div class="metric-sub" style="margin-top:6px;display:flex;align-items:center;gap:6px;justify-content:center;flex-wrap:wrap">
-      <span class="badge badge-${debtorKey}">${debtorName}</span> 尚欠 <span class="badge badge-${creditorKey}">${creditorName}</span>
+function renderCashBalanceMetricCard() {
+  const balA = getCashBalance('A');
+  const balB = getCashBalance('B');
+  return `<div class="metric-card" style="grid-column:1/-1;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.25)">
+    <div class="metric-label">💰 現金帳餘額</div>
+    <div style="display:flex; justify-content:space-between; margin-top:8px;">
+      <div style="flex:1;">
+        <div style="font-size:12px; color:var(--muted);">${settings.nameA}</div>
+        <div class="metric-value" style="color:var(--green);font-size:20px">$${balA.toLocaleString()}</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:12px; color:var(--muted);">${settings.nameB}</div>
+        <div class="metric-value" style="color:var(--green);font-size:20px">$${balB.toLocaleString()}</div>
+      </div>
     </div>
   </div>`;
 }
@@ -2123,37 +2141,26 @@ function renderSettlementMetricCard() {
 function renderSettlementCard() {
   const container = document.getElementById('settlement-card-wrap');
   if (!container) return;
-  if (!cashFlows.length) {
-    container.innerHTML = `<div class="settlement-card" style="background:rgba(212,168,83,0.04);border-color:rgba(212,168,83,0.15)">
-      <div>
-        <div class="settlement-label">⚖️ 目前結算</div>
-        <div class="settlement-value" style="color:var(--muted);font-size:18px">尚無款項記錄</div>
-      </div>
-    </div>`;
-    return;
-  }
-  const net = getSettlement();
-  const total = cashFlows.reduce((s, cf) => s + cf.amount, 0);
-  let valueHTML, metaHTML;
-  if (net === 0) {
-    valueHTML = `<div class="settlement-value" style="color:var(--green)">✓ 已結清</div>`;
-    metaHTML = `<div class="settlement-meta">雙方款項已全數結清</div>`;
-  } else {
-    const debtorName = net > 0 ? settings.nameB : settings.nameA;
-    const creditorName = net > 0 ? settings.nameA : settings.nameB;
-    const debtorKey = net > 0 ? 'b' : 'a';
-    const creditorKey = net > 0 ? 'a' : 'b';
-    valueHTML = `<div class="settlement-value" style="color:var(--red)">$${Math.abs(net).toLocaleString()} 元</div>`;
-    metaHTML = `<div class="settlement-meta"><span class="badge badge-${debtorKey}">${debtorName}</span> 尚欠 <span class="badge badge-${creditorKey}">${creditorName}</span></div>`;
-  }
+  const balA = getCashBalance('A');
+  const balB = getCashBalance('B');
+  const total = cashFlows.length;
+  
   container.innerHTML = `<div class="settlement-card">
-    <div>
-      <div class="settlement-label">⚖️ 目前結算</div>
-      ${valueHTML}
-      ${metaHTML}
+    <div style="flex:1; min-width: 200px;">
+      <div class="settlement-label">💰 帳戶可用現金</div>
+      <div style="display:flex; flex-wrap:wrap; gap:16px; margin-top:8px;">
+        <div>
+          <div style="font-size:12px; color:var(--muted);"><span class="badge badge-a">${settings.nameA}</span></div>
+          <div class="settlement-value" style="color:var(--text); font-size:20px">$${balA.toLocaleString()}</div>
+        </div>
+        <div>
+          <div style="font-size:12px; color:var(--muted);"><span class="badge badge-b">${settings.nameB}</span></div>
+          <div class="settlement-value" style="color:var(--text); font-size:20px">$${balB.toLocaleString()}</div>
+        </div>
+      </div>
     </div>
     <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-      <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace">${cashFlows.length} 筆 ／ 合計 $${total.toLocaleString()}</div>
+      <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace">${total} 筆紀錄</div>
       <button class="btn btn-sm" onclick="exportCashFlowCSV()" style="font-size:12px">⬇ 匯出 CSV</button>
     </div>
   </div>`;
@@ -2165,34 +2172,30 @@ function renderCashFlow() {
   const catF = document.getElementById('cf-filter-cat')?.value || '';
   const sortF = document.getElementById('cf-filter-sort')?.value || 'desc';
   let filtered = [...cashFlows];
-  if (whoF) filtered = filtered.filter(cf => cf.from === whoF || cf.to === whoF);
-  if (catF) filtered = filtered.filter(cf => cf.category === catF);
+  if (whoF) filtered = filtered.filter(cf => cf.who === whoF);
+  if (catF) filtered = filtered.filter(cf => cf.type === catF);
   if (sortF === 'asc') filtered.sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id);
   else filtered.sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
   const container = document.getElementById('cf-list-body');
   if (!container) return;
   if (!filtered.length) {
-    container.innerHTML = '<div class="empty">沒有符合條件的款項記錄</div>';
+    container.innerHTML = '<div class="empty">沒有符合條件的流水帳記錄</div>';
     return;
   }
   container.innerHTML = `<div class="cf-list">${filtered.map(cf => {
-    const fromName = cf.from === 'A' ? settings.nameA : cf.from === 'B' ? settings.nameB : '外部';
-    const toName   = cf.to   === 'A' ? settings.nameA : cf.to   === 'B' ? settings.nameB : '帳戶外';
-    const fromKey  = cf.from === 'A' ? 'a' : 'b';
-    const toKey    = cf.to   === 'A' ? 'a' : cf.to === 'B' ? 'b' : '';
-    const toPart = (cf.to === 'external' || !cf.to)
-      ? `<span style="color:var(--muted);font-size:13px;font-family:'DM Mono',monospace">${toName}</span>`
-      : `<span class="badge badge-${toKey}">${toName}</span>`;
+    const whoName = cf.who === 'A' ? settings.nameA : settings.nameB;
+    const whoKey  = cf.who === 'A' ? 'a' : 'b';
+    const typeName = cf.type === 'deposit' ? '入金' : cf.type === 'withdrawal' ? '出金' : '分潤';
+    const amountColor = cf.type === 'withdrawal' ? 'var(--red)' : 'var(--green)';
+    const amountSign = cf.type === 'withdrawal' ? '-' : '+';
     return `<div class="cf-item">
       <div class="cf-date">${cf.date}</div>
       <div class="cf-direction">
-        <span class="badge badge-${fromKey}">${fromName}</span>
-        <span style="color:var(--muted);font-size:14px">→</span>
-        ${toPart}
+        <span class="badge badge-${whoKey}">${whoName}</span>
       </div>
-      <span class="cf-cat cf-cat-${cf.category}">${cf.category}</span>
+      <span class="cf-cat" style="color:var(--text); background:var(--bg)">${typeName}</span>
       <span class="cf-note">${cf.note || ''}</span>
-      <div class="cf-amount">$${cf.amount.toLocaleString()}</div>
+      <div class="cf-amount" style="color:${amountColor}; font-weight:600">${amountSign}$${cf.amount.toLocaleString()}</div>
       <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px;flex-shrink:0" onclick="deleteCashFlow(${cf.id})" title="刪除">✕</button>
     </div>`;
   }).join('')}</div>`;
@@ -2202,55 +2205,29 @@ function openCashFlowModal() {
   document.getElementById('cf-date').value = new Date().toISOString().slice(0, 10);
   document.getElementById('cf-amount').value = '';
   document.getElementById('cf-note').value = '';
-  document.getElementById('cf-from-a-lbl').textContent = settings.nameA;
-  document.getElementById('cf-from-b-lbl').textContent = settings.nameB;
-  document.getElementById('cf-to-a-lbl').textContent = settings.nameA;
-  document.getElementById('cf-to-b-lbl').textContent = settings.nameB;
-  setCfCategory('代墊買股'); // reset to default and trigger cat change
+  document.getElementById('cf-who-a-lbl').textContent = settings.nameA;
+  document.getElementById('cf-who-b-lbl').textContent = settings.nameB;
+  setCfCategory('deposit');
   document.getElementById('cashflow-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
 }
 
 function closeCashFlowModal() {
   document.getElementById('cashflow-modal').classList.remove('open');
-  document.body.style.overflow = '';
 }
 
-function setCfToggle(field, val) {
-  document.getElementById('cf-' + field).value = val;
-  const idA = field === 'from' ? 'cf-from-btn-a' : 'cf-to-btn-a';
-  const idB = field === 'from' ? 'cf-from-btn-b' : 'cf-to-btn-b';
-  document.getElementById(idA).classList.toggle('active', val === 'A');
-  document.getElementById(idB).classList.toggle('active', val === 'B');
+function setCfToggleWho(val) {
+  document.getElementById('cf-who').value = val;
+  document.getElementById('cf-who-btn-a').classList.toggle('active', val === 'A');
+  document.getElementById('cf-who-btn-b').classList.toggle('active', val === 'B');
 }
 
 function setCfCategory(cat) {
   document.getElementById('cf-category').value = cat;
   // update button active states
-  ['代墊買股', '還款', '提款', '贈與'].forEach(c => {
+  ['deposit', 'withdrawal', 'dividend'].forEach(c => {
     const btn = document.getElementById('cf-cat-btn-' + c);
     if (btn) btn.classList.toggle('active', c === cat);
   });
-  onCfCatChange();
-}
-
-function onCfCatChange() {
-  const cat = document.getElementById('cf-category').value;
-  // Auto-preset direction based on category (user can still override)
-  if (cat === '代墊買股') {
-    setCfToggle('from', 'A'); setCfToggle('to', 'B');
-  } else if (cat === '還款') {
-    setCfToggle('from', 'B'); setCfToggle('to', 'A');
-  } else if (cat === '提款') {
-    setCfToggle('from', 'B');
-    document.getElementById('cf-to').value = 'external';
-    // unselect both 'to' buttons visually for external
-    document.getElementById('cf-to-btn-a').classList.remove('active');
-    document.getElementById('cf-to-btn-b').classList.remove('active');
-  }
-  // 贈與: keep current selection, no auto-preset
-  
-  renderCfRecentTrades();
 }
 
 function renderCfRecentTrades() {
@@ -2289,51 +2266,56 @@ function fillCfFromTrade(note, amount) {
 
 function addCashFlow() {
   const date = document.getElementById('cf-date').value;
-  const from = document.getElementById('cf-from').value;
-  const to = document.getElementById('cf-to').value;
+  const who = document.getElementById('cf-who').value;
   const amount = Math.round(parseFloat(document.getElementById('cf-amount').value));
-  const category = document.getElementById('cf-category').value;
+  const type = document.getElementById('cf-category').value;
   const note = document.getElementById('cf-note').value.trim();
   if (!date) { toast('請選擇日期', 'error'); return; }
   if (!amount || amount <= 0) { toast('請輸入有效金額', 'error'); return; }
-  cashFlows.push({ id: Date.now(), date, from, to, amount, category, note });
+  cashFlows.push({ id: Date.now(), date, who, type, amount, note });
   save();
   closeCashFlowModal();
   renderCashFlow();
   renderDashboard();
-  toast(`✓ 已新增「${category}」記錄 $${amount.toLocaleString()} 元`);
+  const typeName = type === 'deposit' ? '入金' : type === 'withdrawal' ? '出金' : '分潤';
+  toast(`✓ 已新增「${typeName}」記錄 $${amount.toLocaleString()} 元`);
 }
 
 function deleteCashFlow(id) {
-  if (!confirm('確定刪除這筆款項記錄？')) return;
-  cashFlows = cashFlows.filter(cf => cf.id !== id);
-  save();
-  renderCashFlow();
-  renderDashboard();
-  toast('已刪除款項記錄');
+  customConfirm('確定刪除這筆流水帳記錄？', () => {
+    cashFlows = cashFlows.filter(cf => cf.id !== id);
+    save();
+    renderCashFlow();
+    renderDashboard();
+    toast('已刪除流水帳記錄');
+  });
 }
 
 // ── Cash Flow CSV ───────────────────────────────────────
 function cashFlowsToCSV() {
-  const header = 'date,from,to,amount,category,note';
-  const rows = cashFlows.map(cf => [
-    cf.date, cf.from, cf.to || '', cf.amount, cf.category,
-    (cf.note || '').replace(/,/g, '，')
-  ].join(','));
+  const header = 'date,who,type,amount,note';
+  const rows = cashFlows.map(cf => {
+    const whoName = cf.who === 'A' ? settings.nameA : settings.nameB;
+    const typeName = cf.type === 'deposit' ? '入金' : cf.type === 'withdrawal' ? '出金' : '分潤';
+    return [
+      cf.date, whoName, typeName, cf.amount,
+      (cf.note || '').replace(/,/g, '，')
+    ].join(',');
+  });
   return header + '\n' + rows.join('\n');
 }
 
 function exportCashFlowCSV() {
-  if (!cashFlows.length) { toast('尚無款項記錄可匯出', 'error'); return; }
+  if (!cashFlows.length) { toast('尚無現金帳記錄可匯出', 'error'); return; }
   const bom = '\uFEFF';
   const blob = new Blob([bom + cashFlowsToCSV()], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = '款項記錄_' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.download = '現金帳記錄_' + new Date().toISOString().slice(0, 10) + '.csv';
   a.click();
   URL.revokeObjectURL(url);
-  toast('已下載款項 CSV');
+  toast('已下載現金帳 CSV');
 }
 
 // ── Edit Trade Modal ───────────────────────────────────
@@ -2352,12 +2334,10 @@ function openEditModal(id) {
   document.getElementById('edit-btn-a').textContent = settings.nameA;
   document.getElementById('edit-btn-b').textContent = settings.nameB;
   document.getElementById('edit-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
 }
 
 function closeEditModal() {
   document.getElementById('edit-modal').classList.remove('open');
-  document.body.style.overflow = '';
 }
 
 function setEditToggleWho(val) {
@@ -2434,11 +2414,12 @@ function saveEdit() {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeEditModal(); closeCashFlowModal(); } });
 
 function deleteTrade(id) {
-  if (!confirm('確定刪除這筆交易？')) return;
-  trades = trades.filter(t => t.id !== id);
-  save();
-  renderHistory();
-  toast('已刪除');
+  customConfirm('確定刪除這筆交易？', () => {
+    trades = trades.filter(t => t.id !== id);
+    save();
+    renderHistory();
+    toast('已刪除');
+  });
 }
 
 // ── CSV ────────────────────────────────────────────────
@@ -2529,19 +2510,25 @@ function importCSV(mode) {
   const parsed = parseCSV(text);
   if (!parsed) return;
   if (parsed.length === 0) { toast('CSV 中沒有有效的交易紀錄', 'error'); return; }
+  const finishImport = () => {
+    save();
+    document.getElementById('csv-paste').value = '';
+    refreshFilters();
+  };
+
   if (mode === 'replace') {
-    if (!confirm(`確定覆蓋所有現有 ${trades.length} 筆紀錄？`)) return;
-    trades = parsed;
-    toast(`覆蓋完成，共匯入 ${parsed.length} 筆交易`);
+    customConfirm(`確定覆蓋所有現有 ${trades.length} 筆紀錄？`, () => {
+      trades = parsed;
+      toast(`覆蓋完成，共匯入 ${parsed.length} 筆交易`);
+      finishImport();
+    });
   } else {
     const existIds = new Set(trades.map(t => `${t.date}|${t.who}|${t.sym}|${t.side}|${t.qty}|${t.price}`));
     const newOnes = parsed.filter(t => !existIds.has(`${t.date}|${t.who}|${t.sym}|${t.side}|${t.qty}|${t.price}`));
     trades = [...trades, ...newOnes];
     toast(`合併完成，新增 ${newOnes.length} 筆，略過重複 ${parsed.length - newOnes.length} 筆`);
+    finishImport();
   }
-  save();
-  document.getElementById('csv-paste').value = '';
-  refreshFilters();
 }
 
 function handleFileImport(input) {
@@ -2591,14 +2578,15 @@ function saveSettings() {
 }
 
 function clearAll() {
-  if (!confirm(`確定清除所有 ${trades.length} 筆交易紀錄？此動作無法復原。`)) return;
-  trades = [];
-  prices = {};
-  save();
-  renderDashboard();
-  renderPositions();
-  refreshFilters();
-  toast('已清除所有資料');
+  customConfirm(`確定清除所有 ${trades.length} 筆交易紀錄？此動作無法復原。`, () => {
+    trades = [];
+    prices = {};
+    save();
+    renderDashboard();
+    renderPositions();
+    refreshFilters();
+    toast('已清除所有資料');
+  });
 }
 
 // ── Init ───────────────────────────────────────────────
