@@ -400,6 +400,19 @@ select option { background: var(--surface2); }
   /* 6-item mobile nav */
   .mobile-nav .nav-item { font-size: 10px; }
   .mobile-nav .nav-item svg { width: 20px; height: 20px; }
+
+  /* Mobile cashflow list */
+  .cf-item { flex-direction: column; align-items: stretch; gap: 0; padding: 12px 14px; }
+  .cf-item-top { flex-wrap: wrap; gap: 6px; }
+  .cf-date { min-width: auto; }
+  .cf-amount { font-size: 20px; }
+  #sec-cashflow .page-header { flex-direction: row; align-items: center; gap: 8px; flex-wrap: wrap; }
+  #sec-cashflow .page-header > div:last-child { width: auto; }
+  #sec-cashflow .page-header > div:last-child button { width: auto; }
+  .cf-filter-row { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; margin-top: 6px; }
+  .cf-filter-row select { flex: 1 1 calc(50% - 3px); min-width: 0; font-size: 13px; padding: 8px 10px; }
+  .settlement-card { padding: 1rem 1.25rem; gap: 8px; }
+  .settlement-value { font-size: 22px; }
 }
 
 /* ── Cash Flow / Settlement ─────────────────────────── */
@@ -408,16 +421,21 @@ select option { background: var(--surface2); }
 .settlement-value { font-size: 26px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 .settlement-meta { font-size: 13px; color: var(--muted); margin-top: 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .cf-list { display: flex; flex-direction: column; gap: 8px; }
-.cf-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; gap: 10px; transition: border-color 0.15s; flex-wrap: wrap; }
+.cf-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; display: flex; align-items: center; gap: 10px; transition: border-color 0.15s; flex-wrap: wrap; }
 .cf-item:hover { border-color: var(--border2); }
 .cf-date { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); min-width: 82px; flex-shrink: 0; }
 .cf-direction { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-.cf-cat { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 99px; font-size: 11px; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+.cf-cat { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-family: 'Noto Sans TC', sans-serif; flex-shrink: 0; }
 .cf-cat-b_to_a { background: rgba(16,185,129,0.12); color: #10B981; border: 1px solid rgba(16,185,129,0.25); }
 .cf-cat-a_to_b { background: rgba(91,155,213,0.12); color: var(--b-color); border: 1px solid rgba(91,155,213,0.25); }
 .cf-cat-bonus_to_a { background: rgba(212,168,83,0.12); color: var(--a-color); border: 1px solid rgba(212,168,83,0.25); }
 .cf-note { font-size: 13px; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .cf-amount { font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 600; flex-shrink: 0; }
+
+/* Mobile cf-item: card layout */
+.cf-item-top { display: flex; align-items: center; gap: 8px; width: 100%; }
+.cf-item-bottom { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 8px; }
+.cf-item-actions { display: flex; gap: 2px; flex-shrink: 0; }
 
 /* Settlement overview card */
 .settle-overview { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem; }
@@ -732,25 +750,26 @@ select option { background: var(--surface2); }
 
     <!-- Cash Flow -->
     <div class="section" id="sec-cashflow">
-      <div class="page-header">
-        <div><div class="page-title">現金往來記錄</div><div class="page-sub">B ↔ A 結算試算與現金紀錄</div></div>
-        <button class="btn btn-primary btn-sm" onclick="openCashFlowModal()" id="btn-open-cf-modal">＋ 新增紀錄</button>
+      <div class="page-header" style="align-items:center;">
+        <div><div class="page-title">現金往來</div><div class="page-sub">B ↔ A 結算試算與現金紀錄</div></div>
+        <button class="btn btn-primary btn-sm" onclick="openCashFlowModal()" id="btn-open-cf-modal" style="flex-shrink:0;">＋ 新增紀錄</button>
       </div>
       <div id="settlement-card-wrap"></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;">
-        <select id="cf-filter-cat" onchange="renderCashFlow()" style="width:auto;padding:6px 10px;font-size:12px">
+      <div class="cf-filter-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;">
+        <select id="cf-filter-cat" onchange="renderCashFlow()" style="flex:1 1 auto;padding:8px 10px;font-size:13px">
           <option value="">全部類型</option>
           <option value="b_to_a">B 付 A（還款）</option>
           <option value="bonus_to_a">B 給 A（紅利）</option>
           <option value="a_to_b">A 退 B</option>
         </select>
-        <select id="cf-filter-sort" onchange="renderCashFlow()" style="width:auto;padding:6px 10px;font-size:12px">
+        <select id="cf-filter-sort" onchange="renderCashFlow()" style="flex:1 1 auto;padding:8px 10px;font-size:13px">
           <option value="desc">日期：新 ➜ 舊</option>
           <option value="asc">日期：舊 ➜ 新</option>
         </select>
       </div>
       <div id="cf-list-body"><div class="empty">尚無現金往來記錄，點「＋ 新增紀錄」開始記錄</div></div>
     </div>
+
 
 
   </main>
@@ -2354,13 +2373,17 @@ function renderCashFlow() {
       .replace('B', nameB).replace('A', nameA);
     const amountColor = cf.type === 'a_to_b' ? 'var(--b-color)' : cf.type === 'bonus_to_a' ? 'var(--a-color)' : 'var(--green)';
     return `<div class="cf-item">
-      <div class="cf-date">${cf.date}</div>
-      <span class="cf-cat cf-cat-${cf.type}">${typeDisplayName}</span>
-      <span class="cf-note">${cf.note || ''}</span>
-      <div class="cf-amount" style="color:${amountColor}">$${cf.amount.toLocaleString()}</div>
-      <div style="display:flex; gap:4px;">
-        <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px;flex-shrink:0" onclick="editCashFlow(${cf.id})" title="修改">✎</button>
-        <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px;flex-shrink:0" onclick="deleteCashFlow(${cf.id})" title="刪除">✕</button>
+      <div class="cf-item-top">
+        <div class="cf-date">${cf.date}</div>
+        <span class="cf-cat cf-cat-${cf.type}">${typeDisplayName}</span>
+        ${cf.note ? `<span class="cf-note">${cf.note}</span>` : ''}
+      </div>
+      <div class="cf-item-bottom">
+        <div class="cf-amount" style="color:${amountColor}">$${cf.amount.toLocaleString()}</div>
+        <div class="cf-item-actions">
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:14px;" onclick="editCashFlow(${cf.id})" title="修改">✎</button>
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:14px;" onclick="deleteCashFlow(${cf.id})" title="刪除">✕</button>
+        </div>
       </div>
     </div>`;
   }).join('')}</div>`;
