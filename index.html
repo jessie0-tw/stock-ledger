@@ -402,7 +402,7 @@ select option { background: var(--surface2); }
   .mobile-nav .nav-item svg { width: 20px; height: 20px; }
 }
 
-/* ── Cash Flow / Settlement ─────────────────────────────── */
+/* ── Cash Flow / Settlement ─────────────────────────── */
 .settlement-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 .settlement-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
 .settlement-value { font-size: 26px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -413,15 +413,29 @@ select option { background: var(--surface2); }
 .cf-date { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); min-width: 82px; flex-shrink: 0; }
 .cf-direction { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .cf-cat { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 99px; font-size: 11px; font-family: 'DM Mono', monospace; flex-shrink: 0; }
-.cf-cat-代墊買股 { background: rgba(212,168,83,0.12); color: var(--a-color); border: 1px solid rgba(212,168,83,0.25); }
-.cf-cat-還款 { background: rgba(16,185,129,0.12); color: #10B981; border: 1px solid rgba(16,185,129,0.25); }
-.cf-cat-提款 { background: rgba(91,155,213,0.12); color: var(--b-color); border: 1px solid rgba(91,155,213,0.25); }
-.cf-cat-其他 { background: rgba(148,163,184,0.12); color: var(--muted); border: 1px solid rgba(148,163,184,0.25); }
-.cf-cat-贈與 { background: rgba(148,163,184,0.12); color: var(--muted); border: 1px solid rgba(148,163,184,0.25); }
+.cf-cat-b_to_a { background: rgba(16,185,129,0.12); color: #10B981; border: 1px solid rgba(16,185,129,0.25); }
+.cf-cat-a_to_b { background: rgba(91,155,213,0.12); color: var(--b-color); border: 1px solid rgba(91,155,213,0.25); }
+.cf-cat-bonus_to_a { background: rgba(212,168,83,0.12); color: var(--a-color); border: 1px solid rgba(212,168,83,0.25); }
 .cf-note { font-size: 13px; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .cf-amount { font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 600; flex-shrink: 0; }
-/* Category selector button active state in cashflow modal */
-#cf-cat-btn-deposit.active, #cf-cat-btn-withdrawal.active, #cf-cat-btn-dividend.active, #cf-cat-btn-payment.active {
+
+/* Settlement overview card */
+.settle-overview { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem; }
+.settle-title { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; padding: 1rem 1.25rem 0.5rem; }
+.settle-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 1.25rem; border-top: 1px solid var(--border); }
+.settle-row-label { font-size: 14px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.settle-row-val { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500; }
+.settle-divider { border-top: 2px solid var(--border2); margin: 0; }
+.settle-total { background: rgba(0,0,0,0.2); padding: 14px 1.25rem; display: flex; justify-content: space-between; align-items: center; }
+.settle-total-label { font-size: 14px; color: var(--text); font-weight: 500; }
+.settle-total-val { font-size: 24px; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+.settle-estimate { background: rgba(212,168,83,0.04); border-top: 1px solid rgba(212,168,83,0.15); padding: 12px 1.25rem; }
+.settle-estimate-title { font-size: 11px; color: var(--a-color); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+.settle-estimate-row { display: flex; justify-content: space-between; font-size: 13px; font-family: 'DM Mono', monospace; color: var(--muted); padding: 3px 0; }
+.settle-estimate-result { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; font-family: 'DM Mono', monospace; padding: 8px 0 0; border-top: 1px solid rgba(212,168,83,0.2); margin-top: 6px; }
+
+/* Category selector active state */
+#cf-cat-btn-b_to_a.active, #cf-cat-btn-a_to_b.active, #cf-cat-btn-bonus_to_a.active {
   background: rgba(212,168,83,0.15);
   border-color: rgba(212,168,83,0.5);
   color: var(--a-color);
@@ -705,9 +719,9 @@ select option { background: var(--surface2); }
         </div>
       </div>
       <div class="form-card">
-        <div style="font-size:13px;font-weight:500;margin-bottom:12px">現金帳備份 (匯出 CSV)</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">將所有現金流水（入金、出金、分潤、代付）匯出為 CSV 檔案備份。</div>
-        <button class="btn btn-primary" onclick="exportCashFlowCSV()" id="btn-export-cf">⬇ 下載現金帳 CSV</button>
+        <div style="font-size:13px;font-weight:500;margin-bottom:12px">現金往來備份 (匯出 CSV)</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7">將所有現金往來紀錄（B 付 A 還款、B 給 A 紅利、A 退 B）匯出為 CSV 檔案備份。</div>
+        <button class="btn btn-primary" onclick="exportCashFlowCSV()" id="btn-export-cf">⬇ 下載現金往來 CSV</button>
       </div>
       <div class="form-card" style="border-color:rgba(224,92,92,0.3)">
         <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--red)">清除所有資料</div>
@@ -719,30 +733,25 @@ select option { background: var(--surface2); }
     <!-- Cash Flow -->
     <div class="section" id="sec-cashflow">
       <div class="page-header">
-        <div><div class="page-title">現金流水帳</div><div class="page-sub">帳戶可用現金管理</div></div>
-        <button class="btn btn-primary btn-sm" onclick="openCashFlowModal()" id="btn-open-cf-modal">＋ 新增流水紀錄</button>
+        <div><div class="page-title">現金往來記錄</div><div class="page-sub">B ↔ A 結算試算與現金紀錄</div></div>
+        <button class="btn btn-primary btn-sm" onclick="openCashFlowModal()" id="btn-open-cf-modal">＋ 新增紀錄</button>
       </div>
       <div id="settlement-card-wrap"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;">
-        <select id="cf-filter-who" onchange="renderCashFlow()" style="width:auto;padding:6px 10px;font-size:12px">
-          <option value="">全部人員</option>
-          <option value="A" id="cf-filter-a">人員 A</option>
-          <option value="B" id="cf-filter-b">人員 B</option>
-        </select>
         <select id="cf-filter-cat" onchange="renderCashFlow()" style="width:auto;padding:6px 10px;font-size:12px">
-          <option value="">全部分類</option>
-          <option value="deposit">入金</option>
-          <option value="withdrawal">出金</option>
-          <option value="dividend">分潤</option>
-          <option value="payment">代付</option>
+          <option value="">全部類型</option>
+          <option value="b_to_a">B 付 A（還款）</option>
+          <option value="bonus_to_a">B 給 A（紅利）</option>
+          <option value="a_to_b">A 退 B</option>
         </select>
         <select id="cf-filter-sort" onchange="renderCashFlow()" style="width:auto;padding:6px 10px;font-size:12px">
           <option value="desc">日期：新 ➜ 舊</option>
           <option value="asc">日期：舊 ➜ 新</option>
         </select>
       </div>
-      <div id="cf-list-body"><div class="empty">尚無紀錄，點擊右上角「＋ 新增流水紀錄」開始記錄</div></div>
+      <div id="cf-list-body"><div class="empty">尚無現金往來記錄，點「＋ 新增紀錄」開始記錄</div></div>
     </div>
+
 
   </main>
 </div>
@@ -826,34 +835,32 @@ select option { background: var(--surface2); }
 <div class="modal-backdrop" id="cashflow-modal" onclick="if(event.target===this)closeCashFlowModal()">
   <div class="modal-box">
     <div class="modal-header">
-      <div class="modal-title">💰 新增現金流水</div>
+      <div class="modal-title">💰 現金往來紀錄</div>
       <button class="modal-close" onclick="closeCashFlowModal()">✕</button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="cf-id" value="">
-      <div class="modal-grid">
-        <div class="form-group" style="grid-column:1/-1">
-          <label class="field-label">日期</label>
-          <input id="cf-date" type="date">
+      <div class="form-group">
+        <label class="field-label">日期</label>
+        <input id="cf-date" type="date">
+      </div>
+      <div class="form-group">
+        <label class="field-label">類型</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <button type="button" class="btn active" id="cf-cat-btn-b_to_a" onclick="setCfCategory('b_to_a')" style="justify-content:center;font-size:13px;flex-direction:column;gap:2px;padding:10px 8px">
+            <span>B 付 A</span>
+            <span style="font-size:10px;color:var(--muted);font-weight:400">還款 / 結清</span>
+          </button>
+          <button type="button" class="btn" id="cf-cat-btn-bonus_to_a" onclick="setCfCategory('bonus_to_a')" style="justify-content:center;font-size:13px;flex-direction:column;gap:2px;padding:10px 8px">
+            <span>B 給 A 紅利</span>
+            <span style="font-size:10px;color:var(--muted);font-weight:400">偶爾吃紅</span>
+          </button>
+          <button type="button" class="btn" id="cf-cat-btn-a_to_b" onclick="setCfCategory('a_to_b')" style="justify-content:center;font-size:13px;flex-direction:column;gap:2px;padding:10px 8px">
+            <span>A 退 B</span>
+            <span style="font-size:10px;color:var(--muted);font-weight:400">超付退回</span>
+          </button>
         </div>
-        <div class="form-group" style="grid-column:1/-1">
-          <label class="field-label">人員</label>
-          <div class="toggle-group-custom" id="cf-toggle-who">
-            <button type="button" class="toggle-btn active" onclick="setCfToggleWho('A')" id="cf-who-btn-a"><span id="cf-who-a-lbl">人員 A</span></button>
-            <button type="button" class="toggle-btn" onclick="setCfToggleWho('B')" id="cf-who-btn-b"><span id="cf-who-b-lbl">人員 B</span></button>
-          </div>
-          <input type="hidden" id="cf-who" value="A">
-        </div>
-        <div class="form-group" style="grid-column:1/-1">
-          <label class="field-label">資金類型</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button type="button" class="btn active" id="cf-cat-btn-deposit" onclick="setCfCategory('deposit')" style="justify-content:center;font-size:14px">入金</button>
-            <button type="button" class="btn" id="cf-cat-btn-withdrawal" onclick="setCfCategory('withdrawal')" style="justify-content:center;font-size:14px">出金</button>
-            <button type="button" class="btn" id="cf-cat-btn-dividend" onclick="setCfCategory('dividend')" style="justify-content:center;font-size:14px">分潤</button>
-            <button type="button" class="btn" id="cf-cat-btn-payment" onclick="setCfCategory('payment')" style="justify-content:center;font-size:14px">代付</button>
-          </div>
-          <input type="hidden" id="cf-category" value="deposit">
-        </div>
+        <input type="hidden" id="cf-category" value="b_to_a">
       </div>
       <div class="form-group">
         <label class="field-label">金額（元）</label>
@@ -861,8 +868,7 @@ select option { background: var(--surface2); }
       </div>
       <div class="form-group">
         <label class="field-label">備註（選填）</label>
-        <input id="cf-note" type="text" placeholder="說明資金用途...">
-        <div id="cf-recent-trades" style="display:none; flex-wrap:wrap; gap:6px; margin-top:8px;"></div>
+        <input id="cf-note" type="text" placeholder="說明用途...">
       </div>
     </div>
     <div class="modal-footer">
@@ -955,9 +961,63 @@ function load() {
   try { settings = { nameA:'人員 A', nameB:'人員 B', ...JSON.parse(localStorage.getItem('slt_settings') || '{}') }; } catch(e) {}
   try { stockNames = JSON.parse(localStorage.getItem('slt_stock_names') || '{}'); } catch(e) { stockNames = {}; }
   try { cashFlows = JSON.parse(localStorage.getItem('slt_cash_flows') || '[]'); } catch(e) { cashFlows = []; }
+
+  // 舊格式清理（非常舊的版本有 .from 欄位）
   if (cashFlows.length > 0 && cashFlows[0].from !== undefined) {
     cashFlows = [];
-    localStorage.setItem('slt_cash_flows', '[]');
+  }
+
+  // 遷移舊的 cashFlows 格式 → 新的 3 種類型
+  // 舊格式有 .who 欄位；新格式不需要 who，固定是 B ↔ A
+  let cfMigrated = false;
+  cashFlows = cashFlows.map(cf => {
+    if (!cf.type) return null; // 無效記錄
+    // 已是新格式，直接保留
+    if (cf.type === 'b_to_a' || cf.type === 'a_to_b' || cf.type === 'bonus_to_a') return cf;
+
+    // 舊格式遷移：
+    // B 實際付款給 A（入金 by B） → b_to_a
+    if (cf.type === 'deposit' && cf.who === 'B') {
+      cfMigrated = true;
+      const { who, ...rest } = cf;
+      return { ...rest, type: 'b_to_a' };
+    }
+    // B 出金給 A（withdrawal by B） → b_to_a（備用）
+    if (cf.type === 'withdrawal' && cf.who === 'B') {
+      cfMigrated = true;
+      const { who, ...rest } = cf;
+      return { ...rest, type: 'b_to_a' };
+    }
+    // B 的分潤給 A（dividend by B） → bonus_to_a
+    if (cf.type === 'dividend' && cf.who === 'B') {
+      cfMigrated = true;
+      const { who, ...rest } = cf;
+      return { ...rest, type: 'bonus_to_a' };
+    }
+    // A 退款給 B（deposit by A, or withdrawal by A） → a_to_b
+    if ((cf.type === 'deposit' || cf.type === 'withdrawal') && cf.who === 'A') {
+      cfMigrated = true;
+      const { who, ...rest } = cf;
+      return { ...rest, type: 'a_to_b' };
+    }
+    // A 代付備註記錄（payment by A） → 丟棄（只是備註，不是真實現金流）
+    if (cf.type === 'payment' && cf.who === 'A') {
+      cfMigrated = true;
+      return null;
+    }
+    // B 的 payment 記錄 → b_to_a
+    if (cf.type === 'payment' && cf.who === 'B') {
+      cfMigrated = true;
+      const { who, ...rest } = cf;
+      return { ...rest, type: 'b_to_a' };
+    }
+    // 其他未識別的舊格式 → 丟棄
+    cfMigrated = true;
+    return null;
+  }).filter(Boolean);
+
+  if (cfMigrated) {
+    localStorage.setItem('slt_cash_flows', JSON.stringify(cashFlows));
   }
 
   if (backfillTrades()) {
@@ -1117,15 +1177,6 @@ function applyNames() {
   if (elB) elB.textContent = settings.nameB;
   document.getElementById('filter-a').textContent = settings.nameA;
   document.getElementById('filter-b').textContent = settings.nameB;
-  const cfA = document.getElementById('cf-filter-a');
-  const cfB = document.getElementById('cf-filter-b');
-  if (cfA) cfA.textContent = settings.nameA;
-  if (cfB) cfB.textContent = settings.nameB;
-  const cfWhoA = document.getElementById('cf-who-a-lbl');
-  if (cfWhoA) {
-    cfWhoA.textContent = settings.nameA;
-    document.getElementById('cf-who-b-lbl').textContent = settings.nameB;
-  }
   const sa = document.getElementById('set-name-a'), sb = document.getElementById('set-name-b');
   if (sa) sa.value = settings.nameA;
   if (sb) sb.value = settings.nameB;
@@ -2109,96 +2160,204 @@ function renderHistory() {
 }
 
 // ── Cash Flow / Settlement ──────────────────────────────
-function getCashBalance(who) {
-  let bal = 0;
-  cashFlows.forEach(cf => {
-    if (cf.who === who) {
-      if (cf.type === 'deposit' || cf.type === 'dividend') {
-        bal += cf.amount;
-      } else if (cf.type === 'withdrawal' || cf.type === 'payment') {
-        bal -= cf.amount;
-      }
-    }
+
+/**
+ * 計算 B ↔ A 的結算摘要
+ * - B 買股支出：從 trades 自動算（B 向 A 借走的錢）
+ * - B 賣股回款：從 trades 自動算（錢回到 A 帳戶）
+ * - B 已付 A：從 cashFlows 算（含還款 + 紅利）
+ * - 當前持股估值：用 prices 估算（若清倉後）
+ */
+function calcSettlement() {
+  // B 的買股總支出（成交金額 + 手續費）
+  const bBuyCost = trades
+    .filter(t => t.who === 'B' && t.side === 'buy')
+    .reduce((sum, t) => sum + (t.qty * t.price) + (t.fee || 0), 0);
+
+  // B 的賣股總回款（成交金額 - 手續費 - 稅）
+  const bSellProceeds = trades
+    .filter(t => t.who === 'B' && t.side === 'sell')
+    .reduce((sum, t) => sum + (t.qty * t.price) - (t.fee || 0) - (t.tax || 0), 0);
+
+  // B 已直接付給 A 的現金（還款 + 紅利都算進去，因為都是 B → A 的錢）
+  const bPaidToA = cashFlows
+    .filter(cf => cf.type === 'b_to_a' || cf.type === 'bonus_to_a')
+    .reduce((sum, cf) => sum + cf.amount, 0);
+
+  // A 曾退款給 B 的金額（算回到欠款裡）
+  const aRefundToB = cashFlows
+    .filter(cf => cf.type === 'a_to_b')
+    .reduce((sum, cf) => sum + cf.amount, 0);
+
+  // B 的紅利小計（獨立顯示用）
+  const bonusToA = cashFlows
+    .filter(cf => cf.type === 'bonus_to_a')
+    .reduce((sum, cf) => sum + cf.amount, 0);
+
+  // B 目前欠 A 的金額（買股借的 - 賣股還的 - B已付的 + A曾退的）
+  const netOwed = bBuyCost - bSellProceeds - bPaidToA + aRefundToB;
+
+  // B 當前持股的估計市值（若有現價）
+  const pos = getPositions();
+  let bHoldingsValue = 0;
+  let hasAllPrices = true;
+  const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
+  const minFee = settings.minFee !== undefined ? settings.minFee : 1;
+
+  Object.values(pos).forEach(p => {
+    if (p.who !== 'B' || p.qty <= 0) return;
+    const cp = prices[p.sym];
+    if (!cp) { hasAllPrices = false; return; }
+    const rawFee = Math.round(p.qty * cp * 0.001425 * discount);
+    const fee = Math.max(minFee, rawFee);
+    const isEtf = p.sym.startsWith('00') || p.sym.startsWith('01');
+    const taxRate = isEtf ? 0.001 : 0.003;
+    const tax = Math.round(p.qty * cp * taxRate);
+    bHoldingsValue += (p.qty * cp) - fee - tax;
   });
-  return bal;
+
+  // 清倉後結算：若為負數表示 A 應退 B
+  const afterLiquidation = netOwed - bHoldingsValue;
+
+  return {
+    bBuyCost: Math.round(bBuyCost),
+    bSellProceeds: Math.round(bSellProceeds),
+    bPaidToA: Math.round(bPaidToA),
+    aRefundToB: Math.round(aRefundToB),
+    bonusToA: Math.round(bonusToA),
+    netOwed: Math.round(netOwed),
+    bHoldingsValue: Math.round(bHoldingsValue),
+    afterLiquidation: Math.round(afterLiquidation),
+    hasAllPrices,
+    hasBTrades: trades.some(t => t.who === 'B')
+  };
 }
 
+/** 在 Dashboard 的 metric card 顯示簡易結算數字 */
 function renderCashBalanceMetricCard() {
-  const balA = getCashBalance('A');
-  const balB = getCashBalance('B');
+  const s = calcSettlement();
+  if (!s.hasBTrades) {
+    return `<div class="metric-card" style="grid-column:1/-1;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.25)">
+      <div class="metric-label">🤝 ${settings.nameB} ↔ ${settings.nameA} 結算</div>
+      <div class="metric-sub" style="margin-top:8px">尚無 ${settings.nameB} 的交易記錄</div>
+    </div>`;
+  }
+  const owedColor = s.netOwed > 0 ? 'var(--red)' : 'var(--green)';
+  const owedText = s.netOwed > 0
+    ? `${settings.nameB} 欠 ${settings.nameA}`
+    : `${settings.nameA} 欠 ${settings.nameB}`;
   return `<div class="metric-card" style="grid-column:1/-1;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.25)">
-    <div class="metric-label">💰 現金帳餘額</div>
-    <div style="display:flex; justify-content:space-between; margin-top:8px;">
-      <div style="flex:1;">
-        <div style="font-size:12px; color:var(--muted);">${settings.nameA}</div>
-        <div class="metric-value" style="color:var(--green);font-size:20px">$${balA.toLocaleString()}</div>
+    <div class="metric-label">🤝 ${settings.nameB} ↔ ${settings.nameA} 結算</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; flex-wrap:wrap; gap:8px;">
+      <div>
+        <div style="font-size:11px; color:var(--muted); margin-bottom:2px;">${owedText}</div>
+        <div class="metric-value" style="color:${owedColor};font-size:22px">$${Math.abs(s.netOwed).toLocaleString()}</div>
       </div>
-      <div style="flex:1;">
-        <div style="font-size:12px; color:var(--muted);">${settings.nameB}</div>
-        <div class="metric-value" style="color:var(--green);font-size:20px">$${balB.toLocaleString()}</div>
-      </div>
+      ${s.hasAllPrices ? `<div style="text-align:right">
+        <div style="font-size:11px; color:var(--muted); margin-bottom:2px;">清倉後估算</div>
+        <div style="font-size:16px; font-weight:600; color:${s.afterLiquidation > 0 ? 'var(--red)' : 'var(--green)'}; font-family:monospace">
+          ${s.afterLiquidation > 0 ? `${settings.nameB} 還欠` : `${settings.nameA} 應退`} $${Math.abs(s.afterLiquidation).toLocaleString()}
+        </div>
+      </div>` : ''}
     </div>
   </div>`;
 }
 
+/** 現金帳頁面頂部的完整結算卡 */
 function renderSettlementCard() {
   const container = document.getElementById('settlement-card-wrap');
   if (!container) return;
-  const balA = getCashBalance('A');
-  const balB = getCashBalance('B');
-  const total = cashFlows.length;
-  
-  container.innerHTML = `<div class="settlement-card">
-    <div style="flex:1; min-width: 200px;">
-      <div class="settlement-label">💰 帳戶可用現金</div>
-      <div style="display:flex; flex-wrap:wrap; gap:16px; margin-top:8px;">
-        <div>
-          <div style="font-size:12px; color:var(--muted);"><span class="badge badge-a">${settings.nameA}</span></div>
-          <div class="settlement-value" style="color:var(--text); font-size:20px">$${balA.toLocaleString()}</div>
+  const s = calcSettlement();
+  const fmt = (v) => `$${Math.abs(v).toLocaleString()}`;
+  const nameA = settings.nameA, nameB = settings.nameB;
+
+  const netColor = s.netOwed > 0 ? 'var(--red)' : 'var(--green)';
+  const netLabel = s.netOwed > 0 ? `${nameB} 目前欠 ${nameA}` : `${nameA} 目前欠 ${nameB}`;
+  const netSub = s.netOwed > 0
+    ? `（此金額目前以股票形式鎖在帳戶裡）`
+    : `（${nameB} 已超額還款）`;
+
+  let estimateHTML = '';
+  if (s.hasBTrades) {
+    const afterColor = s.afterLiquidation > 0 ? 'var(--red)' : 'var(--green)';
+    const afterLabel = s.afterLiquidation > 0
+      ? `清倉後 ${nameB} 仍欠 ${nameA}`
+      : `清倉後 ${nameA} 應退 ${nameB}`;
+    if (s.hasAllPrices) {
+      estimateHTML = `<div class="settle-estimate">
+        <div class="settle-estimate-title">📊 若現在全部清倉估算</div>
+        <div class="settle-estimate-row">
+          <span>${nameB} 持股估值（含手續費稅）</span>
+          <span style="color:var(--green)">+${fmt(s.bHoldingsValue)}</span>
         </div>
-        <div>
-          <div style="font-size:12px; color:var(--muted);"><span class="badge badge-b">${settings.nameB}</span></div>
-          <div class="settlement-value" style="color:var(--text); font-size:20px">$${balB.toLocaleString()}</div>
+        <div class="settle-estimate-result">
+          <span style="color:${afterColor}">${afterLabel}</span>
+          <span style="color:${afterColor}">${fmt(s.afterLiquidation)}</span>
         </div>
-      </div>
+      </div>`;
+    } else {
+      estimateHTML = `<div class="settle-estimate">
+        <div class="settle-estimate-title">📊 若現在全部清倉估算</div>
+        <div style="font-size:13px; color:var(--muted); font-family:'DM Mono',monospace;">部分股票無現價，請到「持股分析」頁面更新現價後再查看</div>
+      </div>`;
+    }
+  }
+
+  container.innerHTML = `<div class="settle-overview">
+    <div class="settle-title">🤝 ${nameB} ↔ ${nameA} 結算總覽</div>
+    <div class="settle-row">
+      <span class="settle-row-label">＋ ${nameB} 買股累計支出</span>
+      <span class="settle-row-val" style="color:var(--red)">−${fmt(s.bBuyCost)}</span>
     </div>
-    <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-      <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace">${total} 筆紀錄</div>
-      <button class="btn btn-sm" onclick="exportCashFlowCSV()" style="font-size:12px">⬇ 匯出 CSV</button>
+    <div class="settle-row">
+      <span class="settle-row-label">− ${nameB} 賣股已回款</span>
+      <span class="settle-row-val" style="color:var(--green)">+${fmt(s.bSellProceeds)}</span>
     </div>
+    <div class="settle-row">
+      <span class="settle-row-label">− ${nameB} 已直接付 ${nameA}（含紅利 ${fmt(s.bonusToA)}）</span>
+      <span class="settle-row-val" style="color:var(--green)">+${fmt(s.bPaidToA)}</span>
+    </div>
+    ${s.aRefundToB > 0 ? `<div class="settle-row">
+      <span class="settle-row-label">＋ ${nameA} 曾退款給 ${nameB}</span>
+      <span class="settle-row-val" style="color:var(--red)">−${fmt(s.aRefundToB)}</span>
+    </div>` : ''}
+    <div class="settle-total">
+      <span class="settle-total-label">${netLabel}</span>
+      <span class="settle-total-val" style="color:${netColor}">${fmt(s.netOwed)}</span>
+    </div>
+    <div style="font-size:12px; color:var(--muted); padding: 6px 1.25rem 10px; font-family:'DM Mono',monospace">${netSub}</div>
+    ${estimateHTML}
   </div>`;
 }
 
 function renderCashFlow() {
   renderSettlementCard();
-  const whoF = document.getElementById('cf-filter-who')?.value || '';
   const catF = document.getElementById('cf-filter-cat')?.value || '';
   const sortF = document.getElementById('cf-filter-sort')?.value || 'desc';
   let filtered = [...cashFlows];
-  if (whoF) filtered = filtered.filter(cf => cf.who === whoF);
   if (catF) filtered = filtered.filter(cf => cf.type === catF);
   if (sortF === 'asc') filtered.sort((a, b) => a.date.localeCompare(b.date) || a.id - b.id);
   else filtered.sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
   const container = document.getElementById('cf-list-body');
   if (!container) return;
   if (!filtered.length) {
-    container.innerHTML = '<div class="empty">沒有符合條件的流水帳記錄</div>';
+    container.innerHTML = '<div class="empty">尚無現金往來記錄，點「＋ 新增紀錄」開始記錄</div>';
     return;
   }
+
+  const typeNames = { b_to_a: 'B 付 A', a_to_b: 'A 退 B', bonus_to_a: 'B 給 A 紅利' };
+  const nameA = settings.nameA, nameB = settings.nameB;
+
   container.innerHTML = `<div class="cf-list">${filtered.map(cf => {
-    const whoName = cf.who === 'A' ? settings.nameA : settings.nameB;
-    const whoKey  = cf.who === 'A' ? 'a' : 'b';
-    const typeName = cf.type === 'deposit' ? '入金' : cf.type === 'withdrawal' ? '出金' : cf.type === 'payment' ? '代付' : '分潤';
-    const amountColor = cf.type === 'withdrawal' || cf.type === 'payment' ? 'var(--red)' : 'var(--green)';
-    const amountSign = cf.type === 'withdrawal' || cf.type === 'payment' ? '-' : '+';
+    const typeName = typeNames[cf.type] || cf.type;
+    const typeDisplayName = typeName
+      .replace('B', nameB).replace('A', nameA);
+    const amountColor = cf.type === 'a_to_b' ? 'var(--b-color)' : cf.type === 'bonus_to_a' ? 'var(--a-color)' : 'var(--green)';
     return `<div class="cf-item">
       <div class="cf-date">${cf.date}</div>
-      <div class="cf-direction">
-        <span class="badge badge-${whoKey}">${whoName}</span>
-      </div>
-      <span class="cf-cat" style="color:var(--text); background:var(--bg)">${typeName}</span>
+      <span class="cf-cat cf-cat-${cf.type}">${typeDisplayName}</span>
       <span class="cf-note">${cf.note || ''}</span>
-      <div class="cf-amount" style="color:${amountColor}; font-weight:600">${amountSign}$${cf.amount.toLocaleString()}</div>
+      <div class="cf-amount" style="color:${amountColor}">$${cf.amount.toLocaleString()}</div>
       <div style="display:flex; gap:4px;">
         <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px;flex-shrink:0" onclick="editCashFlow(${cf.id})" title="修改">✎</button>
         <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px;flex-shrink:0" onclick="deleteCashFlow(${cf.id})" title="刪除">✕</button>
@@ -2212,9 +2371,7 @@ function openCashFlowModal() {
   document.getElementById('cf-date').value = new Date().toISOString().slice(0, 10);
   document.getElementById('cf-amount').value = '';
   document.getElementById('cf-note').value = '';
-  document.getElementById('cf-who-a-lbl').textContent = settings.nameA;
-  document.getElementById('cf-who-b-lbl').textContent = settings.nameB;
-  setCfCategory('deposit');
+  setCfCategory('b_to_a');
   document.getElementById('cashflow-modal').classList.add('open');
 }
 
@@ -2222,53 +2379,12 @@ function closeCashFlowModal() {
   document.getElementById('cashflow-modal').classList.remove('open');
 }
 
-function setCfToggleWho(val) {
-  document.getElementById('cf-who').value = val;
-  document.getElementById('cf-who-btn-a').classList.toggle('active', val === 'A');
-  document.getElementById('cf-who-btn-b').classList.toggle('active', val === 'B');
-}
-
 function setCfCategory(cat) {
   document.getElementById('cf-category').value = cat;
-  // update button active states
-  ['deposit', 'withdrawal', 'dividend', 'payment'].forEach(c => {
+  ['b_to_a', 'a_to_b', 'bonus_to_a'].forEach(c => {
     const btn = document.getElementById('cf-cat-btn-' + c);
     if (btn) btn.classList.toggle('active', c === cat);
   });
-}
-
-function renderCfRecentTrades() {
-  const container = document.getElementById('cf-recent-trades');
-  if (!container) return;
-  const cat = document.getElementById('cf-category').value;
-  if (cat !== '代墊買股') {
-    container.style.display = 'none';
-    return;
-  }
-  
-  // 取得最近的 5 筆交易（優先顯示買進）
-  const recentTrades = [...trades]
-    .sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id)
-    .slice(0, 5);
-    
-  if (recentTrades.length === 0) {
-    container.style.display = 'none';
-    return;
-  }
-  
-  container.style.display = 'flex';
-  container.innerHTML = recentTrades.map(t => {
-    const name = stockNames[t.sym] || '';
-    const sideLabel = t.side === 'buy' ? '買進' : '賣出';
-    const text = `${t.sym} ${name} ${sideLabel} ${t.qty}股`.trim();
-    const amount = (t.qty * t.price) + (t.fee || 0) + (t.tax || 0);
-    return `<button type="button" class="btn btn-ghost" style="padding:4px 8px; font-size:12px; border:1px solid var(--border2); color:var(--text);" onclick="fillCfFromTrade('${text}', ${amount})">${text}</button>`;
-  }).join('');
-}
-
-function fillCfFromTrade(note, amount) {
-  document.getElementById('cf-note').value = note;
-  document.getElementById('cf-amount').value = Math.round(amount);
 }
 
 function editCashFlow(id) {
@@ -2278,9 +2394,6 @@ function editCashFlow(id) {
   document.getElementById('cf-date').value = cf.date;
   document.getElementById('cf-amount').value = cf.amount;
   document.getElementById('cf-note').value = cf.note || '';
-  document.getElementById('cf-who-a-lbl').textContent = settings.nameA;
-  document.getElementById('cf-who-b-lbl').textContent = settings.nameB;
-  setCfToggleWho(cf.who);
   setCfCategory(cf.type);
   document.getElementById('cashflow-modal').classList.add('open');
 }
@@ -2288,26 +2401,26 @@ function editCashFlow(id) {
 function saveCashFlow() {
   const idStr = document.getElementById('cf-id').value;
   const date = document.getElementById('cf-date').value;
-  const who = document.getElementById('cf-who').value;
   const amount = Math.round(parseFloat(document.getElementById('cf-amount').value));
   const type = document.getElementById('cf-category').value;
   const note = document.getElementById('cf-note').value.trim();
   if (!date) { toast('請選擇日期', 'error'); return; }
   if (!amount || amount <= 0) { toast('請輸入有效金額', 'error'); return; }
-  
+
+  const typeNames = { b_to_a: 'B 付 A（還款）', a_to_b: 'A 退 B', bonus_to_a: 'B 給 A（紅利）' };
+
   if (idStr) {
     const id = parseInt(idStr);
     const idx = cashFlows.findIndex(c => c.id === id);
     if (idx > -1) {
-      cashFlows[idx] = { ...cashFlows[idx], date, who, type, amount, note };
-      toast('✓ 已更新流水帳記錄');
+      cashFlows[idx] = { ...cashFlows[idx], date, type, amount, note };
+      toast('✓ 已更新現金往來記錄');
     }
   } else {
-    cashFlows.push({ id: Date.now(), date, who, type, amount, note });
-    const typeName = type === 'deposit' ? '入金' : type === 'withdrawal' ? '出金' : type === 'payment' ? '代付' : '分潤';
-    toast(`✓ 已新增「${typeName}」記錄 $${amount.toLocaleString()} 元`);
+    cashFlows.push({ id: Date.now(), date, type, amount, note });
+    toast(`✓ 已新增「${typeNames[type] || type}」$${amount.toLocaleString()} 元`);
   }
-  
+
   save();
   closeCashFlowModal();
   renderCashFlow();
@@ -2315,43 +2428,47 @@ function saveCashFlow() {
 }
 
 function deleteCashFlow(id) {
-  customConfirm('確定刪除這筆流水帳記錄？', () => {
+  customConfirm('確定刪除這筆現金往來記錄？', () => {
     cashFlows = cashFlows.filter(cf => cf.id !== id);
     save();
     renderCashFlow();
     renderDashboard();
-    toast('已刪除流水帳記錄');
+    toast('已刪除現金往來記錄');
   });
 }
 
 // ── Cash Flow CSV ───────────────────────────────────────
 function cashFlowsToCSV() {
-  const header = 'date,who,type,amount,note';
-  const rows = cashFlows.map(cf => {
-    const whoName = cf.who === 'A' ? settings.nameA : settings.nameB;
-    const typeName = cf.type === 'deposit' ? '入金' : cf.type === 'withdrawal' ? '出金' : cf.type === 'payment' ? '代付' : '分潤';
-    return [
-      cf.date, whoName, typeName, cf.amount,
-      (cf.note || '').replace(/,/g, '，')
-    ].join(',');
-  });
+  const header = 'date,type,amount,note';
+  const typeNames = { b_to_a: 'B付A_還款', a_to_b: 'A退B', bonus_to_a: 'B給A_紅利' };
+  const rows = cashFlows.map(cf => [
+    cf.date,
+    typeNames[cf.type] || cf.type,
+    cf.amount,
+    (cf.note || '').replace(/,/g, '，')
+  ].join(','));
   return header + '\n' + rows.join('\n');
 }
 
 function exportCashFlowCSV() {
-  if (!cashFlows.length) { toast('尚無現金帳記錄可匯出', 'error'); return; }
+  if (!cashFlows.length) { toast('尚無現金往來記錄可匯出', 'error'); return; }
   const bom = '\uFEFF';
   const blob = new Blob([bom + cashFlowsToCSV()], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = '現金帳記錄_' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.download = '現金往來記錄_' + new Date().toISOString().slice(0, 10) + '.csv';
   a.click();
   URL.revokeObjectURL(url);
-  toast('已下載現金帳 CSV');
+  toast('已下載現金往來 CSV');
 }
 
+
 // ── Edit Trade Modal ───────────────────────────────────
+
+
+
+
 function openEditModal(id) {
   const t = trades.find(t => t.id === id);
   if (!t) return;
