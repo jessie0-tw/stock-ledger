@@ -14,11 +14,11 @@
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #000000;
-  --surface: #1F1F1F;
+  --surface: #0F172A;
   --surface2: #1E293B;
   --border: #1E293B;
   --border2: #334155;
@@ -26,22 +26,22 @@
   --muted: #94A3B8;
   --accent: #22C55E;
   --accent2: #16A34A;
-  --green: #34C759;
-  --red: #FF2D55;
+  --green: #10B981;
+  --red: #EF4444;
   --a-color: #d4a853;
   --b-color: #5b9bd5;
   --radius: 10px;
   --radius-lg: 16px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { overflow-x: clip; max-width: 100%; }
+html, body { overflow-x: hidden; max-width: 100%; }
 body { background: var(--bg); color: var(--text); font-family: 'Noto Sans TC', sans-serif; font-weight: 300; min-height: 100vh; }
 a { color: inherit; text-decoration: none; }
 
 /* Layout */
 .app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
 .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: calc(2rem + env(safe-area-inset-top)) 0 2rem; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
-.main { padding: calc(2rem + env(safe-area-inset-top)) 2.5rem 2rem; overflow-x: clip; min-width: 0; }
+.main { padding: calc(2rem + env(safe-area-inset-top)) 2.5rem 2rem; overflow-x: hidden; }
 
 /* Sidebar */
 .logo { padding: 0 1.5rem 2rem; }
@@ -69,11 +69,11 @@ a { color: inherit; text-decoration: none; }
 .dash-header-v4 { display: none; }
 
 /* Cards & Metrics */
-.metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 12px; }
+.metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 2rem; }
 .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; justify-content: center; text-align: center; }
 .metric-card.accent { border-color: rgba(212,168,83,0.3); background: rgba(212,168,83,0.05); }
-.metric-label { font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 11px; font-weight: 400; color: #C7C7CC; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06px; }
-.metric-value { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 400; letter-spacing: normal; }
+.metric-label { font-size: 13px; color: #C7C7CC; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+.metric-value { font-size: 28px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; letter-spacing: -0.02em; }
 .metric-value.pos { color: var(--green); }
 .metric-value.neg { color: var(--red); }
 .metric-sub { font-size: 12px; color: var(--muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -159,7 +159,7 @@ select option { background: var(--surface2); }
 /* Chart area */
 .chart-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 2rem; }
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; overflow: hidden; }
-.chart-title { font-size: 14px; color: #C7C7CC; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 1rem; text-align: center; }
+.chart-title { font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 1rem; text-align: center; }
 .chart-wrap { position: relative; height: 220px; }
 .chart-dual { display: flex; gap: 16px; height: 220px; }
 
@@ -396,7 +396,7 @@ select option { background: var(--surface2); }
   white-space: nowrap;
   flex-shrink: 0;
 }
-.btn-add-record:hover { transform: scale(1.04); }
+.btn-add-record:hover { background: rgba(212,168,83,0.22); }
 
 @media (max-width: 768px) {
   .app { grid-template-columns: 1fr; }
@@ -419,7 +419,7 @@ select option { background: var(--surface2); }
 
   /* Mobile chart fixes */
   /* Allow larger metric values on mobile */
-  .metric-value { font-size: 24px; }
+  .metric-value { font-size: 26px; }
   .metrics-row { grid-template-columns: 1fr 1fr; gap: 10px; }
   .metric-card { padding: 0.9rem; }
   
@@ -553,34 +553,25 @@ select option { background: var(--surface2); }
   <!-- Main -->
   <main class="main">
     <!-- Global Sync Status Indicator (Hidden on mobile dashboard to merge into header) -->
-    <div id="sync-status-bar" class="desktop-only" style="display:none;justify-content:flex-end;margin-bottom:1rem;">
+    <div id="sync-status-bar" class="desktop-only" style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
       <span id="sync-status" class="status-badge local">💾 本機儲存模式</span>
     </div>
 
     <!-- Dashboard -->
     <div class="section active" id="sec-dashboard">
-      <div class="page-header dash-header-v4" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: auto; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 12px; position: sticky; top: 0; background: var(--bg); z-index: 100; margin-top: calc(-1rem - env(safe-area-inset-top)); padding-top: calc(1.5rem + env(safe-area-inset-top)); margin-left: -1rem; margin-right: -1rem; padding-left: 1rem; padding-right: 1rem;">
-        
-        <!-- Left: Title & Cloud Icon -->
-        <div style="display: flex; align-items: center; gap: 8px; position: relative; z-index: 2;">
-          <div class="dash-title-v4" style="text-align: left; font-size: 22px; font-weight: 500; font-family: 'Roboto', sans-serif; color: rgba(204, 204, 204, 1); line-height: 28px; flex-shrink: 0;">總覽</div>
+      <div class="page-header dash-header-v4" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 1.5rem; margin-top: 0.5rem;">
+        <div class="dash-title-v4" style="text-align: left; font-size: 24px; font-weight: 600; flex-shrink: 0;">總覽</div>
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; flex: 1;">
+          <div id="dash-date" style="font-size: 13px; color: var(--muted); white-space: nowrap;"></div>
           <div class="dash-sync-v4" id="sync-icon-v4" style="display: flex; align-items: center;">
-            <svg width="23" height="17" viewBox="0 0 23 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M14.245 0C12.7128 0.00117617 11.2112 0.428565 9.908 1.23437C8.60484 2.04017 7.55154 3.19262 6.8659 4.56281C6.05023 4.44385 5.21881 4.49424 4.42348 4.71082C3.62815 4.92741 2.88598 5.30555 2.24326 5.82166C1.60054 6.33777 1.07106 6.98077 0.687838 7.71057C0.304621 8.44036 0.0758875 9.24129 0.0159065 10.0634C-0.0440744 10.8855 0.0659834 11.7112 0.339215 12.4888C0.612447 13.2665 1.04299 13.9796 1.60399 14.5835C2.165 15.1875 2.84442 15.6693 3.59989 15.999C4.35536 16.3288 5.17067 16.4993 5.99496 16.5H14.245C16.433 16.5 18.5314 15.6308 20.0786 14.0836C21.6258 12.5365 22.495 10.438 22.495 8.25C22.495 6.06196 21.6258 3.96354 20.0786 2.41637C18.5314 0.869194 16.433 0 14.245 0ZM14.245 15H5.99496C4.80149 15 3.65689 14.5259 2.81298 13.682C1.96907 12.8381 1.49496 11.6935 1.49496 10.5C1.49496 9.30653 1.96907 8.16193 2.81298 7.31802C3.65689 6.47411 4.80149 6 5.99496 6C6.09809 6 6.20121 6 6.3034 6.01031C6.09829 6.73918 5.99451 7.49282 5.99496 8.25C5.99496 8.44891 6.07398 8.63968 6.21463 8.78033C6.35528 8.92098 6.54605 9 6.74496 9C6.94387 9 7.13464 8.92098 7.27529 8.78033C7.41594 8.63968 7.49496 8.44891 7.49496 8.25C7.49496 6.91498 7.89084 5.60993 8.63254 4.4999C9.37424 3.38987 10.4284 2.5247 11.6618 2.01381C12.8952 1.50292 14.2524 1.36925 15.5618 1.6297C16.8712 1.89015 18.0739 2.53302 19.0179 3.47703C19.9619 4.42103 20.6048 5.62377 20.8653 6.93314C21.1257 8.24251 20.992 9.59971 20.4811 10.8331C19.9703 12.0665 19.1051 13.1207 17.9951 13.8624C16.885 14.6041 15.58 15 14.245 15ZM17.7756 6.21937C17.8453 6.28903 17.9006 6.37175 17.9384 6.46279C17.9761 6.55384 17.9956 6.65144 17.9956 6.75C17.9956 6.84856 17.9761 6.94616 17.9384 7.03721C17.9006 7.12825 17.8453 7.21097 17.7756 7.28063L13.2756 11.7806C13.2059 11.8504 13.1232 11.9057 13.0322 11.9434C12.9411 11.9812 12.8435 12.0006 12.745 12.0006C12.6464 12.0006 12.5488 11.9812 12.4578 11.9434C12.3667 11.9057 12.284 11.8504 12.2143 11.7806L9.96433 9.53063C9.8236 9.38989 9.74454 9.19902 9.74454 9C9.74454 8.80098 9.8236 8.61011 9.96433 8.46937C10.1051 8.32864 10.2959 8.24958 10.495 8.24958C10.694 8.24958 10.8849 8.32864 11.0256 8.46937L12.745 10.1897L16.7143 6.21937C16.784 6.14964 16.8667 6.09432 16.9578 6.05658C17.0488 6.01884 17.1464 5.99941 17.245 5.99941C17.3435 5.99941 17.4411 6.01884 17.5322 6.05658C17.6232 6.09432 17.7059 6.14964 17.7756 6.21937Z" fill="#00C3D0"/>
+            <svg viewBox="0 0 24 24" style="width: 22px; height: 22px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;">
+              <path d="M17.5 19c2.5 0 4.5-2 4.5-4.5a4.5 4.5 0 0 0-4.08-4.47A7 7 0 0 0 4.58 11.5 5 5 0 0 0 6 21h10z"></path>
+              <polyline points="9 16 11 18 15 13"></polyline>
             </svg>
           </div>
         </div>
-
-        <!-- Middle: Date -->
-        <div id="dash-date" style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 13px; font-weight: 400; color: #8A8D93; white-space: nowrap; z-index: 1;"></div>
-
-        <!-- Right: Add Record Button -->
-        <button class="btn-add-record" onclick="switchSection('add', null)" style="position: relative; z-index: 2; display:flex; align-items:center; gap:8px; font-weight: 500; font-size: 16px; padding: 6px 16px 6px 6px; border-radius: 100px 0 0 100px; margin-right: -1rem;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="16"></line>
-            <line x1="8" y1="12" x2="16" y2="12"></line>
-          </svg>
+        <button class="btn-add-record" onclick="switchSection('add', null)" style="display:flex;align-items:center;gap:4px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           新增紀錄
         </button>
       </div>
@@ -590,16 +581,16 @@ select option { background: var(--surface2); }
           <div class="chart-title">持倉成本分佈</div>
           <div class="chart-dual">
             <div style="flex: 1; position: relative; min-width: 0; display: flex; flex-direction: column;">
+              <div style="text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-a-title">人員 A 持倉配比</div>
               <div style="position: relative; height: 180px;" id="chart-cost-a-container">
                 <canvas id="chart-cost-a"></canvas>
               </div>
-              <div style="text-align: center; font-size: 10px; color: var(--muted); margin-top: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-a-title">人員 A 持倉配比</div>
             </div>
             <div style="flex: 1; position: relative; min-width: 0; display: flex; flex-direction: column;">
+              <div style="text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-b-title">人員 B 持倉配比</div>
               <div style="position: relative; height: 180px;" id="chart-cost-b-container">
                 <canvas id="chart-cost-b"></canvas>
               </div>
-              <div style="text-align: center; font-size: 10px; color: var(--muted); margin-top: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-b-title">人員 B 持倉配比</div>
             </div>
           </div>
         </div>
@@ -742,7 +733,7 @@ select option { background: var(--surface2); }
         <button class="btn btn-primary" onclick="saveSettings()" id="btn-save-settings">儲存設定</button>
       </div>
       <div class="form-card">
-        <div style="font-size:13px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:4px;"><svg class="icon-fill" style="width:16px;height:12px;" viewBox="0 0 23 17" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14.245 0C12.7128 0.00117617 11.2112 0.428565 9.908 1.23437C8.60484 2.04017 7.55154 3.19262 6.8659 4.56281C6.05023 4.44385 5.21881 4.49424 4.42348 4.71082C3.62815 4.92741 2.88598 5.30555 2.24326 5.82166C1.60054 6.33777 1.07106 6.98077 0.687838 7.71057C0.304621 8.44036 0.0758875 9.24129 0.0159065 10.0634C-0.0440744 10.8855 0.0659834 11.7112 0.339215 12.4888C0.612447 13.2665 1.04299 13.9796 1.60399 14.5835C2.165 15.1875 2.84442 15.6693 3.59989 15.999C4.35536 16.3288 5.17067 16.4993 5.99496 16.5H14.245C16.433 16.5 18.5314 15.6308 20.0786 14.0836C21.6258 12.5365 22.495 10.438 22.495 8.25C22.495 6.06196 21.6258 3.96354 20.0786 2.41637C18.5314 0.869194 16.433 0 14.245 0ZM14.245 15H5.99496C4.80149 15 3.65689 14.5259 2.81298 13.682C1.96907 12.8381 1.49496 11.6935 1.49496 10.5C1.49496 9.30653 1.96907 8.16193 2.81298 7.31802C3.65689 6.47411 4.80149 6 5.99496 6C6.09809 6 6.20121 6 6.3034 6.01031C6.09829 6.73918 5.99451 7.49282 5.99496 8.25C5.99496 8.44891 6.07398 8.63968 6.21463 8.78033C6.35528 8.92098 6.54605 9 6.74496 9C6.94387 9 7.13464 8.92098 7.27529 8.78033C7.41594 8.63968 7.49496 8.44891 7.49496 8.25C7.49496 6.91498 7.89084 5.60993 8.63254 4.4999C9.37424 3.38987 10.4284 2.5247 11.6618 2.01381C12.8952 1.50292 14.2524 1.36925 15.5618 1.6297C16.8712 1.89015 18.0739 2.53302 19.0179 3.47703C19.9619 4.42103 20.6048 5.62377 20.8653 6.93314C21.1257 8.24251 20.992 9.59971 20.4811 10.8331C19.9703 12.0665 19.1051 13.1207 17.9951 13.8624C16.885 14.6041 15.58 15 14.245 15ZM17.7756 6.21937C17.8453 6.28903 17.9006 6.37175 17.9384 6.46279C17.9761 6.55384 17.9956 6.65144 17.9956 6.75C17.9956 6.84856 17.9761 6.94616 17.9384 7.03721C17.9006 7.12825 17.8453 7.21097 17.7756 7.28063L13.2756 11.7806C13.2059 11.8504 13.1232 11.9057 13.0322 11.9434C12.9411 11.9812 12.8435 12.0006 12.745 12.0006C12.6464 12.0006 12.5488 11.9812 12.4578 11.9434C12.3667 11.9057 12.284 11.8504 12.2143 11.7806L9.96433 9.53063C9.8236 9.38989 9.74454 9.19902 9.74454 9C9.74454 8.80098 9.8236 8.61011 9.96433 8.46937C10.1051 8.32864 10.2959 8.24958 10.495 8.24958C10.694 8.24958 10.8849 8.32864 11.0256 8.46937L12.745 10.1897L16.7143 6.21937C16.784 6.14964 16.8667 6.09432 16.9578 6.05658C17.0488 6.01884 17.1464 5.99941 17.245 5.99941C17.3435 5.99941 17.4411 6.01884 17.5322 6.05658C17.6232 6.09432 17.7059 6.14964 17.7756 6.21937Z"/></svg> 雲端即時同步說明</div>
+        <div style="font-size:13px;font-weight:500;margin-bottom:8px">☁️ 雲端即時同步說明</div>
         <div style="font-size:12px;color:var(--muted);line-height:1.7;">
           本帳本已支援 **Firebase Firestore** 雲端即時同步。開通後，各個裝置（電腦與手機）只要開啟網址，無須輸入任何金鑰即會自動同步更新。<br><br>
           <strong style="color:var(--text)">設定步驟：</strong><br>
@@ -1106,7 +1097,7 @@ function initFirebase() {
       syncDocRef = db.collection('ledgers').doc(docId);
       
       if (statusIndicator) {
-        statusIndicator.innerHTML = `<svg class="icon-fill" style="width:16px;height:12px;margin-right:2px;vertical-align:middle;margin-top:-2px;" viewBox="0 0 23 17" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14.245 0C12.7128 0.00117617 11.2112 0.428565 9.908 1.23437C8.60484 2.04017 7.55154 3.19262 6.8659 4.56281C6.05023 4.44385 5.21881 4.49424 4.42348 4.71082C3.62815 4.92741 2.88598 5.30555 2.24326 5.82166C1.60054 6.33777 1.07106 6.98077 0.687838 7.71057C0.304621 8.44036 0.0758875 9.24129 0.0159065 10.0634C-0.0440744 10.8855 0.0659834 11.7112 0.339215 12.4888C0.612447 13.2665 1.04299 13.9796 1.60399 14.5835C2.165 15.1875 2.84442 15.6693 3.59989 15.999C4.35536 16.3288 5.17067 16.4993 5.99496 16.5H14.245C16.433 16.5 18.5314 15.6308 20.0786 14.0836C21.6258 12.5365 22.495 10.438 22.495 8.25C22.495 6.06196 21.6258 3.96354 20.0786 2.41637C18.5314 0.869194 16.433 0 14.245 0ZM14.245 15H5.99496C4.80149 15 3.65689 14.5259 2.81298 13.682C1.96907 12.8381 1.49496 11.6935 1.49496 10.5C1.49496 9.30653 1.96907 8.16193 2.81298 7.31802C3.65689 6.47411 4.80149 6 5.99496 6C6.09809 6 6.20121 6 6.3034 6.01031C6.09829 6.73918 5.99451 7.49282 5.99496 8.25C5.99496 8.44891 6.07398 8.63968 6.21463 8.78033C6.35528 8.92098 6.54605 9 6.74496 9C6.94387 9 7.13464 8.92098 7.27529 8.78033C7.41594 8.63968 7.49496 8.44891 7.49496 8.25C7.49496 6.91498 7.89084 5.60993 8.63254 4.4999C9.37424 3.38987 10.4284 2.5247 11.6618 2.01381C12.8952 1.50292 14.2524 1.36925 15.5618 1.6297C16.8712 1.89015 18.0739 2.53302 19.0179 3.47703C19.9619 4.42103 20.6048 5.62377 20.8653 6.93314C21.1257 8.24251 20.992 9.59971 20.4811 10.8331C19.9703 12.0665 19.1051 13.1207 17.9951 13.8624C16.885 14.6041 15.58 15 14.245 15ZM17.7756 6.21937C17.8453 6.28903 17.9006 6.37175 17.9384 6.46279C17.9761 6.55384 17.9956 6.65144 17.9956 6.75C17.9956 6.84856 17.9761 6.94616 17.9384 7.03721C17.9006 7.12825 17.8453 7.21097 17.7756 7.28063L13.2756 11.7806C13.2059 11.8504 13.1232 11.9057 13.0322 11.9434C12.9411 11.9812 12.8435 12.0006 12.745 12.0006C12.6464 12.0006 12.5488 11.9812 12.4578 11.9434C12.3667 11.9057 12.284 11.8504 12.2143 11.7806L9.96433 9.53063C9.8236 9.38989 9.74454 9.19902 9.74454 9C9.74454 8.80098 9.8236 8.61011 9.96433 8.46937C10.1051 8.32864 10.2959 8.24958 10.495 8.24958C10.694 8.24958 10.8849 8.32864 11.0256 8.46937L12.745 10.1897L16.7143 6.21937C16.784 6.14964 16.8667 6.09432 16.9578 6.05658C17.0488 6.01884 17.1464 5.99941 17.245 5.99941C17.3435 5.99941 17.4411 6.01884 17.5322 6.05658C17.6232 6.09432 17.7059 6.14964 17.7756 6.21937Z"/></svg> 雲端同步完成`;
+        statusIndicator.innerHTML = `☁️ 雲端同步完成`;
         statusIndicator.className = 'status-badge cloud';
       }
       
@@ -1409,14 +1400,7 @@ function getSummary() {
 // ── Dashboard ──────────────────────────────────────────
 function renderDashboard() {
   const dateEl = document.getElementById('dash-date');
-  if (dateEl) {
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = d.getMonth() + 1;
-    const day = d.getDate();
-    const w = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][d.getDay()];
-    dateEl.textContent = `${y} 年 ${m} 月 ${day} 日 ${w}`;
-  }
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
   const { costA, costB, unrealA, unrealB, realA, realB } = getSummary();
   const totalCost = costA + costB;
   const totalUnreal = unrealA + unrealB;
@@ -1448,9 +1432,9 @@ function renderDashboard() {
     </div>
     
     <div class="metric-card metric-card-total-pnl">
-      <div class="metric-label" style="font-size: 12px;">合計總損益</div>
+      <div class="metric-label">合計總損益</div>
       <div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${formatMoney(totalPnl)}</div>
-      <div class="metric-sub" style="margin-top: 10px; color: var(--muted); font-size: 11px;">總持倉成本 $${Math.round(Math.abs(totalCost)).toLocaleString()}</div>
+      <div class="metric-sub" style="margin-top: 10px; color: var(--muted); font-size: 12px;">總持倉成本 $${Math.round(Math.abs(totalCost)).toLocaleString()}</div>
     </div>
     ${renderCashBalanceMetricCard()}
   `;
@@ -2310,34 +2294,29 @@ function calcSettlement() {
 function renderCashBalanceMetricCard() {
   const s = calcSettlement();
   if (!s.hasBTrades) {
-    return `<div class="metric-card" style="grid-column:1/-1; background: rgba(60, 60, 67, 0.18); border-color: rgba(255, 255, 255, 0.22); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px;">
-      <div style="font-family: 'SF Pro', -apple-system, sans-serif; font-size: 13px; font-weight: 400; color: #C7C7CC; letter-spacing: 0.06px;">帳款結算</div>
-      <div style="font-family: Arial, sans-serif; font-size: 13px; color: #8E8E93;">尚無 ${settings.nameB} 的交易記錄</div>
+    return `<div class="metric-card" style="grid-column:1/-1;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.25)">
+      <div class="metric-label">🤝 ${settings.nameB} ↔ ${settings.nameA} 結算</div>
+      <div class="metric-sub" style="margin-top:8px">尚無 ${settings.nameB} 的交易記錄</div>
     </div>`;
   }
-
   const owedColor = s.netOwed > 0 ? 'var(--red)' : 'var(--green)';
   const owedText = s.netOwed > 0
     ? `${settings.nameB} 欠 ${settings.nameA}`
     : `${settings.nameA} 欠 ${settings.nameB}`;
-    
-  const afterLiqName = s.afterLiquidation > 0 ? settings.nameB : settings.nameA;
-  const afterLiqAction = s.afterLiquidation > 0 ? '還欠' : '應退';
-  const afterLiqColor = s.afterLiquidation > 0 ? 'var(--red)' : 'var(--green)';
-
-  return `<div class="metric-card" style="grid-column:1/-1; background: rgba(60, 60, 67, 0.18); border-color: rgba(255, 255, 255, 0.22); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px;">
-    <div style="font-family: 'SF Pro', -apple-system, sans-serif; font-size: 13px; font-weight: 400; color: #C7C7CC; letter-spacing: 0.06px;">帳款結算</div>
-    <div style="display: flex; align-items: baseline; gap: 12px;">
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #8E8E93;">${owedText}</span>
-      <span style="font-family: 'Inter', sans-serif; font-size: 20px; color: ${owedColor};">$${Math.abs(s.netOwed).toLocaleString()}</span>
+  return `<div class="metric-card" style="grid-column:1/-1;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.25)">
+    <div class="metric-label">🤝 ${settings.nameB} ↔ ${settings.nameA} 結算</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; flex-wrap:wrap; gap:8px;">
+      <div>
+        <div style="font-size:11px; color:var(--muted); margin-bottom:2px;">${owedText}</div>
+        <div class="metric-value" style="color:${owedColor}; font-size:28px; font-weight:600;">$${Math.abs(s.netOwed).toLocaleString()}</div>
+      </div>
+      ${s.hasAllPrices ? `<div style="text-align:right">
+        <div style="font-size:11px; color:var(--muted); margin-bottom:2px;">清倉後估算</div>
+        <div style="font-size:16px; font-weight:600; color:${s.afterLiquidation > 0 ? 'var(--red)' : 'var(--green)'}; font-family:monospace">
+          ${s.afterLiquidation > 0 ? `${settings.nameB} 還欠` : `${settings.nameA} 應退`} $${Math.abs(s.afterLiquidation).toLocaleString()}
+        </div>
+      </div>` : ''}
     </div>
-    ${s.hasAllPrices ? `
-    <div style="display: flex; align-items: baseline; gap: 8px;">
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #8E8E93;">清倉後估算</span>
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #FFCC00;">${afterLiqName}</span>
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #C7C7CC;">${afterLiqAction}</span>
-      <span style="font-family: 'Inter', sans-serif; font-size: 20px; color: ${afterLiqColor};">$${Math.abs(s.afterLiquidation).toLocaleString()}</span>
-    </div>` : ''}
   </div>`;
 }
 

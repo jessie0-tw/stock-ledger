@@ -14,11 +14,11 @@
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #000000;
-  --surface: #1F1F1F;
+  --surface: #0F172A;
   --surface2: #1E293B;
   --border: #1E293B;
   --border2: #334155;
@@ -26,8 +26,8 @@
   --muted: #94A3B8;
   --accent: #22C55E;
   --accent2: #16A34A;
-  --green: #34C759;
-  --red: #FF2D55;
+  --green: #10B981;
+  --red: #EF4444;
   --a-color: #d4a853;
   --b-color: #5b9bd5;
   --radius: 10px;
@@ -69,11 +69,11 @@ a { color: inherit; text-decoration: none; }
 .dash-header-v4 { display: none; }
 
 /* Cards & Metrics */
-.metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 12px; }
+.metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 2rem; }
 .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; justify-content: center; text-align: center; }
 .metric-card.accent { border-color: rgba(212,168,83,0.3); background: rgba(212,168,83,0.05); }
-.metric-label { font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 11px; font-weight: 400; color: #C7C7CC; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06px; }
-.metric-value { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 400; letter-spacing: normal; }
+.metric-label { font-size: 13px; color: #C7C7CC; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+.metric-value { font-size: 28px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; letter-spacing: -0.02em; }
 .metric-value.pos { color: var(--green); }
 .metric-value.neg { color: var(--red); }
 .metric-sub { font-size: 12px; color: var(--muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -159,7 +159,7 @@ select option { background: var(--surface2); }
 /* Chart area */
 .chart-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 2rem; }
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; overflow: hidden; }
-.chart-title { font-size: 14px; color: #C7C7CC; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 1rem; text-align: center; }
+.chart-title { font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 1rem; text-align: center; }
 .chart-wrap { position: relative; height: 220px; }
 .chart-dual { display: flex; gap: 16px; height: 220px; }
 
@@ -419,7 +419,7 @@ select option { background: var(--surface2); }
 
   /* Mobile chart fixes */
   /* Allow larger metric values on mobile */
-  .metric-value { font-size: 24px; }
+  .metric-value { font-size: 26px; }
   .metrics-row { grid-template-columns: 1fr 1fr; gap: 10px; }
   .metric-card { padding: 0.9rem; }
   
@@ -575,8 +575,8 @@ select option { background: var(--surface2); }
         <div id="dash-date" style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 13px; font-weight: 400; color: #8A8D93; white-space: nowrap; z-index: 1;"></div>
 
         <!-- Right: Add Record Button -->
-        <button class="btn-add-record" onclick="switchSection('add', null)" style="position: relative; z-index: 2; display:flex; align-items:center; gap:8px; font-weight: 500; font-size: 16px; padding: 6px 16px 6px 6px; border-radius: 100px 0 0 100px; margin-right: -1rem;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button class="btn-add-record" onclick="switchSection('add', null)" style="position: relative; z-index: 2; display:flex; align-items:center; gap:6px; font-weight: 500; font-size: 14px; padding: 6px 12px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="8" x2="12" y2="16"></line>
             <line x1="8" y1="12" x2="16" y2="12"></line>
@@ -590,16 +590,16 @@ select option { background: var(--surface2); }
           <div class="chart-title">持倉成本分佈</div>
           <div class="chart-dual">
             <div style="flex: 1; position: relative; min-width: 0; display: flex; flex-direction: column;">
+              <div style="text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-a-title">人員 A 持倉配比</div>
               <div style="position: relative; height: 180px;" id="chart-cost-a-container">
                 <canvas id="chart-cost-a"></canvas>
               </div>
-              <div style="text-align: center; font-size: 10px; color: var(--muted); margin-top: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-a-title">人員 A 持倉配比</div>
             </div>
             <div style="flex: 1; position: relative; min-width: 0; display: flex; flex-direction: column;">
+              <div style="text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-b-title">人員 B 持倉配比</div>
               <div style="position: relative; height: 180px;" id="chart-cost-b-container">
                 <canvas id="chart-cost-b"></canvas>
               </div>
-              <div style="text-align: center; font-size: 10px; color: var(--muted); margin-top: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-b-title">人員 B 持倉配比</div>
             </div>
           </div>
         </div>
@@ -1448,9 +1448,9 @@ function renderDashboard() {
     </div>
     
     <div class="metric-card metric-card-total-pnl">
-      <div class="metric-label" style="font-size: 12px;">合計總損益</div>
+      <div class="metric-label">合計總損益</div>
       <div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${formatMoney(totalPnl)}</div>
-      <div class="metric-sub" style="margin-top: 10px; color: var(--muted); font-size: 11px;">總持倉成本 $${Math.round(Math.abs(totalCost)).toLocaleString()}</div>
+      <div class="metric-sub" style="margin-top: 10px; color: var(--muted); font-size: 12px;">總持倉成本 $${Math.round(Math.abs(totalCost)).toLocaleString()}</div>
     </div>
     ${renderCashBalanceMetricCard()}
   `;
@@ -2310,34 +2310,29 @@ function calcSettlement() {
 function renderCashBalanceMetricCard() {
   const s = calcSettlement();
   if (!s.hasBTrades) {
-    return `<div class="metric-card" style="grid-column:1/-1; background: rgba(60, 60, 67, 0.18); border-color: rgba(255, 255, 255, 0.22); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px;">
-      <div style="font-family: 'SF Pro', -apple-system, sans-serif; font-size: 13px; font-weight: 400; color: #C7C7CC; letter-spacing: 0.06px;">帳款結算</div>
-      <div style="font-family: Arial, sans-serif; font-size: 13px; color: #8E8E93;">尚無 ${settings.nameB} 的交易記錄</div>
+    return `<div class="metric-card" style="grid-column:1/-1;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.25)">
+      <div class="metric-label">🤝 ${settings.nameB} ↔ ${settings.nameA} 結算</div>
+      <div class="metric-sub" style="margin-top:8px">尚無 ${settings.nameB} 的交易記錄</div>
     </div>`;
   }
-
   const owedColor = s.netOwed > 0 ? 'var(--red)' : 'var(--green)';
   const owedText = s.netOwed > 0
     ? `${settings.nameB} 欠 ${settings.nameA}`
     : `${settings.nameA} 欠 ${settings.nameB}`;
-    
-  const afterLiqName = s.afterLiquidation > 0 ? settings.nameB : settings.nameA;
-  const afterLiqAction = s.afterLiquidation > 0 ? '還欠' : '應退';
-  const afterLiqColor = s.afterLiquidation > 0 ? 'var(--red)' : 'var(--green)';
-
-  return `<div class="metric-card" style="grid-column:1/-1; background: rgba(60, 60, 67, 0.18); border-color: rgba(255, 255, 255, 0.22); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px;">
-    <div style="font-family: 'SF Pro', -apple-system, sans-serif; font-size: 13px; font-weight: 400; color: #C7C7CC; letter-spacing: 0.06px;">帳款結算</div>
-    <div style="display: flex; align-items: baseline; gap: 12px;">
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #8E8E93;">${owedText}</span>
-      <span style="font-family: 'Inter', sans-serif; font-size: 20px; color: ${owedColor};">$${Math.abs(s.netOwed).toLocaleString()}</span>
+  return `<div class="metric-card" style="grid-column:1/-1;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.25)">
+    <div class="metric-label">🤝 ${settings.nameB} ↔ ${settings.nameA} 結算</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; flex-wrap:wrap; gap:8px;">
+      <div>
+        <div style="font-size:11px; color:var(--muted); margin-bottom:2px;">${owedText}</div>
+        <div class="metric-value" style="color:${owedColor}; font-size:28px; font-weight:600;">$${Math.abs(s.netOwed).toLocaleString()}</div>
+      </div>
+      ${s.hasAllPrices ? `<div style="text-align:right">
+        <div style="font-size:11px; color:var(--muted); margin-bottom:2px;">清倉後估算</div>
+        <div style="font-size:16px; font-weight:600; color:${s.afterLiquidation > 0 ? 'var(--red)' : 'var(--green)'}; font-family:monospace">
+          ${s.afterLiquidation > 0 ? `${settings.nameB} 還欠` : `${settings.nameA} 應退`} $${Math.abs(s.afterLiquidation).toLocaleString()}
+        </div>
+      </div>` : ''}
     </div>
-    ${s.hasAllPrices ? `
-    <div style="display: flex; align-items: baseline; gap: 8px;">
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #8E8E93;">清倉後估算</span>
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #FFCC00;">${afterLiqName}</span>
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #C7C7CC;">${afterLiqAction}</span>
-      <span style="font-family: 'Inter', sans-serif; font-size: 20px; color: ${afterLiqColor};">$${Math.abs(s.afterLiquidation).toLocaleString()}</span>
-    </div>` : ''}
   </div>`;
 }
 
