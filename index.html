@@ -66,7 +66,7 @@ a { color: inherit; text-decoration: none; }
 /* Sections */
 .section { display: none; }
 .section.active { display: block; }
-#sec-dashboard.active { display: flex; flex-direction: column; min-height: calc(100vh - 4.5rem - env(safe-area-inset-bottom)); }
+#sec-dashboard.active { display: flex; flex-direction: column; height: calc(100vh - 5.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)); overflow: hidden; }
 .dash-header-v4 { display: none; }
 
 /* Cards & Metrics */
@@ -587,7 +587,7 @@ select option { background: var(--surface2); }
           新增紀錄
         </button>
       </div>
-      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 0.5rem;">
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 0.5rem 0;">
         <div class="metrics-row" id="dash-metrics"></div>
       <div class="chart-grid">
         <div class="chart-card">
