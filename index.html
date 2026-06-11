@@ -2258,9 +2258,9 @@ function calcSettlement() {
     .filter(t => t.who === 'B' && t.side === 'sell')
     .reduce((sum, t) => sum + (t.qty * t.price) - (t.fee || 0) - (t.tax || 0), 0);
 
-  // B 已直接付給 A 的現金（還款 + 紅利都算進去，因為都是 B → A 的錢）
+  // B 已直接付給 A 的現金（僅限還款，不含紅利）
   const bPaidToA = cashFlows
-    .filter(cf => cf.type === 'b_to_a' || cf.type === 'bonus_to_a')
+    .filter(cf => cf.type === 'b_to_a')
     .reduce((sum, cf) => sum + cf.amount, 0);
 
   // A 曾退款給 B 的金額（算回到欠款裡）
@@ -2273,8 +2273,8 @@ function calcSettlement() {
     .filter(cf => cf.type === 'bonus_to_a')
     .reduce((sum, cf) => sum + cf.amount, 0);
 
-  // B 目前欠 A 的金額（買股借的 - 賣股還的 - B已付的 + A曾退的）
-  const netOwed = bBuyCost - bSellProceeds - bPaidToA + aRefundToB;
+  // B 目前欠 A 的金額（買股借的 - 賣股還的 - B已付的 + A曾退的 + B承諾的紅利）
+  const netOwed = bBuyCost - bSellProceeds - bPaidToA + aRefundToB + bonusToA;
 
   // B 當前持股的估計市值（若有現價）
   const pos = getPositions();
@@ -2398,9 +2398,13 @@ function renderSettlementCard() {
       <span class="settle-row-val" style="color:var(--green)">+${fmt(s.bSellProceeds)}</span>
     </div>
     <div class="settle-row">
-      <span class="settle-row-label">− ${nameB} 已直接付 ${nameA}（含紅利 ${fmt(s.bonusToA)}）</span>
+      <span class="settle-row-label">− ${nameB} 已直接付 ${nameA}</span>
       <span class="settle-row-val" style="color:var(--green)">+${fmt(s.bPaidToA)}</span>
     </div>
+    ${s.bonusToA > 0 ? `<div class="settle-row">
+      <span class="settle-row-label">＋ ${nameB} 承諾給 ${nameA} 紅利</span>
+      <span class="settle-row-val" style="color:var(--red)">−${fmt(s.bonusToA)}</span>
+    </div>` : ''}
     ${s.aRefundToB > 0 ? `<div class="settle-row">
       <span class="settle-row-label">＋ ${nameA} 曾退款給 ${nameB}</span>
       <span class="settle-row-val" style="color:var(--red)">−${fmt(s.aRefundToB)}</span>
