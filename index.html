@@ -91,18 +91,21 @@ a { color: inherit; text-decoration: none; }
 /* Mobile trade cards for history */
 .history-mobile-cards { display: none; flex-direction: column; gap: 10px; padding: 4px 0; }
 .trade-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: border-color 0.15s; }
-.trade-card-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px 8px; }
-.trade-card-sym { font-family: 'DM Serif Display', serif; font-size: 22px; display: inline-flex; align-items: baseline; gap: 6px; }
-.trade-card-sym-name { font-size: 12px; color: var(--muted); font-family: 'Noto Sans TC', sans-serif; font-weight: normal; }
-.trade-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-.trade-card-date { font-family: 'Roboto Flex', sans-serif; font-size: 12px; color: var(--muted); }
-.trade-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--border); }
-.trade-card-cell { padding: 10px 14px; display: flex; flex-direction: column; gap: 3px; }
-.trade-card-cell:not(:last-child) { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.trade-card-cell:nth-child(2n+1):last-child { grid-column: 1 / -1; border-right: none; }
-.trade-card-cell-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Roboto Flex', sans-serif; }
-.trade-card-cell-val { font-family: 'Roboto Flex', sans-serif; font-size: 15px; }
-.trade-card-cell-sub { font-size: 11px; color: var(--muted); font-family: 'Roboto Flex', sans-serif; line-height: 1.4; }
+.trade-card-header { display: flex; flex-direction: column; padding: 14px 16px 12px; gap: 4px; }
+.trade-card-sym { font-family: 'Roboto Flex', sans-serif; font-weight: 500; font-size: 22px; display: inline-flex; align-items: baseline; gap: 8px; color: #94A3B8; }
+.trade-card-sym-name { font-size: 18px; color: #FFF; font-weight: normal; font-family: 'Noto Sans TC', sans-serif; }
+.trade-card-date { font-family: 'Roboto Flex', sans-serif; font-size: 13px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 2px; }
+.trade-card-body { display: grid; grid-template-columns: 1fr 1.1fr 1.8fr; gap: 0; border-top: 1px solid var(--border); }
+.trade-card-cell { padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+.trade-card-cell:not(:last-child) { border-right: 1px solid var(--border); }
+.trade-card-cell-label { font-size: 13px; color: var(--muted); font-family: 'Noto Sans TC', sans-serif; }
+.trade-card-cell-val { font-family: 'Roboto Flex', sans-serif; font-size: 18px; }
+.trade-card-cell-sub { font-size: 11px; color: var(--muted); font-family: 'Noto Sans TC', sans-serif; line-height: 1.4; text-align: right; }
+.badge-outline { padding: 2px 12px; border-radius: 12px; font-size: 13px; font-weight: normal; background: transparent; display: inline-flex; align-items: center; justify-content: center; }
+.badge-outline-a { border: 1px solid #EAB308; color: #EAB308; }
+.badge-outline-b { border: 1px solid #94A3B8; color: #94A3B8; }
+.badge-outline-buy { border: 1px solid #00C3D0; color: #00C3D0; }
+.badge-outline-sell { border: 1px solid #F59E0B; color: #F59E0B; }
 .trade-card-footer { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.15); }
 .trade-card-note { font-size: 13px; color: var(--muted); font-style: italic; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -141,21 +144,27 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 label.field-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'Roboto Flex', sans-serif; }
 input, select, textarea { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 15px; font-family: 'Noto Sans TC', sans-serif; outline: none; width: 100%; transition: border-color 0.15s; }
 .form-group input:focus, .form-group select:focus { border-color: var(--accent); outline: none; }
-.toggle-group-custom { display: flex; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 4px; height: 42px; border: 1px solid var(--border); }
-.toggle-group-custom .toggle-btn { flex: 1; border-radius: 6px; font-size: 14px; font-weight: 600; color: var(--muted); background: transparent; border: none; transition: all 0.2s; cursor: pointer; }
-.toggle-group-custom .toggle-btn.active { background: rgba(212,168,83,0.15); color: var(--a-color); font-weight: 700; }
+.toggle-group-custom { display: flex; gap: 8px; border: none; background: transparent; padding: 0; }
+.toggle-group-custom .toggle-btn { flex: 1; border-radius: 8px; font-size: 15px; font-weight: normal; color: var(--text); background: transparent; border: 1px solid var(--border2); transition: all 0.2s; cursor: pointer; padding: 10px 0; }
+.toggle-group-custom .toggle-btn.active { border-color: #EAB308; color: #EAB308; background: rgba(234,179,8,0.1); }
 .add-trade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 select option { background: var(--surface2); }
 
 /* Buttons */
 .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; font-size: 15px; cursor: pointer; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-family: 'Noto Sans TC', sans-serif; transition: all 0.15s; }
 .btn:hover { border-color: var(--border); background: var(--surface); }
-.btn-primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 500; }
+.btn-primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: normal; }
 .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); }
 .btn-ghost { background: transparent; border-color: transparent; color: var(--muted); padding: 6px 10px; font-size: 14px; }
 .btn-ghost:hover { color: var(--red); background: rgba(224,92,92,0.08); }
 .btn-sm { padding: 5px 12px; font-size: 14px; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-action-red { background: transparent; border: 1px solid var(--border2); color: var(--text); }
+.btn-action-red:hover, .btn-action-red:active { border-color: var(--red); color: var(--red); background: rgba(239,68,68,0.1); }
+.btn-action-yellow { background: transparent; border: 1px solid var(--border2); color: var(--text); }
+.btn-action-yellow:hover, .btn-action-yellow:active { border-color: #EAB308; color: #EAB308; background: rgba(234,179,8,0.1); }
+.btn-action-gray { background: transparent; border: 1px solid var(--border2); color: var(--text); }
+.btn-action-gray:hover, .btn-action-gray:active { border-color: var(--border); color: #FFF; background: rgba(255,255,255,0.05); }
 
 /* Chart area */
 .chart-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 0; }
@@ -684,37 +693,35 @@ select option { background: var(--surface2); }
 
     <!-- History -->
     <div class="section" id="sec-history">
-      <div class="page-header">
-        <div><div class="page-title">交易明細</div></div>
-        <div class="history-filters" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <select id="filter-who" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
-            <option value="">全部人員</option>
+      <div class="page-header" style="flex-shrink: 0; display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: auto; margin-bottom: 20px; padding-bottom: 12px; position: sticky; top: 0; background: var(--bg); z-index: 100; margin-top: calc(-1rem - env(safe-area-inset-top)); padding-top: calc(1.5rem + env(safe-area-inset-top)); margin-left: -1rem; margin-right: -1rem; padding-left: 1rem; padding-right: 1rem;">
+        <div class="page-title" style="text-align: left; font-size: 22px; font-weight: 500; font-family: 'Roboto', sans-serif; color: rgba(204, 204, 204, 1); line-height: 28px; flex-shrink: 0; margin: 0;">交易明細</div>
+        <div class="history-filters" style="display:flex;gap:6px;align-items:center;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;margin-left:auto;">
+          <select id="filter-who" onchange="renderHistory()" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;">
+            <option value="">人員</option>
             <option value="A" id="filter-a">人員 A</option>
             <option value="B" id="filter-b">人員 B</option>
           </select>
-          <select id="filter-sym" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
-            <option value="">全部股票</option>
+          <select id="filter-sym" onchange="renderHistory()" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;">
+            <option value="">股票</option>
           </select>
-          <select id="filter-side" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
-            <option value="">全部買賣</option>
+          <select id="filter-side" onchange="renderHistory()" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;">
+            <option value="">買賣</option>
             <option value="buy">買進</option>
             <option value="sell">賣出</option>
           </select>
-          <select id="filter-range" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
-            <option value="">全部時間</option>
+          <select id="filter-range" onchange="renderHistory()" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;">
+            <option value="">期間</option>
             <option value="this-month">當月</option>
             <option value="3-months">近三個月</option>
             <option value="1-year">近一年</option>
           </select>
-          <select id="filter-sort" onchange="renderHistory()" style="width:auto;padding:6px 10px;font-size:12px">
-            <option value="desc">日期：新 ➜ 舊</option>
-            <option value="asc">日期：舊 ➜ 新</option>
+          <select id="filter-sort" onchange="renderHistory()" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;">
+            <option value="desc">新➜舊</option>
+            <option value="asc">舊➜新</option>
           </select>
         </div>
       </div>
-      <div class="table-wrap">
-        <div id="history-body"></div>
-      </div>
+      <div id="history-body" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
     <!-- CSV -->
@@ -897,9 +904,15 @@ select option { background: var(--surface2); }
         💡 儲存後將依新數據自動重新計算手續費與交易稅
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeEditModal()" id="btn-edit-cancel">取消</button>
-      <button class="btn btn-primary" onclick="saveEdit()" id="btn-edit-save">✓ 儲存變更</button>
+    <div class="modal-footer" style="justify-content: space-between;">
+      <button class="btn btn-action-red" style="padding:6px 12px;" onclick="deleteTrade(Number(document.getElementById('edit-id').value)); closeEditModal();">✕ 刪除紀錄</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-action-yellow" onclick="closeEditModal()" id="btn-edit-cancel">取消</button>
+        <button class="btn btn-action-yellow" style="display:flex; align-items:center; gap:6px; font-weight:normal;" onclick="saveEdit()" id="btn-edit-save">
+          <svg width="13" height="10" viewBox="0 0 19 14" fill="currentColor"><path d="M18.531 1.28104L6.53104 13.281C6.46139 13.3508 6.37867 13.4061 6.28762 13.4438C6.19657 13.4816 6.09898 13.501 6.00042 13.501C5.90185 13.501 5.80426 13.4816 5.71321 13.4438C5.62216 13.4061 5.53945 13.3508 5.46979 13.281L0.219792 8.03104C0.0790615 7.89031 0 7.69944 0 7.50042C0 7.30139 0.0790615 7.11052 0.219792 6.96979C0.360523 6.82906 0.551394 6.75 0.750417 6.75C0.94944 6.75 1.14031 6.82906 1.28104 6.96979L6.00042 11.6901L17.4698 0.219792C17.6105 0.0790612 17.8014 -1.48284e-09 18.0004 0C18.1994 1.48284e-09 18.3903 0.0790612 18.531 0.219792C18.6718 0.360522 18.7508 0.551394 18.7508 0.750417C18.7508 0.94944 18.6718 1.14031 18.531 1.28104Z"/></svg>
+          儲存
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -1860,7 +1873,10 @@ function renderPositions() {
         </div>
         <div class="compact-stat">
           <div class="compact-stat-label">平均成本</div>
-          <div class="compact-stat-val" style="display:flex; justify-content:space-between; align-items:baseline;"><span>${avg > 0 ? avg.toFixed(2) : '—'}<span style="font-size:11px;color:var(--muted)"> 元</span></span>${costPct !== null ? `<span style="font-size:12px; color:var(--muted); font-weight:normal;"> ( ${costPct>=0?'+':''}${costPct.toFixed(2)}% ) </span>` : ''}</div>
+          <div class="compact-stat-val">
+            <div>${avg > 0 ? avg.toFixed(2) : '—'}<span style="font-size:11px;color:var(--muted)"> 元</span></div>
+            ${costPct !== null ? `<div style="font-size:12px; color:var(--muted); font-weight:normal; margin-top:2px;">( ${costPct>=0?'+':''}${costPct.toFixed(2)}% )</div>` : ''}
+          </div>
         </div>
         <div class="compact-stat">
           <div class="compact-stat-label">已實現損益</div>
@@ -2103,6 +2119,7 @@ function addTrade() {
   document.getElementById('f-note').value = '';
   toast(`✓ 已新增 ${side === 'buy' ? '買進' : '賣出'} ${sym} ${qty.toLocaleString()} 股 @ ${price}`);
   refreshFilters();
+  switchTab('history');
 }
 
 // ── History ────────────────────────────────────────────
@@ -2196,40 +2213,41 @@ function renderHistory() {
         const tax = t.tax || 0;
         const net = t.side === 'buy' ? amt + fee : amt - fee - tax;
         const netSub = t.side === 'buy'
-          ? `$${amt.toLocaleString()} + 手續費 $${fee}`
-          : `$${amt.toLocaleString()} - 手續費 $${fee} - 稅 $${tax}`;
+          ? `含手續費 $${fee}`
+          : `手續費 $${fee}<br>交易稅 $${tax}`;
         const isBuy = t.side === 'buy';
         return `
         <div class="trade-card">
           <div class="trade-card-header">
-            <div>
+            <div class="trade-card-date">${t.date.replace(/-/g, ' / ')}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
               <div class="trade-card-sym">${t.sym}<span class="trade-card-sym-name">${stockNames[t.sym] || ''}</span></div>
-              <div style="margin-top:3px;display:flex;gap:6px;align-items:center">
-                <span class="badge badge-${t.who.toLowerCase()}">${name(t.who)}</span>
-                <span class="${isBuy ? 'tag-buy' : 'tag-sell'}">${isBuy ? '▲ 買進' : '▼ 賣出'}</span>
-              </div>
-            </div>
-            <div class="trade-card-right">
-              <div class="trade-card-date">${t.date}</div>
-              <div style="display:flex;gap:4px">
-                <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px" onclick="openEditModal(${t.id})" title="編輯">✏️</button>
-                <button class="btn btn-ghost" style="padding:4px 8px;font-size:13px" onclick="deleteTrade(${t.id})">✕</button>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <span class="badge-outline badge-outline-${t.who.toLowerCase()}">${name(t.who)}</span>
+                <span class="badge-outline ${isBuy ? 'badge-outline-buy' : 'badge-outline-sell'}">${isBuy ? '買進' : '賣出'}</span>
+                <button class="btn btn-ghost" style="padding:4px; color:var(--muted); margin-left:4px; opacity:0.8; display:flex; align-items:center; justify-content:center;" onclick="openEditModal(${t.id})" title="編輯">
+                  <svg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                    <path d='M14.6484 3.70318L11.2974 0.351555C11.186 0.2401 11.0537 0.151688 10.908 0.0913673C10.7624 0.0310468 10.6064 0 10.4488 0C10.2911 0 10.1351 0.0310468 9.98946 0.0913673C9.84385 0.151688 9.71155 0.2401 9.60012 0.351555L0.35176 9.6002C0.239843 9.71122 0.151113 9.84338 0.0907265 9.989C0.03034 10.1346 -0.000497585 10.2908 6.07128e-06 10.4484V13.8C6.07128e-06 14.1183 0.126436 14.4235 0.351482 14.6485C0.576528 14.8736 0.881756 15 1.20002 15H4.55181C4.70946 15.0005 4.86563 14.9697 5.01125 14.9093C5.15687 14.8489 5.28904 14.7602 5.40007 14.6483L14.6484 5.40036C14.7599 5.28893 14.8483 5.15664 14.9086 5.01103C14.969 4.86543 15 4.70937 15 4.55177C15 4.39417 14.969 4.23811 14.9086 4.0925C14.8483 3.9469 14.7599 3.81461 14.6484 3.70318ZM4.55181 13.8H1.20002V10.4484L7.8001 3.84867L11.1519 7.20029L4.55181 13.8ZM12.0001 6.35133L8.64836 3.00045L10.4484 1.20052L13.8002 4.55139L12.0001 6.35133Z' fill='currentColor'/>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
           <div class="trade-card-body">
             <div class="trade-card-cell">
-              <div class="trade-card-cell-label">股數</div>
+              <div class="trade-card-cell-label">持股</div>
               <div class="trade-card-cell-val">${t.qty.toLocaleString()}</div>
             </div>
             <div class="trade-card-cell">
               <div class="trade-card-cell-label">成交價</div>
               <div class="trade-card-cell-val">$${Number(t.price).toLocaleString()}</div>
             </div>
-            <div class="trade-card-cell" style="grid-column: 1 / -1; border-right: none;">
-              <div class="trade-card-cell-label">金額 (收支)</div>
-              <div class="trade-card-cell-val" style="color:${isBuy ? 'var(--red)' : 'var(--green)'}">${isBuy ? '-' : '+'}$${net.toLocaleString()}</div>
-              <div class="trade-card-cell-sub">${netSub}</div>
+            <div class="trade-card-cell">
+              <div class="trade-card-cell-label">金額</div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:4px; margin-top:auto;">
+                <div class="trade-card-cell-val" style="color:${isBuy ? 'var(--red)' : 'var(--green)'}">${isBuy ? '-' : '+'}$${net.toLocaleString()}</div>
+                <div class="trade-card-cell-sub">${netSub}</div>
+              </div>
             </div>
           </div>
           ${t.note ? `<div class="trade-card-footer">
