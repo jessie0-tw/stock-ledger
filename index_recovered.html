@@ -14,11 +14,11 @@
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #000000;
-  --surface: #1F1F1F;
+  --bg: #020617;
+  --surface: #0F172A;
   --surface2: #1E293B;
   --border: #1E293B;
   --border2: #334155;
@@ -26,33 +26,33 @@
   --muted: #94A3B8;
   --accent: #22C55E;
   --accent2: #16A34A;
-  --green: #34C759;
-  --red: #FF2D55;
+  --green: #10B981;
+  --red: #EF4444;
   --a-color: #d4a853;
   --b-color: #5b9bd5;
   --radius: 10px;
   --radius-lg: 16px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { overflow-x: clip; max-width: 100%; }
+html, body { overflow-x: hidden; max-width: 100%; }
 body { background: var(--bg); color: var(--text); font-family: 'Noto Sans TC', sans-serif; font-weight: 300; min-height: 100vh; }
 a { color: inherit; text-decoration: none; }
 
 /* Layout */
 .app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
 .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: calc(2rem + env(safe-area-inset-top)) 0 2rem; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
-.main { padding: calc(2rem + env(safe-area-inset-top)) 2.5rem 2rem; overflow-x: clip; min-width: 0; }
+.main { padding: calc(2rem + env(safe-area-inset-top)) 2.5rem 2rem; overflow-x: hidden; }
 
 /* Sidebar */
 .logo { padding: 0 1.5rem 2rem; }
 .logo-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); letter-spacing: 0.02em; line-height: 1.2; }
-.logo-sub { font-size: 12px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 2px; font-family: 'Roboto Flex', sans-serif; }
+.logo-sub { font-size: 12px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 2px; font-family: 'DM Mono', monospace; }
 .nav { flex: 1; }
 .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 1.5rem; font-size: 15px; cursor: pointer; color: var(--muted); transition: all 0.15s; border-left: 2px solid transparent; }
 .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
 .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(212,168,83,0.06); font-weight: 400; }
 .nav-icon { font-size: 17px; width: 18px; text-align: center; }
-.nav-section { padding: 1.5rem 1.5rem 0.5rem; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-family: 'Roboto Flex', sans-serif; }
+.nav-section { padding: 1.5rem 1.5rem 0.5rem; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; }
 
 .sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); }
 .person-badge { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 14px; }
@@ -61,20 +61,19 @@ a { color: inherit; text-decoration: none; }
 /* Page header */
 .page-header { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; }
 .page-title { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--text); }
-.page-sub { font-size: 14px; color: var(--muted); margin-top: 4px; font-family: 'Roboto Flex', sans-serif; }
+.page-sub { font-size: 14px; color: var(--muted); margin-top: 4px; font-family: 'DM Mono', monospace; }
 
 /* Sections */
 .section { display: none; }
 .section.active { display: block; }
-#sec-dashboard.active { display: flex; flex-direction: column; min-height: calc(100vh - 5.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
 .dash-header-v4 { display: none; }
 
 /* Cards & Metrics */
-.metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 8px; }
+.metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 2rem; }
 .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; justify-content: center; text-align: center; }
 .metric-card.accent { border-color: rgba(212,168,83,0.3); background: rgba(212,168,83,0.05); }
-.metric-label { font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 11px; font-weight: 400; color: #C7C7CC; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06px; }
-.metric-value { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 400; letter-spacing: normal; }
+.metric-label { font-size: 13px; color: #C7C7CC; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+.metric-value { font-size: 28px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; letter-spacing: -0.02em; }
 .metric-value.pos { color: var(--green); }
 .metric-value.neg { color: var(--red); }
 .metric-sub { font-size: 12px; color: var(--muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -95,14 +94,14 @@ a { color: inherit; text-decoration: none; }
 .trade-card-sym { font-family: 'DM Serif Display', serif; font-size: 22px; display: inline-flex; align-items: baseline; gap: 6px; }
 .trade-card-sym-name { font-size: 12px; color: var(--muted); font-family: 'Noto Sans TC', sans-serif; font-weight: normal; }
 .trade-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-.trade-card-date { font-family: 'Roboto Flex', sans-serif; font-size: 12px; color: var(--muted); }
+.trade-card-date { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); }
 .trade-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--border); }
 .trade-card-cell { padding: 10px 14px; display: flex; flex-direction: column; gap: 3px; }
 .trade-card-cell:not(:last-child) { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 .trade-card-cell:nth-child(2n+1):last-child { grid-column: 1 / -1; border-right: none; }
-.trade-card-cell-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Roboto Flex', sans-serif; }
-.trade-card-cell-val { font-family: 'Roboto Flex', sans-serif; font-size: 15px; }
-.trade-card-cell-sub { font-size: 11px; color: var(--muted); font-family: 'Roboto Flex', sans-serif; line-height: 1.4; }
+.trade-card-cell-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; }
+.trade-card-cell-val { font-family: 'DM Mono', monospace; font-size: 15px; }
+.trade-card-cell-sub { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.4; }
 .trade-card-footer { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.15); }
 .trade-card-note { font-size: 13px; color: var(--muted); font-style: italic; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -122,23 +121,23 @@ a { color: inherit; text-decoration: none; }
 .table-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
 .table-title { font-size: 15px; font-weight: 500; }
 table { width: 100%; border-collapse: collapse; font-size: 15px; }
-th { padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 400; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Roboto Flex', sans-serif; border-bottom: 1px solid var(--border); }
+th { padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 400; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; border-bottom: 1px solid var(--border); }
 td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(255,255,255,0.02); }
 
-.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 99px; font-size: 13px; font-family: 'Roboto Flex', sans-serif; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 99px; font-size: 13px; font-family: 'DM Mono', monospace; }
 .badge-a { background: rgba(212,168,83,0.15); color: var(--a-color); border: 1px solid rgba(212,168,83,0.3); }
 .badge-b { background: rgba(91,155,213,0.15); color: var(--b-color); border: 1px solid rgba(91,155,213,0.3); }
-.tag-buy { color: var(--green); font-size: 13px; font-family: 'Roboto Flex', sans-serif; }
-.tag-sell { color: var(--red); font-size: 13px; font-family: 'Roboto Flex', sans-serif; }
+.tag-buy { color: var(--green); font-size: 13px; font-family: 'DM Mono', monospace; }
+.tag-sell { color: var(--red); font-size: 13px; font-family: 'DM Mono', monospace; }
 
 /* Form */
 .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
 .form-group { display: flex; flex-direction: column; gap: 6px; }
-label.field-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'Roboto Flex', sans-serif; }
+label.field-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; }
 input, select, textarea { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 15px; font-family: 'Noto Sans TC', sans-serif; outline: none; width: 100%; transition: border-color 0.15s; }
 .form-group input:focus, .form-group select:focus { border-color: var(--accent); outline: none; }
 .toggle-group-custom { display: flex; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 4px; height: 42px; border: 1px solid var(--border); }
@@ -158,11 +157,11 @@ select option { background: var(--surface2); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Chart area */
-.chart-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 0; }
+.chart-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 2rem; }
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; overflow: hidden; }
-.chart-title { font-size: 13px; color: #C7C7CC; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Roboto Flex', sans-serif; margin-bottom: 1px; text-align: center; }
+.chart-title { font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 1rem; text-align: center; }
 .chart-wrap { position: relative; height: 220px; }
-.chart-dual { display: flex; gap: 16px; height: 180px; }
+.chart-dual { display: flex; gap: 16px; height: 220px; }
 
 /* Stock overview cards */
 .stock-grid { display: grid; gap: 12px; }
@@ -170,7 +169,7 @@ select option { background: var(--surface2); }
 .stock-card-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
 .stock-sym { font-family: 'DM Serif Display', serif; font-size: 28px; display: inline-flex; align-items: baseline; gap: 8px; }
 .stock-sym span { font-size: 18px; color: var(--muted); font-weight: normal; font-family: 'Noto Sans TC', sans-serif; }
-.stock-price { font-family: 'Roboto Flex', sans-serif; font-size: 15px; color: var(--muted); }
+.stock-price { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--muted); }
 .stock-card-body { display: block; }
 .stock-card-actions { display: flex; gap: 12px; align-items: center; padding: 8px 1.25rem; border-top: 1px solid var(--border); background: rgba(0,0,0,0.15); }
 .holder-table {
@@ -191,7 +190,7 @@ select option { background: var(--surface2); }
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-family: 'Roboto Flex', sans-serif;
+  font-family: 'DM Mono', monospace;
   border-bottom: 1px solid var(--border2);
   padding-bottom: 6px;
 }
@@ -203,7 +202,7 @@ select option { background: var(--surface2); }
   font-weight: 500;
 }
 .holder-table-row .col-val {
-  font-family: 'Roboto Flex', sans-serif;
+  font-family: 'DM Mono', monospace;
   font-size: 13px;
   text-align: right;
 }
@@ -220,22 +219,22 @@ select option { background: var(--surface2); }
   grid-column: 1 / -1;
   font-size: 11px;
   color: var(--muted);
-  font-family: 'Roboto Flex', sans-serif;
+  font-family: 'DM Mono', monospace;
   margin-top: 4px;
   text-align: right;
 }
 
 /* Price status banner */
-.fetch-banner { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 14px; color: var(--muted); font-family: 'Roboto Flex', sans-serif; margin-bottom: 1.5rem; display: none; line-height: 1.6; }
+.fetch-banner { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 14px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 1.5rem; display: none; line-height: 1.6; }
 .fetch-banner.visible { display: block; }
 
 /* Person tabs */
-.person-tabs { display: flex; width: 100%; height: 46px; background: transparent; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 5px; gap: 4px; margin-bottom: 1.5rem; }
-.person-tab { flex: 1; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 14px; cursor: pointer; color: rgba(199, 199, 204, 1); transition: all 0.15s; font-family: 'SF Pro', 'Noto Sans TC', sans-serif; border: 1px solid transparent; user-select: none; }
-.person-tab:hover { color: #FFF; background: rgba(255,255,255,0.04); }
-.person-tab.active-all { background: rgba(31, 31, 31, 1); color: #FFF; border-color: transparent; }
-.person-tab.active-a { background: rgba(31, 31, 31, 1); color: #FFF; border-color: transparent; }
-.person-tab.active-b { background: rgba(31, 31, 31, 1); color: #FFF; border-color: transparent; }
+.person-tabs { display: flex; gap: 6px; margin-bottom: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 5px; width: fit-content; }
+.person-tab { padding: 7px 18px; border-radius: 7px; font-size: 15px; cursor: pointer; color: var(--muted); transition: all 0.15s; font-family: 'Noto Sans TC', sans-serif; border: 1px solid transparent; user-select: none; }
+.person-tab:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.person-tab.active-all { background: var(--surface2); color: var(--text); border-color: var(--border2); }
+.person-tab.active-a { background: rgba(212,168,83,0.15); color: var(--a-color); border-color: rgba(212,168,83,0.35); }
+.person-tab.active-b { background: rgba(91,155,213,0.15); color: var(--b-color); border-color: rgba(91,155,213,0.35); }
 
 /* CSV import/export area */
 .import-area { border: 2px dashed var(--border2); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.15s; }
@@ -251,23 +250,23 @@ select option { background: var(--surface2); }
 .compact-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: border-color 0.15s; }
 .compact-card:active { border-color: var(--border2); }
 .compact-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px 10px; }
-.compact-sym { font-family: 'Roboto Flex', sans-serif; font-weight: 500; font-size: 22px; display: inline-flex; align-items: baseline; gap: 8px; color: #94A3B8; }
-.compact-sym span { font-size: 18px; color: #FFF; font-weight: normal; font-family: 'Noto Sans TC', sans-serif; }
-.compact-sym-name { font-size: 13px; color: var(--muted); margin-top: 1px; font-family: 'Roboto Flex', sans-serif; }
+.compact-sym { font-family: 'DM Serif Display', serif; font-size: 32px; letter-spacing: 0.01em; display: inline-flex; align-items: baseline; gap: 8px; }
+.compact-sym span { font-size: 18px; color: var(--muted); font-weight: normal; font-family: 'Noto Sans TC', sans-serif; }
+.compact-sym-name { font-size: 13px; color: var(--muted); margin-top: 1px; font-family: 'DM Mono', monospace; }
 .compact-price-block { text-align: right; }
-.compact-price { font-family: 'Roboto Flex', sans-serif; font-size: 20px; font-weight: 500; }
-.compact-change { font-size: 13px; font-family: 'Roboto Flex', sans-serif; margin-top: 2px; }
+.compact-price { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; }
+.compact-change { font-size: 13px; font-family: 'DM Mono', monospace; margin-top: 2px; }
 .compact-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid var(--border); }
 .compact-stat { padding: 10px 16px; }
 .compact-stat:not(:last-child) { border-right: 1px solid var(--border); }
-.compact-stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Roboto Flex', sans-serif; margin-bottom: 4px; }
-.compact-stat-val { font-family: 'Roboto Flex', sans-serif; font-size: 17px; font-weight: 500; }
-.compact-pnl-row { display: flex; justify-content: flex-start; align-items: baseline; gap: 12px; padding: 10px 16px; border-top: 1px solid var(--border); background: rgba(255,255,255,0.015); }
-.compact-pnl-label { font-size: 12px; color: var(--muted); font-family: 'Roboto Flex', sans-serif; text-transform: uppercase; letter-spacing: 0.1em; }
-.compact-pnl-val { font-family: 'Roboto Flex', sans-serif; font-size: 21px; font-weight: 500; }
-.compact-pnl-pct { font-size: 13px; font-family: 'Roboto Flex', sans-serif; margin-left: 6px; opacity: 0.8; }
+.compact-stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.compact-stat-val { font-family: 'DM Mono', monospace; font-size: 17px; font-weight: 500; }
+.compact-pnl-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-top: 1px solid var(--border); background: rgba(255,255,255,0.015); }
+.compact-pnl-label { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.1em; }
+.compact-pnl-val { font-family: 'DM Mono', monospace; font-size: 21px; font-weight: 500; }
+.compact-pnl-pct { font-size: 13px; font-family: 'DM Mono', monospace; margin-left: 6px; opacity: 0.8; }
 .compact-actions { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.2); flex-wrap: wrap; }
-.compact-no-price { padding: 8px 16px 12px; font-size: 13px; color: var(--muted); font-family: 'Roboto Flex', sans-serif; }
+.compact-no-price { padding: 8px 16px 12px; font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; }
 
 /* Info box */
 .info-box { background: rgba(212,168,83,0.06); border: 1px solid rgba(212,168,83,0.2); border-radius: var(--radius); padding: 12px 16px; font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 1.5rem; }
@@ -294,7 +293,7 @@ select option { background: var(--surface2); }
   border-radius: 20px;
   font-size: 13px;
   font-weight: 500;
-  font-family: 'Roboto Flex', sans-serif;
+  font-family: 'DM Mono', monospace;
   background: var(--surface2);
   border: 1px solid var(--border);
   color: var(--muted);
@@ -321,7 +320,7 @@ select option { background: var(--surface2); }
   background: var(--surface); 
   border-top: 1px solid var(--border); 
   border-bottom: none;
-  padding: 0px 8px calc(1px + env(safe-area-inset-bottom)); 
+  padding: 0.5rem 0.5rem calc(0.5rem + env(safe-area-inset-bottom)); 
   gap: 0; 
   justify-content: space-around;
   align-items: flex-end;
@@ -332,12 +331,11 @@ select option { background: var(--surface2); }
 .mobile-nav .nav-item { 
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: 4px; border-radius: 0; border-left: none; 
-  font-size: 12px; color: var(--muted);
+  font-size: 11px; color: var(--muted);
   flex: 1;
 }
 /* 尺寸限制：只設定大小，不強制 fill/stroke */
-.mobile-nav .nav-item svg { width: 22px; height: 22px; transform: translateY(5px); }
-.mobile-nav .nav-item span { transform: translateY(0px); display: block; }
+.mobile-nav .nav-item svg { width: 22px; height: 22px; }
 .mobile-nav .nav-item .nav-icon-wrap { margin-bottom: 4px; }
 /* nav-icon-wrap 內的 SVG：重置 fill/stroke，讓各個 icon 自己控制 */
 .mobile-nav .nav-item .nav-icon-wrap svg {
@@ -347,26 +345,13 @@ select option { background: var(--surface2); }
   stroke: none;         /* 預設不加描邊 */
 }
 .mobile-nav .nav-item { color: var(--muted); }
-.mobile-nav .nav-item.active { 
-  background: var(--a-color); 
-  color: var(--bg); 
-  font-weight: 500; 
-  border: 1px solid var(--border);
-  border-bottom: none;
-  border-radius: 8px 8px 0 0;
-  padding: 12px 0px 6px 0px;
-  margin: -12px 25px -4px 25px; /* offset padding vertically, stretch top by 7px, shrink horizontally more */
-  transform: scale(1.1) translateY(-1.5px);
-  transition: transform 0.2s ease;
-}
-.mobile-nav .nav-item.active .nav-icon-wrap { background: transparent; padding: 0; margin-bottom: 4px; border-radius: 0; }
-.mobile-nav .nav-item.active .nav-icon-wrap > svg { stroke: var(--bg); stroke-width: 2; fill: none; }
-.mobile-nav .nav-item.active > svg { stroke: var(--bg); stroke-width: 2; fill: none; }
-.mobile-nav .nav-item.active > svg.icon-fill { stroke: none; fill: var(--bg); stroke-width: 0; }
-.mobile-nav .nav-item.active svg { transform: translateY(3px); }
-.mobile-nav .nav-item.active span { transform: translateY(-4px); display: block; }
-.mobile-nav .nav-item:not(.active) > svg { stroke: var(--muted); stroke-width: 2; fill: none; }
-.mobile-nav .nav-item:not(.active) > svg.icon-fill { stroke: none; fill: var(--muted); stroke-width: 0; }
+.mobile-nav .nav-item.active { background: transparent; color: var(--text-primary); font-weight: 600; }
+.mobile-nav .nav-item.active > svg { stroke: var(--text-primary); stroke-width: 2.5; }
+/* active 狀態內的 icon 變黑 */
+.mobile-nav .nav-item.active .nav-icon-wrap svg { fill: #000000; stroke: none; }
+
+
+/* Add Button (V4 specific) */
 .fab-add { position: relative; }
 .fab-inner { 
   width: 48px; height: 48px; 
@@ -375,11 +360,11 @@ select option { background: var(--surface2); }
   display: flex; flex-direction: column; align-items: center; justify-content: center; 
   margin-top: -14px; margin-bottom: 2px;
   box-shadow: 0 4px 12px rgba(212,168,83,0.25);
-  border: 1px solid var(--a-color);
+  border: 1px solid rgba(212,168,83,0.35);
 }
-.fab-inner svg { width: 20px; height: 20px; stroke: #000; stroke-width: 2px; fill: none; margin-bottom: 0 !important; }
+.fab-inner svg { width: 20px; height: 20px; stroke: var(--a-color); stroke-width: 2px; fill: none; margin-bottom: 0 !important; }
 .nav-item.fab-add span { font-size: 10px; color: var(--a-color); margin-top: 2px; font-weight: 600; }
-.nav-item.fab-add.active .fab-inner { background: rgba(212,168,83,0.8); border-color: rgba(212,168,83,1); }
+.nav-item.fab-add.active .fab-inner { background: rgba(212,168,83,0.25); border-color: rgba(212,168,83,0.6); }
 
 /* New Record Button in Dashboard Header */
 .btn-add-record {
@@ -389,17 +374,17 @@ select option { background: var(--surface2); }
   padding: 8px 14px;
   border-radius: 20px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  border: none;
-  background: var(--a-color);
-  color: #000;
+  border: 1px solid var(--a-color);
+  background: rgba(212,168,83,0.12);
+  color: var(--a-color);
   font-family: 'Noto Sans TC', sans-serif;
   transition: all 0.15s;
   white-space: nowrap;
   flex-shrink: 0;
 }
-.btn-add-record:hover { transform: scale(1.04); }
+.btn-add-record:hover { background: rgba(212,168,83,0.22); }
 
 @media (max-width: 768px) {
   .app { grid-template-columns: 1fr; }
@@ -422,17 +407,17 @@ select option { background: var(--surface2); }
 
   /* Mobile chart fixes */
   /* Allow larger metric values on mobile */
-  .metric-value { font-size: 24px; }
-  .metrics-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .metric-value { font-size: 26px; }
+  .metrics-row { grid-template-columns: 1fr 1fr; gap: 10px; }
   .metric-card { padding: 0.9rem; }
   
   /* Mobile chart fixes */
   .chart-grid { display: flex; flex-direction: column; }
-  .chart-card { min-height: auto; }
+  .chart-card { min-height: 250px; }
   .chart-wrap { height: 180px; }
   .chart-dual { flex-direction: row; height: auto; gap: 8px; }
   .chart-dual > div { flex: 1 !important; min-width: 0; }
-  #chart-cost-a-container, #chart-cost-b-container { height: 110px !important; }
+  #chart-cost-a-container, #chart-cost-b-container { height: 140px !important; }
   .chart-card { padding: 1rem 0.85rem; }
   
   #sync-status-bar { margin-bottom: 0.75rem; }
@@ -446,8 +431,8 @@ select option { background: var(--surface2); }
   .history-desktop-table { display: none !important; }
   .history-mobile-cards { display: flex !important; }
   /* 6-item mobile nav */
-  .mobile-nav .nav-item { font-size: 12px; }
-  .mobile-nav .nav-item svg { width: 20px; height: 20px; transform: translateY(5px); }
+  .mobile-nav .nav-item { font-size: 10px; }
+  .mobile-nav .nav-item svg { width: 20px; height: 20px; }
 
   /* Mobile cashflow list */
   #sec-cashflow .page-header { flex-direction: row; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -463,7 +448,7 @@ select option { background: var(--surface2); }
 
 /* ── Cash Flow / Settlement ─────────────────────────── */
 .settlement-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-.settlement-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; font-family: 'Roboto Flex', sans-serif; margin-bottom: 4px; }
+.settlement-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
 .settlement-value { font-size: 26px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 .settlement-meta { font-size: 13px; color: var(--muted); margin-top: 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .cf-list { display: flex; flex-direction: column; gap: 8px; }
@@ -471,29 +456,29 @@ select option { background: var(--surface2); }
 .cf-item:hover { border-color: var(--border2); }
 .cf-item-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
 .cf-item-right { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-.cf-date { font-family: 'Roboto Flex', sans-serif; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+.cf-date { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); flex-shrink: 0; }
 .cf-direction { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .cf-cat { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-family: 'Noto Sans TC', sans-serif; flex-shrink: 0; white-space: nowrap; }
 .cf-cat-b_to_a { background: rgba(16,185,129,0.12); color: #10B981; border: 1px solid rgba(16,185,129,0.25); }
 .cf-cat-a_to_b { background: rgba(91,155,213,0.12); color: var(--b-color); border: 1px solid rgba(91,155,213,0.25); }
 .cf-cat-bonus_to_a { background: rgba(212,168,83,0.12); color: var(--a-color); border: 1px solid rgba(212,168,83,0.25); }
 .cf-note { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
-.cf-amount { font-family: 'Roboto Flex', sans-serif; font-size: 16px; font-weight: 600; flex-shrink: 0; }
+.cf-amount { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 600; flex-shrink: 0; }
 
 /* Settlement overview card */
 .settle-overview { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem; }
-.settle-title { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'Roboto Flex', sans-serif; padding: 1rem 1.25rem 0.5rem; }
+.settle-title { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; padding: 1rem 1.25rem 0.5rem; }
 .settle-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 1.25rem; border-top: 1px solid var(--border); }
-.settle-row-label { font-size: 14px; color: var(--muted); font-family: 'Roboto Flex', sans-serif; }
-.settle-row-val { font-family: 'Roboto Flex', sans-serif; font-size: 15px; font-weight: 500; }
+.settle-row-label { font-size: 14px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.settle-row-val { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500; }
 .settle-divider { border-top: 2px solid var(--border2); margin: 0; }
 .settle-total { background: rgba(0,0,0,0.2); padding: 14px 1.25rem; display: flex; justify-content: space-between; align-items: center; }
 .settle-total-label { font-size: 14px; color: var(--text); font-weight: 500; }
 .settle-total-val { font-size: 24px; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 .settle-estimate { background: rgba(212,168,83,0.04); border-top: 1px solid rgba(212,168,83,0.15); padding: 12px 1.25rem; }
-.settle-estimate-title { font-size: 11px; color: var(--a-color); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'Roboto Flex', sans-serif; margin-bottom: 8px; }
-.settle-estimate-row { display: flex; justify-content: space-between; font-size: 13px; font-family: 'Roboto Flex', sans-serif; color: var(--muted); padding: 3px 0; }
-.settle-estimate-result { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; font-family: 'Roboto Flex', sans-serif; padding: 8px 0 0; border-top: 1px solid rgba(212,168,83,0.2); margin-top: 6px; }
+.settle-estimate-title { font-size: 11px; color: var(--a-color); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+.settle-estimate-row { display: flex; justify-content: space-between; font-size: 13px; font-family: 'DM Mono', monospace; color: var(--muted); padding: 3px 0; }
+.settle-estimate-result { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; font-family: 'DM Mono', monospace; padding: 8px 0 0; border-top: 1px solid rgba(212,168,83,0.2); margin-top: 6px; }
 
 /* Category selector active state */
 #cf-cat-btn-b_to_a.active, #cf-cat-btn-a_to_b.active, #cf-cat-btn-bonus_to_a.active {
@@ -508,21 +493,27 @@ select option { background: var(--surface2); }
 
 <!-- Mobile Nav -->
 <div class="mobile-nav" id="mobile-nav">
-  <div class="nav-item" onclick="switchSection('positions', this)">
-    <svg class="icon-fill" width="17" height="14" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M18.125 16.25C18.125 16.4158 18.0592 16.5747 17.9419 16.6919C17.8247 16.8092 17.6658 16.875 17.5 16.875H2.5C2.33424 16.875 2.17527 16.8092 2.05806 16.6919C1.94085 16.5747 1.875 16.4158 1.875 16.25V3.75C1.875 3.58424 1.94085 3.42527 2.05806 3.30806C2.17527 3.19085 2.33424 3.125 2.5 3.125C2.66576 3.125 2.82473 3.19085 2.94194 3.30806C3.05915 3.42527 3.125 3.58424 3.125 3.75V12.2414L7.05781 8.30781C7.11586 8.2497 7.18479 8.2036 7.26066 8.17215C7.33654 8.1407 7.41787 8.12451 7.5 8.12451C7.58213 8.12451 7.66346 8.1407 7.73934 8.17215C7.81521 8.2036 7.88414 8.2497 7.94219 8.30781L10 10.3664L14.1164 6.25H12.5C12.3342 6.25 12.1753 6.18415 12.0581 6.06694C11.9408 5.94973 11.875 5.79076 11.875 5.625C11.875 5.45924 11.9408 5.30027 12.0581 5.18306C12.1753 5.06585 12.3342 5 12.5 5H15.625C15.7908 5 15.9497 5.06585 16.0669 5.18306C16.1842 5.30027 16.25 5.45924 16.25 5.625V8.75C16.25 8.91576 16.1842 9.07473 16.0669 9.19194C15.9497 9.30915 15.7908 9.375 15.625 9.375C15.4592 9.375 15.3003 9.30915 15.1831 9.19194C15.0658 9.07473 15 8.91576 15 8.75V7.13359L10.4422 11.6922C10.3841 11.7503 10.3152 11.7964 10.2393 11.8279C10.1635 11.8593 10.0821 11.8755 10 11.8755C9.91787 11.8755 9.83654 11.8593 9.76066 11.8279C9.68479 11.7964 9.61586 11.7503 9.55781 11.6922L7.5 9.63359L3.125 14.0086V15.625H17.5C17.6658 15.625 17.8247 15.6908 17.9419 15.8081C18.0592 15.9253 18.125 16.0842 18.125 16.25Z" /></svg>
-    <span>庫存</span>
-  </div>
-  <div class="nav-item" onclick="switchSection('history', this)">
-    <svg class="icon-fill" width="15" height="12" viewBox="0 0 15 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3.75 0.9375C3.75 0.77174 3.81585 0.612769 3.93306 0.495558C4.05027 0.378348 4.20924 0.3125 4.375 0.3125H14.375C14.5408 0.3125 14.6997 0.378348 14.8169 0.495558C14.9342 0.612769 15 0.77174 15 0.9375C15 1.10326 14.9342 1.26223 14.8169 1.37944C14.6997 1.49665 14.5408 1.5625 14.375 1.5625H4.375C4.20924 1.5625 4.05027 1.49665 3.93306 1.37944C3.81585 1.26223 3.75 1.10326 3.75 0.9375ZM14.375 5.3125H4.375C4.20924 5.3125 4.05027 5.37835 3.93306 5.49556C3.81585 5.61277 3.75 5.77174 3.75 5.9375C3.75 6.10326 3.81585 6.26223 3.93306 6.37944C4.05027 6.49665 4.20924 6.5625 4.375 6.5625H14.375C14.5408 6.5625 14.6997 6.49665 14.8169 6.37944C14.9342 6.26223 15 6.10326 15 5.9375C15 5.77174 14.9342 5.61277 14.8169 5.49556C14.6997 5.37835 14.5408 5.3125 14.375 5.3125ZM14.375 10.3125H4.375C4.20924 10.3125 4.05027 10.3783 3.93306 10.4956C3.81585 10.6128 3.75 10.7717 3.75 10.9375C3.75 11.1033 3.81585 11.2622 3.93306 11.3794C4.05027 11.4967 4.20924 11.5625 4.375 11.5625H14.375C14.5408 11.5625 14.6997 11.4967 14.8169 11.3794C14.9342 11.2622 15 11.1033 15 10.9375C15 10.7717 14.9342 10.6128 14.8169 10.4956C14.6997 10.3783 14.5408 10.3125 14.375 10.3125ZM0.937501 0C0.752081 0 0.570824 0.0549835 0.416653 0.157997C0.262482 0.261011 0.142321 0.407429 0.0713634 0.578734C0.000406206 0.75004 -0.0181594 0.93854 0.0180142 1.1204C0.0541879 1.30225 0.143476 1.4693 0.274588 1.60041C0.4057 1.73152 0.572746 1.82081 0.754603 1.85699C0.936461 1.89316 1.12496 1.87459 1.29627 1.80364C1.46757 1.73268 1.61399 1.61252 1.717 1.45835C1.82002 1.30418 1.875 1.11292 1.875 0.9375C1.875 0.68886 1.77623 0.450403 1.60041 0.274587C1.4246 0.0987719 1.18614 0 0.937501 0ZM0.937501 5C0.752081 5 0.570824 5.05498 0.416653 5.158C0.262482 5.26101 0.142321 5.40743 0.0713634 5.57873C0.000406206 5.75004 -0.0181594 5.93854 0.0180142 6.1204C0.0541879 6.30225 0.143476 6.4693 0.274588 6.60041C0.4057 6.73152 0.572746 6.82081 0.754603 6.85699C0.936461 6.89316 1.12496 6.87459 1.29627 6.80364C1.46757 6.73268 1.61399 6.61252 1.717 6.45835C1.82002 6.30418 1.875 6.12292 1.875 5.9375C1.875 5.68886 1.77623 5.4504 1.60041 5.27459C1.4246 5.09877 1.18614 5 0.937501 5ZM0.937501 10C0.752081 10 0.570824 10.055 0.416653 10.158C0.262482 10.261 0.142321 10.4074 0.0713634 10.5787C0.000406206 10.75 -0.0181594 10.9385 0.0180142 11.1204C0.0541879 11.3023 0.143476 11.4693 0.274588 11.6004C0.4057 11.7315 0.572746 11.8208 0.754603 11.857C0.936461 11.8932 1.12496 11.8746 1.29627 11.8036C1.46757 11.7327 1.61399 11.6125 1.717 11.4583C1.82002 11.3042 1.875 11.1229 1.875 10.9375C1.875 10.6889 1.77623 10.4504 1.60041 10.2746C1.4246 10.0988 1.18614 10 0.937501 10Z" /></svg>
-    <span>明細</span>
-  </div>
   <div class="nav-item active" onclick="switchSection('dashboard', this)">
-    <svg viewBox="0 0 24 24"><circle cx="6.5" cy="6.5" r="3.5"></circle><circle cx="17.5" cy="6.5" r="3.5"></circle><circle cx="17.5" cy="17.5" r="3.5"></circle><circle cx="6.5" cy="17.5" r="3.5"></circle></svg>
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
     <span>總覽</span>
   </div>
+  <div class="nav-item" onclick="switchSection('positions', this)">
+    <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+    <span>持股</span>
+  </div>
+  <div class="nav-item fab-add" onclick="switchSection('add', this)">
+    <div class="fab-inner">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      <span>新增</span>
+    </div>
+  </div>
+  <div class="nav-item" onclick="switchSection('history', this)">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+    <span>明細</span>
+  </div>
   <div class="nav-item" onclick="switchSection('cashflow', this)">
-    <svg class="icon-fill" width="20" height="12" viewBox="0 0 20 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10 2.66667C9.34073 2.66667 8.69626 2.86216 8.1481 3.22843C7.59994 3.59471 7.17269 4.1153 6.9204 4.72439C6.66811 5.33348 6.6021 6.0037 6.73072 6.6503C6.85933 7.29691 7.1768 7.89085 7.64298 8.35702C8.10915 8.8232 8.7031 9.14067 9.3497 9.26928C9.9963 9.3979 10.6665 9.33189 11.2756 9.0796C11.8847 8.82731 12.4053 8.40006 12.7716 7.8519C13.1378 7.30374 13.3333 6.65927 13.3333 6C13.3333 5.11595 12.9821 4.2681 12.357 3.64298C11.7319 3.01786 10.8841 2.66667 10 2.66667ZM10 8C9.60444 8 9.21776 7.8827 8.88886 7.66294C8.55996 7.44318 8.30362 7.13082 8.15224 6.76537C8.00087 6.39991 7.96126 5.99778 8.03843 5.60982C8.1156 5.22186 8.30608 4.86549 8.58579 4.58579C8.86549 4.30608 9.22186 4.1156 9.60982 4.03843C9.99778 3.96126 10.3999 4.00087 10.7654 4.15224C11.1308 4.30362 11.4432 4.55996 11.6629 4.88886C11.8827 5.21776 12 5.60444 12 6C12 6.53043 11.7893 7.03914 11.4142 7.41421C11.0391 7.78929 10.5304 8 10 8ZM19.3333 0H0.666667C0.489856 0 0.320286 0.070238 0.195262 0.195262C0.0702379 0.320287 0 0.489856 0 0.666667V11.3333C0 11.5101 0.0702379 11.6797 0.195262 11.8047C0.320287 11.9298 0.489856 12 0.666667 12H19.3333C19.5101 12 19.6797 11.9298 19.8047 11.8047C19.9298 11.6797 20 11.5101 20 11.3333V0.666667C20 0.489856 19.9298 0.320287 19.8047 0.195262C19.6797 0.070238 19.5101 0 19.3333 0ZM15.4708 10.6667H4.52917C4.30534 9.90967 3.89567 9.2207 3.33749 8.66251C2.7793 8.10433 2.09033 7.69466 1.33333 7.47083V4.52917C2.09033 4.30534 2.7793 3.89567 3.33749 3.33749C3.89567 2.7793 4.30534 2.09033 4.52917 1.33333H15.4708C15.6947 2.09033 16.1043 2.7793 16.6625 3.33749C17.2207 3.89567 17.9097 4.30534 18.6667 4.52917V7.47083C17.9097 7.69466 17.2207 8.10433 16.6625 8.66251C16.1043 9.2207 15.6947 9.90967 15.4708 10.6667ZM18.6667 3.11417C17.867 2.77033 17.2297 2.13297 16.8858 1.33333H18.6667V3.11417ZM3.11417 1.33333C2.77033 2.13297 2.13297 2.77033 1.33333 3.11417V1.33333H3.11417ZM1.33333 8.88583C2.13297 9.22967 2.77033 9.86703 3.11417 10.6667H1.33333V8.88583ZM16.8858 10.6667C17.2297 9.86703 17.867 9.22967 18.6667 8.88583V10.6667H16.8858Z" /></svg>
-    <span>現金帳</span>
+    <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+    <span>流水帳</span>
   </div>
   <div class="nav-item" onclick="switchSection('settings', this)">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -556,68 +547,51 @@ select option { background: var(--surface2); }
   <!-- Main -->
   <main class="main">
     <!-- Global Sync Status Indicator (Hidden on mobile dashboard to merge into header) -->
-    <div id="sync-status-bar" class="desktop-only" style="display:none;justify-content:flex-end;margin-bottom:1rem;">
+    <div id="sync-status-bar" class="desktop-only" style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
       <span id="sync-status" class="status-badge local">💾 本機儲存模式</span>
     </div>
 
     <!-- Dashboard -->
     <div class="section active" id="sec-dashboard">
-      <div class="page-header dash-header-v4" style="flex-shrink: 0; display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: auto; margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 12px; position: sticky; top: 0; background: var(--bg); z-index: 100; margin-top: calc(-1rem - env(safe-area-inset-top)); padding-top: calc(1.5rem + env(safe-area-inset-top)); margin-left: -1rem; margin-right: -1rem; padding-left: 1rem; padding-right: 1rem;">
-        
-        <!-- Left: Title & Cloud Icon -->
-        <div style="display: flex; align-items: center; gap: 8px; position: relative; z-index: 2;">
-          <div class="dash-title-v4" style="text-align: left; font-size: 22px; font-weight: 500; font-family: 'Roboto', sans-serif; color: rgba(204, 204, 204, 1); line-height: 28px; flex-shrink: 0;">總覽</div>
-          <div class="dash-sync-v4" id="sync-icon-v4" style="display: flex; align-items: center;">
-            <svg width="23" height="17" viewBox="0 0 23 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M14.245 0C12.7128 0.00117617 11.2112 0.428565 9.908 1.23437C8.60484 2.04017 7.55154 3.19262 6.8659 4.56281C6.05023 4.44385 5.21881 4.49424 4.42348 4.71082C3.62815 4.92741 2.88598 5.30555 2.24326 5.82166C1.60054 6.33777 1.07106 6.98077 0.687838 7.71057C0.304621 8.44036 0.0758875 9.24129 0.0159065 10.0634C-0.0440744 10.8855 0.0659834 11.7112 0.339215 12.4888C0.612447 13.2665 1.04299 13.9796 1.60399 14.5835C2.165 15.1875 2.84442 15.6693 3.59989 15.999C4.35536 16.3288 5.17067 16.4993 5.99496 16.5H14.245C16.433 16.5 18.5314 15.6308 20.0786 14.0836C21.6258 12.5365 22.495 10.438 22.495 8.25C22.495 6.06196 21.6258 3.96354 20.0786 2.41637C18.5314 0.869194 16.433 0 14.245 0ZM14.245 15H5.99496C4.80149 15 3.65689 14.5259 2.81298 13.682C1.96907 12.8381 1.49496 11.6935 1.49496 10.5C1.49496 9.30653 1.96907 8.16193 2.81298 7.31802C3.65689 6.47411 4.80149 6 5.99496 6C6.09809 6 6.20121 6 6.3034 6.01031C6.09829 6.73918 5.99451 7.49282 5.99496 8.25C5.99496 8.44891 6.07398 8.63968 6.21463 8.78033C6.35528 8.92098 6.54605 9 6.74496 9C6.94387 9 7.13464 8.92098 7.27529 8.78033C7.41594 8.63968 7.49496 8.44891 7.49496 8.25C7.49496 6.91498 7.89084 5.60993 8.63254 4.4999C9.37424 3.38987 10.4284 2.5247 11.6618 2.01381C12.8952 1.50292 14.2524 1.36925 15.5618 1.6297C16.8712 1.89015 18.0739 2.53302 19.0179 3.47703C19.9619 4.42103 20.6048 5.62377 20.8653 6.93314C21.1257 8.24251 20.992 9.59971 20.4811 10.8331C19.9703 12.0665 19.1051 13.1207 17.9951 13.8624C16.885 14.6041 15.58 15 14.245 15ZM17.7756 6.21937C17.8453 6.28903 17.9006 6.37175 17.9384 6.46279C17.9761 6.55384 17.9956 6.65144 17.9956 6.75C17.9956 6.84856 17.9761 6.94616 17.9384 7.03721C17.9006 7.12825 17.8453 7.21097 17.7756 7.28063L13.2756 11.7806C13.2059 11.8504 13.1232 11.9057 13.0322 11.9434C12.9411 11.9812 12.8435 12.0006 12.745 12.0006C12.6464 12.0006 12.5488 11.9812 12.4578 11.9434C12.3667 11.9057 12.284 11.8504 12.2143 11.7806L9.96433 9.53063C9.8236 9.38989 9.74454 9.19902 9.74454 9C9.74454 8.80098 9.8236 8.61011 9.96433 8.46937C10.1051 8.32864 10.2959 8.24958 10.495 8.24958C10.694 8.24958 10.8849 8.32864 11.0256 8.46937L12.745 10.1897L16.7143 6.21937C16.784 6.14964 16.8667 6.09432 16.9578 6.05658C17.0488 6.01884 17.1464 5.99941 17.245 5.99941C17.3435 5.99941 17.4411 6.01884 17.5322 6.05658C17.6232 6.09432 17.7059 6.14964 17.7756 6.21937Z" fill="#00C3D0"/>
-            </svg>
-          </div>
+      <div class="page-header dash-header-v4" style="display: flex; flex-direction: row; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 0.5rem; margin-top: 0.5rem;">
+        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+          <div class="dash-title-v4" style="text-align: left; line-height: 1; margin-top: 4px; font-size: 24px; font-weight: 600;">總覽</div>
+          <div id="dash-date" style="font-size: 13px; color: var(--text-muted); margin-top: 6px; text-align: left; white-space: nowrap;"></div>
         </div>
-
-        <!-- Middle: Date -->
-        <div id="dash-date" style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 13px; font-weight: 400; color: #8A8D93; white-space: nowrap; z-index: 1;"></div>
-
-        <!-- Right: Add Record Button -->
-        <button class="btn-add-record" onclick="switchSection('add', null)" style="position: relative; z-index: 2; display:flex; align-items:center; gap:6px; font-weight: 500; font-size: 14px; padding: 5px 14px 5px 5px; border-radius: 100px 0 0 100px; margin-right: -1rem;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="16"></line>
-            <line x1="8" y1="12" x2="16" y2="12"></line>
+        <div class="dash-sync-v4" id="sync-icon-v4" style="display: flex; justify-content: flex-end;">
+          <svg viewBox="0 0 24 24" style="width: 22px; height: 22px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;">
+            <path d="M17.5 19c2.5 0 4.5-2 4.5-4.5a4.5 4.5 0 0 0-4.08-4.47A7 7 0 0 0 4.58 11.5 5 5 0 0 0 6 21h10z"></path>
+            <polyline points="9 16 11 18 15 13"></polyline>
           </svg>
-          新增紀錄
-        </button>
+        </div>
       </div>
-      <div style="display: flex; flex-direction: column; justify-content: center; margin-top: auto; margin-bottom: auto; padding: 0.5rem 0;">
-        <div class="metrics-row" id="dash-metrics"></div>
+      <div class="metrics-row" id="dash-metrics"></div>
       <div class="chart-grid">
         <div class="chart-card">
           <div class="chart-title">持倉成本分佈</div>
           <div class="chart-dual">
             <div style="flex: 1; position: relative; min-width: 0; display: flex; flex-direction: column;">
-              <div style="position: relative; height: 135px;" id="chart-cost-a-container">
+              <div style="text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-a-title">人員 A 持倉配比</div>
+              <div style="position: relative; height: 180px;" id="chart-cost-a-container">
                 <canvas id="chart-cost-a"></canvas>
               </div>
-              <div style="text-align: center; font-size: 10px; color: var(--muted); margin-top: -4px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-a-title">人員 A 持倉配比</div>
             </div>
             <div style="flex: 1; position: relative; min-width: 0; display: flex; flex-direction: column;">
-              <div style="position: relative; height: 135px;" id="chart-cost-b-container">
+              <div style="text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-b-title">人員 B 持倉配比</div>
+              <div style="position: relative; height: 180px;" id="chart-cost-b-container">
                 <canvas id="chart-cost-b"></canvas>
               </div>
-              <div style="text-align: center; font-size: 10px; color: var(--muted); margin-top: -4px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-b-title">人員 B 持倉配比</div>
             </div>
           </div>
-        </div>
         </div>
       </div>
     </div>
 
     <!-- Positions -->
     <div class="section" id="sec-positions">
-      <div class="page-header" style="flex-shrink: 0; display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: auto; margin-bottom: 20px; padding-bottom: 12px; position: sticky; top: 0; background: var(--bg); z-index: 100; margin-top: calc(-1rem - env(safe-area-inset-top)); padding-top: calc(1.5rem + env(safe-area-inset-top)); margin-left: -1rem; margin-right: -1rem; padding-left: 1rem; padding-right: 1rem;">
-        <div class="page-title" style="text-align: left; font-size: 22px; font-weight: 500; font-family: 'Roboto', sans-serif; color: rgba(204, 204, 204, 1); line-height: 28px; flex-shrink: 0; margin: 0;">持股分析</div>
-        <button class="btn" onclick="fetchAllPrices()" id="btn-fetch-all" style="background:#00C3D0; color:#000; border:none; border-radius:4px; padding:6px 10px; font-size:12px; font-weight:500; display:flex; align-items:center; gap:6px; margin-left:auto;">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M12 0.897755V3.95938C12 4.09471 11.9473 4.2245 11.8536 4.3202C11.7598 4.41589 11.6326 4.46965 11.5 4.46965H8.5C8.36739 4.46965 8.24021 4.41589 8.14645 4.3202C8.05268 4.2245 8 4.09471 8 3.95938C8 3.82405 8.05268 3.69426 8.14645 3.59857C8.24021 3.50287 8.36739 3.44911 8.5 3.44911H10.2931L9.37875 2.51595C8.44948 1.56328 7.1878 1.0258 5.87063 1.0215H5.8425C4.53636 1.01837 3.28151 1.54011 2.34937 2.47386C2.25389 2.56482 2.12731 2.61405 1.99672 2.61099C1.86612 2.60793 1.74189 2.55284 1.65059 2.4575C1.55929 2.36215 1.50817 2.23414 1.50818 2.10082C1.50819 1.96751 1.55932 1.8395 1.65062 1.74417C2.78033 0.617359 4.29988 -0.0093287 5.87952 0.000104982C7.45916 0.00953866 8.97142 0.654333 10.0881 1.79456L11 2.72772V0.897755C11 0.762423 11.0527 0.632634 11.1464 0.536939C11.2402 0.441245 11.3674 0.387484 11.5 0.387484C11.6326 0.387484 11.7598 0.441245 11.8536 0.536939C11.9473 0.632634 12 0.762423 12 0.897755ZM9.65063 9.52708C8.70927 10.4655 7.44337 10.9873 6.12747 10.9795C4.81156 10.9716 3.55175 10.4346 2.62125 9.48498L1.70688 8.55182H3.5C3.63261 8.55182 3.75979 8.49806 3.85355 8.40237C3.94732 8.30667 4 8.17688 4 8.04155C4 7.90622 3.94732 7.77643 3.85355 7.68073C3.75979 7.58504 3.63261 7.53128 3.5 7.53128H0.5C0.367392 7.53128 0.240215 7.58504 0.146447 7.68073C0.0526785 7.77643 0 7.90622 0 8.04155V11.1032C0 11.2385 0.0526785 11.3683 0.146447 11.464C0.240215 11.5597 0.367392 11.6134 0.5 11.6134C0.632608 11.6134 0.759785 11.5597 0.853553 11.464C0.947321 11.3683 1 11.2385 1 11.1032V9.27322L1.91438 10.2064C3.02951 11.3501 4.544 11.9953 6.125 12H6.15812C7.72568 12.0041 9.23171 11.3778 10.35 10.2568C10.4413 10.1614 10.4924 10.0334 10.4924 9.90011C10.4925 9.7668 10.4413 9.63878 10.35 9.54344C10.2587 9.44809 10.1345 9.393 10.0039 9.38994C9.87332 9.38689 9.74674 9.43611 9.65125 9.52708H9.65063Z" fill="black"/></svg> 抓取現價
-        </button>
+      <div class="page-header">
+        <div><div class="page-title">持股分析</div><div class="page-sub">各股票分人員損益明細</div></div>
+        <button class="btn btn-primary btn-sm" onclick="fetchAllPrices()" id="btn-fetch-all">⟳ 自動抓取所有現價</button>
       </div>
       <!-- Person view tabs -->
       <div class="person-tabs">
@@ -749,7 +723,7 @@ select option { background: var(--surface2); }
         <button class="btn btn-primary" onclick="saveSettings()" id="btn-save-settings">儲存設定</button>
       </div>
       <div class="form-card">
-        <div style="font-size:13px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:4px;"><svg class="icon-fill" style="width:16px;height:12px;" viewBox="0 0 23 17" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14.245 0C12.7128 0.00117617 11.2112 0.428565 9.908 1.23437C8.60484 2.04017 7.55154 3.19262 6.8659 4.56281C6.05023 4.44385 5.21881 4.49424 4.42348 4.71082C3.62815 4.92741 2.88598 5.30555 2.24326 5.82166C1.60054 6.33777 1.07106 6.98077 0.687838 7.71057C0.304621 8.44036 0.0758875 9.24129 0.0159065 10.0634C-0.0440744 10.8855 0.0659834 11.7112 0.339215 12.4888C0.612447 13.2665 1.04299 13.9796 1.60399 14.5835C2.165 15.1875 2.84442 15.6693 3.59989 15.999C4.35536 16.3288 5.17067 16.4993 5.99496 16.5H14.245C16.433 16.5 18.5314 15.6308 20.0786 14.0836C21.6258 12.5365 22.495 10.438 22.495 8.25C22.495 6.06196 21.6258 3.96354 20.0786 2.41637C18.5314 0.869194 16.433 0 14.245 0ZM14.245 15H5.99496C4.80149 15 3.65689 14.5259 2.81298 13.682C1.96907 12.8381 1.49496 11.6935 1.49496 10.5C1.49496 9.30653 1.96907 8.16193 2.81298 7.31802C3.65689 6.47411 4.80149 6 5.99496 6C6.09809 6 6.20121 6 6.3034 6.01031C6.09829 6.73918 5.99451 7.49282 5.99496 8.25C5.99496 8.44891 6.07398 8.63968 6.21463 8.78033C6.35528 8.92098 6.54605 9 6.74496 9C6.94387 9 7.13464 8.92098 7.27529 8.78033C7.41594 8.63968 7.49496 8.44891 7.49496 8.25C7.49496 6.91498 7.89084 5.60993 8.63254 4.4999C9.37424 3.38987 10.4284 2.5247 11.6618 2.01381C12.8952 1.50292 14.2524 1.36925 15.5618 1.6297C16.8712 1.89015 18.0739 2.53302 19.0179 3.47703C19.9619 4.42103 20.6048 5.62377 20.8653 6.93314C21.1257 8.24251 20.992 9.59971 20.4811 10.8331C19.9703 12.0665 19.1051 13.1207 17.9951 13.8624C16.885 14.6041 15.58 15 14.245 15ZM17.7756 6.21937C17.8453 6.28903 17.9006 6.37175 17.9384 6.46279C17.9761 6.55384 17.9956 6.65144 17.9956 6.75C17.9956 6.84856 17.9761 6.94616 17.9384 7.03721C17.9006 7.12825 17.8453 7.21097 17.7756 7.28063L13.2756 11.7806C13.2059 11.8504 13.1232 11.9057 13.0322 11.9434C12.9411 11.9812 12.8435 12.0006 12.745 12.0006C12.6464 12.0006 12.5488 11.9812 12.4578 11.9434C12.3667 11.9057 12.284 11.8504 12.2143 11.7806L9.96433 9.53063C9.8236 9.38989 9.74454 9.19902 9.74454 9C9.74454 8.80098 9.8236 8.61011 9.96433 8.46937C10.1051 8.32864 10.2959 8.24958 10.495 8.24958C10.694 8.24958 10.8849 8.32864 11.0256 8.46937L12.745 10.1897L16.7143 6.21937C16.784 6.14964 16.8667 6.09432 16.9578 6.05658C17.0488 6.01884 17.1464 5.99941 17.245 5.99941C17.3435 5.99941 17.4411 6.01884 17.5322 6.05658C17.6232 6.09432 17.7059 6.14964 17.7756 6.21937Z"/></svg> 雲端即時同步說明</div>
+        <div style="font-size:13px;font-weight:500;margin-bottom:8px">☁️ 雲端即時同步說明</div>
         <div style="font-size:12px;color:var(--muted);line-height:1.7;">
           本帳本已支援 **Firebase Firestore** 雲端即時同步。開通後，各個裝置（電腦與手機）只要開啟網址，無須輸入任何金鑰即會自動同步更新。<br><br>
           <strong style="color:var(--text)">設定步驟：</strong><br>
@@ -783,7 +757,7 @@ select option { background: var(--surface2); }
         </div>
         <div style="margin-top:16px">
           <label class="field-label" style="margin-bottom:6px;display:block">或貼上 CSV 文字</label>
-          <textarea id="csv-paste" rows="5" placeholder="date,who,side,symbol,qty,price,note&#10;2024-01-15,A,buy,2330,1000,600,..." style="font-family:'Roboto Flex', sans-serif;font-size:12px;resize:vertical"></textarea>
+          <textarea id="csv-paste" rows="5" placeholder="date,who,side,symbol,qty,price,note&#10;2024-01-15,A,buy,2330,1000,600,..." style="font-family:'DM Mono',monospace;font-size:12px;resize:vertical"></textarea>
         </div>
         <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
           <button class="btn btn-primary" onclick="importCSV('merge')" id="btn-import-merge">合併匯入</button>
@@ -1113,7 +1087,7 @@ function initFirebase() {
       syncDocRef = db.collection('ledgers').doc(docId);
       
       if (statusIndicator) {
-        statusIndicator.innerHTML = `<svg class="icon-fill" style="width:16px;height:12px;margin-right:2px;vertical-align:middle;margin-top:-2px;" viewBox="0 0 23 17" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14.245 0C12.7128 0.00117617 11.2112 0.428565 9.908 1.23437C8.60484 2.04017 7.55154 3.19262 6.8659 4.56281C6.05023 4.44385 5.21881 4.49424 4.42348 4.71082C3.62815 4.92741 2.88598 5.30555 2.24326 5.82166C1.60054 6.33777 1.07106 6.98077 0.687838 7.71057C0.304621 8.44036 0.0758875 9.24129 0.0159065 10.0634C-0.0440744 10.8855 0.0659834 11.7112 0.339215 12.4888C0.612447 13.2665 1.04299 13.9796 1.60399 14.5835C2.165 15.1875 2.84442 15.6693 3.59989 15.999C4.35536 16.3288 5.17067 16.4993 5.99496 16.5H14.245C16.433 16.5 18.5314 15.6308 20.0786 14.0836C21.6258 12.5365 22.495 10.438 22.495 8.25C22.495 6.06196 21.6258 3.96354 20.0786 2.41637C18.5314 0.869194 16.433 0 14.245 0ZM14.245 15H5.99496C4.80149 15 3.65689 14.5259 2.81298 13.682C1.96907 12.8381 1.49496 11.6935 1.49496 10.5C1.49496 9.30653 1.96907 8.16193 2.81298 7.31802C3.65689 6.47411 4.80149 6 5.99496 6C6.09809 6 6.20121 6 6.3034 6.01031C6.09829 6.73918 5.99451 7.49282 5.99496 8.25C5.99496 8.44891 6.07398 8.63968 6.21463 8.78033C6.35528 8.92098 6.54605 9 6.74496 9C6.94387 9 7.13464 8.92098 7.27529 8.78033C7.41594 8.63968 7.49496 8.44891 7.49496 8.25C7.49496 6.91498 7.89084 5.60993 8.63254 4.4999C9.37424 3.38987 10.4284 2.5247 11.6618 2.01381C12.8952 1.50292 14.2524 1.36925 15.5618 1.6297C16.8712 1.89015 18.0739 2.53302 19.0179 3.47703C19.9619 4.42103 20.6048 5.62377 20.8653 6.93314C21.1257 8.24251 20.992 9.59971 20.4811 10.8331C19.9703 12.0665 19.1051 13.1207 17.9951 13.8624C16.885 14.6041 15.58 15 14.245 15ZM17.7756 6.21937C17.8453 6.28903 17.9006 6.37175 17.9384 6.46279C17.9761 6.55384 17.9956 6.65144 17.9956 6.75C17.9956 6.84856 17.9761 6.94616 17.9384 7.03721C17.9006 7.12825 17.8453 7.21097 17.7756 7.28063L13.2756 11.7806C13.2059 11.8504 13.1232 11.9057 13.0322 11.9434C12.9411 11.9812 12.8435 12.0006 12.745 12.0006C12.6464 12.0006 12.5488 11.9812 12.4578 11.9434C12.3667 11.9057 12.284 11.8504 12.2143 11.7806L9.96433 9.53063C9.8236 9.38989 9.74454 9.19902 9.74454 9C9.74454 8.80098 9.8236 8.61011 9.96433 8.46937C10.1051 8.32864 10.2959 8.24958 10.495 8.24958C10.694 8.24958 10.8849 8.32864 11.0256 8.46937L12.745 10.1897L16.7143 6.21937C16.784 6.14964 16.8667 6.09432 16.9578 6.05658C17.0488 6.01884 17.1464 5.99941 17.245 5.99941C17.3435 5.99941 17.4411 6.01884 17.5322 6.05658C17.6232 6.09432 17.7059 6.14964 17.7756 6.21937Z"/></svg> 雲端同步完成`;
+        statusIndicator.innerHTML = `☁️ 雲端同步完成`;
         statusIndicator.className = 'status-badge cloud';
       }
       
@@ -1416,14 +1390,7 @@ function getSummary() {
 // ── Dashboard ──────────────────────────────────────────
 function renderDashboard() {
   const dateEl = document.getElementById('dash-date');
-  if (dateEl) {
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = d.getMonth() + 1;
-    const day = d.getDate();
-    const w = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][d.getDay()];
-    dateEl.textContent = `${y} 年 ${m} 月 ${day} 日 ${w}`;
-  }
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
   const { costA, costB, unrealA, unrealB, realA, realB } = getSummary();
   const totalCost = costA + costB;
   const totalUnreal = unrealA + unrealB;
@@ -1455,9 +1422,9 @@ function renderDashboard() {
     </div>
     
     <div class="metric-card metric-card-total-pnl">
-      <div class="metric-label" style="font-size: 12px;">合計總損益</div>
+      <div class="metric-label">合計總損益</div>
       <div class="metric-value ${totalPnl >= 0 ? 'pos' : 'neg'}">${formatMoney(totalPnl)}</div>
-      <div class="metric-sub" style="margin-top: 10px; color: var(--muted); font-size: 11px;">總持倉成本 $${Math.round(Math.abs(totalCost)).toLocaleString()}</div>
+      <div class="metric-sub" style="margin-top: 10px; color: #8E8E93; font-size: 12px;">總持倉成本 $${Math.round(Math.abs(totalCost)).toLocaleString()}</div>
     </div>
     ${renderCashBalanceMetricCard()}
   `;
@@ -1484,7 +1451,6 @@ function renderCharts() {
   const donutOpts = {
     responsive: true,
     maintainAspectRatio: false,
-    layout: { padding: 15 },
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -1845,12 +1811,13 @@ function renderPositions() {
       const qty = p ? p.qty : 0;
       const costPct = cp && avg > 0 ? ((cp - avg) / avg * 100) : null;
 
-      // 頂部：股票代號 + 現價
+      // 頂部：股票代號 + 現價 + 漲跌幅
       const priceBlock = cp
         ? `<div class="compact-price-block">
-            <div class="compact-price" style="color:#FFF">${cp.toFixed(2)}<span style="font-size:12px; color:var(--muted); font-family:'Noto Sans TC',sans-serif; font-weight:normal; margin-left:2px;"> 元</span></div>
+            <div class="compact-price" style="color:${costPct!==null&&costPct>=0?'var(--green)':'var(--red)'}">${cp.toFixed(2)}</div>
+            ${costPct !== null ? `<div class="compact-change" style="color:${costPct>=0?'var(--green)':'var(--red)'}">${costPct>=0?'+':''}${costPct.toFixed(2)}% vs 均</div>` : '<div class="compact-change" style="color:var(--muted)">— 無均價</div>'}
           </div>`
-        : `<div class="compact-price-block"><div style="font-size:12px;color:var(--muted);font-family:'Roboto Flex', sans-serif">尚無現價</div></div>`;
+        : `<div class="compact-price-block"><div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace">尚無現價</div></div>`;
 
       // 中間三格統計
       const statsRow = `<div class="compact-stats">
@@ -1859,11 +1826,11 @@ function renderPositions() {
           <div class="compact-stat-val">${qty > 0 ? qty.toLocaleString() : '—'}<span style="font-size:11px;color:var(--muted)"> 股</span></div>
         </div>
         <div class="compact-stat">
-          <div class="compact-stat-label">平均成本</div>
-          <div class="compact-stat-val" style="display:flex; justify-content:space-between; align-items:baseline;"><span>${avg > 0 ? avg.toFixed(2) : '—'}<span style="font-size:11px;color:var(--muted)"> 元</span></span>${costPct !== null ? `<span style="font-size:12px; color:var(--muted); font-weight:normal;"> ( ${costPct>=0?'+':''}${costPct.toFixed(2)}% ) </span>` : ''}</div>
+          <div class="compact-stat-label">均成本</div>
+          <div class="compact-stat-val">${avg > 0 ? avg.toFixed(2) : '—'}<span style="font-size:11px;color:var(--muted)"> 元</span></div>
         </div>
         <div class="compact-stat">
-          <div class="compact-stat-label">已實現損益</div>
+          <div class="compact-stat-label">已實現</div>
           <div class="compact-stat-val" style="color:${pnlColor(realized)}">${realized !== 0 ? (realized >= 0 ? '+' : '') + Math.round(realized).toLocaleString() : '—'}</div>
         </div>
       </div>`;
@@ -1872,30 +1839,29 @@ function renderPositions() {
       const pnlRow = cp
         ? `<div class="compact-pnl-row">
             <div class="compact-pnl-label">合計損益</div>
-            <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;justify-content:flex-start;flex:1;">
-              <div class="compact-pnl-val" style="color:${pnlColor(totalPnl)}">${totalPnl >= 0 ? '+' : ''}${Math.round(totalPnl).toLocaleString()}<span style="font-size:17px;font-weight:normal;margin-left:2px;"> 元</span></div>
-              ${unr !== null ? `<div class="compact-pnl-pct" style="color:var(--muted); margin-left:auto;">（未實 ${unr>=0?'+':''}${Math.round(unr).toLocaleString()} ／ 估費 $${estimatedSellFee} ／ 估稅 $${estimatedSellTax}）</div>` : ''}
+            <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+              <div class="compact-pnl-val" style="color:${pnlColor(totalPnl)}">${totalPnl >= 0 ? '+' : ''}${Math.round(totalPnl).toLocaleString()} 元</div>
+              ${unr !== null ? `<div class="compact-pnl-pct" style="color:${pnlColor(unr)}">（未實 ${unr>=0?'+':''}${Math.round(unr).toLocaleString()} ／ 估費 $${estimatedSellFee} ／ 估稅 $${estimatedSellTax}）</div>` : ''}
             </div>
           </div>`
         : `<div class="compact-no-price">⟵ 點「⟳ 抓取現價」計算損益</div>`;
 
       // 操作列
-      const actionsRow = `<div class="compact-actions" style="display:flex; align-items:center; gap:8px; padding:12px 16px; border-top:1px solid var(--border); background:transparent;">
-        <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="flex:1.2; height:34px; padding:0; border-radius:8px; font-size:13px; background:transparent; border:1px solid var(--border2); color:var(--muted); box-sizing:border-box; display:flex; align-items:center; justify-content:center; gap:6px;">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M12 0.897755V3.95938C12 4.09471 11.9473 4.2245 11.8536 4.3202C11.7598 4.41589 11.6326 4.46965 11.5 4.46965H8.5C8.36739 4.46965 8.24021 4.41589 8.14645 4.3202C8.05268 4.2245 8 4.09471 8 3.95938C8 3.82405 8.05268 3.69426 8.14645 3.59857C8.24021 3.50287 8.36739 3.44911 8.5 3.44911H10.2931L9.37875 2.51595C8.44948 1.56328 7.1878 1.0258 5.87063 1.0215H5.8425C4.53636 1.01837 3.28151 1.54011 2.34937 2.47386C2.25389 2.56482 2.12731 2.61405 1.99672 2.61099C1.86612 2.60793 1.74189 2.55284 1.65059 2.4575C1.55929 2.36215 1.50817 2.23414 1.50818 2.10082C1.50819 1.96751 1.55932 1.8395 1.65062 1.74417C2.78033 0.617359 4.29988 -0.0093287 5.87952 0.000104982C7.45916 0.00953866 8.97142 0.654333 10.0881 1.79456L11 2.72772V0.897755C11 0.762423 11.0527 0.632634 11.1464 0.536939C11.2402 0.441245 11.3674 0.387484 11.5 0.387484C11.6326 0.387484 11.7598 0.441245 11.8536 0.536939C11.9473 0.632634 12 0.762423 12 0.897755ZM9.65063 9.52708C8.70927 10.4655 7.44337 10.9873 6.12747 10.9795C4.81156 10.9716 3.55175 10.4346 2.62125 9.48498L1.70688 8.55182H3.5C3.63261 8.55182 3.75979 8.49806 3.85355 8.40237C3.94732 8.30667 4 8.17688 4 8.04155C4 7.90622 3.94732 7.77643 3.85355 7.68073C3.75979 7.58504 3.63261 7.53128 3.5 7.53128H0.5C0.367392 7.53128 0.240215 7.58504 0.146447 7.68073C0.0526785 7.77643 0 7.90622 0 8.04155V11.1032C0 11.2385 0.0526785 11.3683 0.146447 11.464C0.240215 11.5597 0.367392 11.6134 0.5 11.6134C0.632608 11.6134 0.759785 11.5597 0.853553 11.464C0.947321 11.3683 1 11.2385 1 11.1032V9.27322L1.91438 10.2064C3.02951 11.3501 4.544 11.9953 6.125 12H6.15812C7.72568 12.0041 9.23171 11.3778 10.35 10.2568C10.4413 10.1614 10.4924 10.0334 10.4924 9.90011C10.4925 9.7668 10.4413 9.63878 10.35 9.54344C10.2587 9.44809 10.1345 9.393 10.0039 9.38994C9.87332 9.38689 9.74674 9.43611 9.65125 9.52708H9.65063Z" fill="currentColor"/></svg> 抓取現價
-        </button>
-        <input type="number" step="0.01" placeholder="現價" id="manual-${sym}"
-          style="flex:2; height:34px; padding:0 8px; text-align:center; border-radius:8px; font-size:13px; background:transparent; border:1px solid var(--border2); color:#FFF; font-family:'Roboto Flex', sans-serif; box-sizing:border-box;"
-          onkeydown="if(event.key==='Enter')saveManual('${sym}')">
-        <button class="btn btn-sm" onclick="saveManual('${sym}')" style="flex:0.6; height:34px; padding:0; border-radius:8px; font-size:15px; background:transparent; border:1px solid var(--border2); color:var(--muted); box-sizing:border-box; display:flex; align-items:center; justify-content:center;">
-          <svg width="15" height="11" viewBox="0 0 19 14" fill="none"><path d="M18.531 1.28104L6.53104 13.281C6.46139 13.3508 6.37867 13.4061 6.28762 13.4438C6.19657 13.4816 6.09898 13.501 6.00042 13.501C5.90185 13.501 5.80426 13.4816 5.71321 13.4438C5.62216 13.4061 5.53945 13.3508 5.46979 13.281L0.219792 8.03104C0.0790615 7.89031 0 7.69944 0 7.50042C0 7.30139 0.0790615 7.11052 0.219792 6.96979C0.360523 6.82906 0.551394 6.75 0.750417 6.75C0.94944 6.75 1.14031 6.82906 1.28104 6.96979L6.00042 11.6901L17.4698 0.219792C17.6105 0.0790612 17.8014 -1.48284e-09 18.0004 0C18.1994 1.48284e-09 18.3903 0.0790612 18.531 0.219792C18.6718 0.360522 18.7508 0.551394 18.7508 0.750417C18.7508 0.94944 18.6718 1.14031 18.531 1.28104Z" fill="currentColor"/></svg>
-        </button>
+      const actionsRow = `<div class="compact-actions">
+        <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:13px">⟳ 抓取現價</button>
+        <div style="display:flex;align-items:center;gap:6px;flex:1">
+          <input type="number" step="0.01" placeholder="現價" id="manual-${sym}"
+            style="flex:1;min-width:70px;padding:5px 8px;font-size:14px;font-family:'DM Mono',monospace"
+            onkeydown="if(event.key==='Enter')saveManual('${sym}')">
+          <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:13px;padding:5px 12px">✓</button>
+        </div>
       </div>`;
 
       return `<div class="compact-card">
         <div class="compact-top">
           <div>
-            <div class="compact-sym">${sym}<span>${stockNames[sym] || ''}</span></div>
+            <div class="compact-sym" style="color:${accentColor}">${sym}<span>${stockNames[sym] || ''}</span></div>
+            <div class="compact-sym-name">${qty > 0 ? qty.toLocaleString() + ' 股持有中' : '已出清'}</div>
           </div>
           ${priceBlock}
         </div>
@@ -1916,16 +1882,16 @@ function renderPositions() {
       if (!p || (p.qty <= 0 && p.realized === 0)) {
         const hadTrades = trades.some(t => t.sym === sym && t.who === who);
         if (!hadTrades) {
-          return `<div class="holder-table-row" style="padding: 12px 0;">
-            <div class="col-name" style="color:${accentColor}; font-size:14px;">${name(who)}</div>
-            <div class="col-empty" style="grid-column: 2 / -1; color: var(--muted); font-size: 14px; padding-left: 12px;">無持倉</div>
+          return `<div class="holder-table-row">
+            <div class="col-name" style="color:${accentColor}">${name(who)}</div>
+            <div class="col-empty" style="grid-column: 2 / -1; color: var(--muted); font-size: 12px;">無持倉</div>
           </div>`;
         }
       }
       if (!p) {
-        return `<div class="holder-table-row" style="padding: 12px 0;">
-          <div class="col-name" style="color:${accentColor}; font-size:14px;">${name(who)}</div>
-          <div class="col-empty" style="grid-column: 2 / -1; color: var(--muted); font-size: 14px; padding-left: 12px;">無持倉</div>
+        return `<div class="holder-table-row">
+          <div class="col-name" style="color:${accentColor}">${name(who)}</div>
+          <div class="col-empty" style="grid-column: 2 / -1; color: var(--muted); font-size: 12px;">無持倉</div>
         </div>`;
       }
 
@@ -1947,15 +1913,15 @@ function renderPositions() {
       const unr = cp && p.qty > 0 ? (cp * p.qty - estimatedSellFee - estimatedSellTax) - p.cost : null;
 
       const unrealizedBlock = unr !== null
-        ? `<div class="holder-table-details" style="font-size:12px; margin-top:8px;">價差 ${(cp - avg) >= 0 ? '+' : ''}${(cp - avg).toFixed(2)} &nbsp;/&nbsp; 估手續費 $${estimatedSellFee} &nbsp;/&nbsp; 估交易稅 $${estimatedSellTax}</div>`
-        : p.qty > 0 ? `<div class="holder-table-details" style="color:var(--muted); font-size:12px; margin-top:8px;">← 按「抓取現價」計算未實現損益</div>` : '';
+        ? `<div class="holder-table-details">現 ${cp} ／ 差 ${(cp - avg) >= 0 ? '+' : ''}${(cp - avg).toFixed(2)} ／ 估費 $${estimatedSellFee} ／ 估稅 $${estimatedSellTax}</div>`
+        : p.qty > 0 ? `<div class="holder-table-details" style="color:var(--muted)">← 按「抓取現價」計算未實現損益</div>` : '';
 
-      return `<div class="holder-table-row" style="padding: 12px 0;">
-        <div class="col-name" style="color:${accentColor}; font-size:14px;">${name(who)}</div>
-        <div class="col-val" style="font-size:14px;">${p.qty > 0 ? p.qty.toLocaleString() : '—'}</div>
-        <div class="col-val" style="font-size:14px;">${p.qty > 0 ? avg.toFixed(2) : '—'}</div>
-        <div class="col-val" style="color:${pnlColor(unr ?? 0)}; font-size:14px;">${unr !== null ? (unr >= 0 ? '+' : '') + Math.round(unr).toLocaleString() : '—'}</div>
-        <div class="col-val" style="color:${pnlColor(p.realized)}; font-size:14px;">${p.realized >= 0 ? '+' : ''}${Math.round(p.realized).toLocaleString()}</div>
+      return `<div class="holder-table-row">
+        <div class="col-name" style="color:${accentColor}">${name(who)}</div>
+        <div class="col-val">${p.qty > 0 ? p.qty.toLocaleString() : '—'}</div>
+        <div class="col-val">${p.qty > 0 ? avg.toFixed(2) : '—'}</div>
+        <div class="col-val" style="color:${pnlColor(unr ?? 0)}">${unr !== null ? (unr >= 0 ? '+' : '') + Math.round(unr).toLocaleString() : '—'}</div>
+        <div class="col-val" style="color:${pnlColor(p.realized)}">${p.realized >= 0 ? '+' : ''}${Math.round(p.realized).toLocaleString()}</div>
         ${unrealizedBlock}
       </div>`;
     };
@@ -1965,39 +1931,37 @@ function renderPositions() {
       const pA = pos[sym + '_A'], pB = pos[sym + '_B'];
 
       const priceHeader = cp
-        ? `<span style="font-family:'Roboto Flex', sans-serif;font-size:24px;font-weight:500;color:#FFF">${cp.toFixed(2)} <span style="font-size:14px;color:var(--muted);font-family:'Noto Sans TC',sans-serif;font-weight:normal;">元</span></span>`
-        : `<span style="color:var(--muted);font-size:14px;font-family:'Roboto Flex', sans-serif">— 尚無現價</span>`;
+        ? `<span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--text)">${cp.toFixed(2)} 元</span>`
+        : `<span style="color:var(--muted);font-size:14px;font-family:'DM Mono',monospace">— 尚無現價</span>`;
 
       const tableContent = `
-        <div class="holder-table" style="padding: 0.5rem 1.25rem;">
-          <div class="holder-table-row header-row" style="padding-bottom: 10px; border-bottom: 1px solid var(--border2);">
-            <div class="col-name" style="font-size:12px;">成員</div>
-            <div class="col-val" style="text-align:right; font-size:12px;">持股</div>
-            <div class="col-val" style="text-align:right; font-size:12px;">平均成本</div>
-            <div class="col-val" style="text-align:right; font-size:12px;">未實現</div>
-            <div class="col-val" style="text-align:right; font-size:12px;">已實現</div>
+        <div class="holder-table">
+          <div class="holder-table-row header-row">
+            <div class="col-name">成員</div>
+            <div class="col-qty">持股</div>
+            <div class="col-avg">均成本</div>
+            <div class="col-unreal">未實現</div>
+            <div class="col-real">已實現</div>
           </div>
           ${paneRowHTML(pA, 'A', sym)}
           ${paneRowHTML(pB, 'B', sym)}
         </div>
       `;
 
-      return `<div class="stock-card" style="background:var(--surface); border:1px solid var(--border); border-radius:16px; margin-bottom:16px; overflow:hidden;">
-        <div class="stock-card-header" style="display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid var(--border);">
-          <div class="stock-sym" style="color:#94A3B8; font-size:22px; font-family:'Roboto Flex', sans-serif; font-weight:500;">${sym}<span style="color:#FFF; font-size:18px; margin-left:8px; font-family:'Noto Sans TC',sans-serif; font-weight:normal;">${stockNames[sym] || ''}</span></div>
+      return `<div class="stock-card">
+        <div class="stock-card-header">
+          <div class="stock-sym">${sym}<span>${stockNames[sym] || ''}</span></div>
           ${priceHeader}
         </div>
         <div class="stock-card-body">${tableContent}</div>
-        <div class="stock-card-actions" style="display:flex; align-items:center; gap:8px; padding:12px 20px; border-top:1px solid var(--border); background:transparent;">
-          <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="flex:1.2; height:34px; padding:0; border-radius:8px; font-size:13px; background:transparent; border:1px solid var(--border2); color:var(--muted); box-sizing:border-box; display:flex; align-items:center; justify-content:center; gap:6px;">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M12 0.897755V3.95938C12 4.09471 11.9473 4.2245 11.8536 4.3202C11.7598 4.41589 11.6326 4.46965 11.5 4.46965H8.5C8.36739 4.46965 8.24021 4.41589 8.14645 4.3202C8.05268 4.2245 8 4.09471 8 3.95938C8 3.82405 8.05268 3.69426 8.14645 3.59857C8.24021 3.50287 8.36739 3.44911 8.5 3.44911H10.2931L9.37875 2.51595C8.44948 1.56328 7.1878 1.0258 5.87063 1.0215H5.8425C4.53636 1.01837 3.28151 1.54011 2.34937 2.47386C2.25389 2.56482 2.12731 2.61405 1.99672 2.61099C1.86612 2.60793 1.74189 2.55284 1.65059 2.4575C1.55929 2.36215 1.50817 2.23414 1.50818 2.10082C1.50819 1.96751 1.55932 1.8395 1.65062 1.74417C2.78033 0.617359 4.29988 -0.0093287 5.87952 0.000104982C7.45916 0.00953866 8.97142 0.654333 10.0881 1.79456L11 2.72772V0.897755C11 0.762423 11.0527 0.632634 11.1464 0.536939C11.2402 0.441245 11.3674 0.387484 11.5 0.387484C11.6326 0.387484 11.7598 0.441245 11.8536 0.536939C11.9473 0.632634 12 0.762423 12 0.897755ZM9.65063 9.52708C8.70927 10.4655 7.44337 10.9873 6.12747 10.9795C4.81156 10.9716 3.55175 10.4346 2.62125 9.48498L1.70688 8.55182H3.5C3.63261 8.55182 3.75979 8.49806 3.85355 8.40237C3.94732 8.30667 4 8.17688 4 8.04155C4 7.90622 3.94732 7.77643 3.85355 7.68073C3.75979 7.58504 3.63261 7.53128 3.5 7.53128H0.5C0.367392 7.53128 0.240215 7.58504 0.146447 7.68073C0.0526785 7.77643 0 7.90622 0 8.04155V11.1032C0 11.2385 0.0526785 11.3683 0.146447 11.464C0.240215 11.5597 0.367392 11.6134 0.5 11.6134C0.632608 11.6134 0.759785 11.5597 0.853553 11.464C0.947321 11.3683 1 11.2385 1 11.1032V9.27322L1.91438 10.2064C3.02951 11.3501 4.544 11.9953 6.125 12H6.15812C7.72568 12.0041 9.23171 11.3778 10.35 10.2568C10.4413 10.1614 10.4924 10.0334 10.4924 9.90011C10.4925 9.7668 10.4413 9.63878 10.35 9.54344C10.2587 9.44809 10.1345 9.393 10.0039 9.38994C9.87332 9.38689 9.74674 9.43611 9.65125 9.52708H9.65063Z" fill="currentColor"/></svg> 抓取現價
-          </button>
-          <input type="number" step="0.01" placeholder="現價" id="manual-${sym}"
-            style="flex:2; height:34px; padding:0 8px; text-align:center; border-radius:8px; font-size:13px; background:transparent; border:1px solid var(--border2); color:#FFF; font-family:'Roboto Flex', sans-serif; box-sizing:border-box;"
-            onkeydown="if(event.key==='Enter')saveManual('${sym}')">
-          <button class="btn btn-sm" onclick="saveManual('${sym}')" style="flex:0.6; height:34px; padding:0; border-radius:8px; font-size:15px; background:transparent; border:1px solid var(--border2); color:var(--muted); box-sizing:border-box; display:flex; align-items:center; justify-content:center;">
-            <svg width="15" height="11" viewBox="0 0 19 14" fill="none"><path d="M18.531 1.28104L6.53104 13.281C6.46139 13.3508 6.37867 13.4061 6.28762 13.4438C6.19657 13.4816 6.09898 13.501 6.00042 13.501C5.90185 13.501 5.80426 13.4816 5.71321 13.4438C5.62216 13.4061 5.53945 13.3508 5.46979 13.281L0.219792 8.03104C0.0790615 7.89031 0 7.69944 0 7.50042C0 7.30139 0.0790615 7.11052 0.219792 6.96979C0.360523 6.82906 0.551394 6.75 0.750417 6.75C0.94944 6.75 1.14031 6.82906 1.28104 6.96979L6.00042 11.6901L17.4698 0.219792C17.6105 0.0790612 17.8014 -1.48284e-09 18.0004 0C18.1994 1.48284e-09 18.3903 0.0790612 18.531 0.219792C18.6718 0.360522 18.7508 0.551394 18.7508 0.750417C18.7508 0.94944 18.6718 1.14031 18.531 1.28104Z" fill="currentColor"/></svg>
-          </button>
+        <div class="stock-card-actions">
+          <button class="btn btn-sm" onclick="fetchOneSym('${sym}')" id="fetch-btn-${sym}" style="font-size:13px">⟳ 抓取現價</button>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="number" step="0.01" placeholder="現價" id="manual-${sym}"
+              style="width:75px;padding:5px 8px;font-size:13px;font-family:'DM Mono',monospace"
+              onkeydown="if(event.key==='Enter')saveManual('${sym}')">
+            <button class="btn btn-sm" onclick="saveManual('${sym}')" style="font-size:13px;padding:5px 10px">✓</button>
+          </div>
         </div>
       </div>`;
     }).join('');
@@ -2170,13 +2134,13 @@ function renderHistory() {
             ? `單價 $${amt.toLocaleString()} + 手續費 $${fee}`
             : `單價 $${amt.toLocaleString()} - 手續費 $${fee} - 稅 $${tax}`;
           return `<tr>
-          <td style="font-family:'Roboto Flex', sans-serif;font-size:14px">${t.date}</td>
+          <td style="font-family:'DM Mono',monospace;font-size:14px">${t.date}</td>
           <td style="font-weight:500">${t.sym} <span style="font-size:13px;color:var(--muted);font-weight:normal;margin-left:4px">${stockNames[t.sym] || ''}</span></td>
           <td><span class="badge badge-${t.who.toLowerCase()}">${name(t.who)}</span></td>
           <td><span class="${t.side === 'buy' ? 'tag-buy' : 'tag-sell'}">${t.side === 'buy' ? '▲ 買進' : '▼ 賣出'}</span></td>
-          <td style="font-family:'Roboto Flex', sans-serif">${t.qty.toLocaleString()}</td>
-          <td style="font-family:'Roboto Flex', sans-serif">${t.price}</td>
-          <td style="font-family:'Roboto Flex', sans-serif;line-height:1.3">
+          <td style="font-family:'DM Mono',monospace">${t.qty.toLocaleString()}</td>
+          <td style="font-family:'DM Mono',monospace">${t.price}</td>
+          <td style="font-family:'DM Mono',monospace;line-height:1.3">
             <div>$${net.toLocaleString()}</div>
             <div style="font-size:12px;color:var(--muted)">${netSub}</div>
           </td>
@@ -2262,9 +2226,9 @@ function calcSettlement() {
     .filter(t => t.who === 'B' && t.side === 'sell')
     .reduce((sum, t) => sum + (t.qty * t.price) - (t.fee || 0) - (t.tax || 0), 0);
 
-  // B 已直接付給 A 的現金（僅限還款，不含紅利）
+  // B 已直接付給 A 的現金（還款 + 紅利都算進去，因為都是 B → A 的錢）
   const bPaidToA = cashFlows
-    .filter(cf => cf.type === 'b_to_a')
+    .filter(cf => cf.type === 'b_to_a' || cf.type === 'bonus_to_a')
     .reduce((sum, cf) => sum + cf.amount, 0);
 
   // A 曾退款給 B 的金額（算回到欠款裡）
@@ -2277,8 +2241,8 @@ function calcSettlement() {
     .filter(cf => cf.type === 'bonus_to_a')
     .reduce((sum, cf) => sum + cf.amount, 0);
 
-  // B 目前欠 A 的金額（買股借的 - 賣股還的 - B已付的 + A曾退的 + B承諾的紅利）
-  const netOwed = bBuyCost - bSellProceeds - bPaidToA + aRefundToB + bonusToA;
+  // B 目前欠 A 的金額（買股借的 - 賣股還的 - B已付的 + A曾退的）
+  const netOwed = bBuyCost - bSellProceeds - bPaidToA + aRefundToB;
 
   // B 當前持股的估計市值（若有現價）
   const pos = getPositions();
@@ -2320,34 +2284,29 @@ function calcSettlement() {
 function renderCashBalanceMetricCard() {
   const s = calcSettlement();
   if (!s.hasBTrades) {
-    return `<div class="metric-card" style="grid-column:1/-1; background: rgba(60, 60, 67, 0.18); border-color: rgba(255, 255, 255, 0.22); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px;">
-      <div style="font-family: 'SF Pro', -apple-system, sans-serif; font-size: 13px; font-weight: 400; color: #C7C7CC; letter-spacing: 0.06px;">帳款結算</div>
-      <div style="font-family: Arial, sans-serif; font-size: 13px; color: #8E8E93;">尚無 ${settings.nameB} 的交易記錄</div>
+    return `<div class="metric-card" style="grid-column:1/-1;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.25)">
+      <div class="metric-label">🤝 ${settings.nameB} ↔ ${settings.nameA} 結算</div>
+      <div class="metric-sub" style="margin-top:8px">尚無 ${settings.nameB} 的交易記錄</div>
     </div>`;
   }
-
   const owedColor = s.netOwed > 0 ? 'var(--red)' : 'var(--green)';
   const owedText = s.netOwed > 0
     ? `${settings.nameB} 欠 ${settings.nameA}`
     : `${settings.nameA} 欠 ${settings.nameB}`;
-    
-  const afterLiqName = s.afterLiquidation > 0 ? settings.nameB : settings.nameA;
-  const afterLiqAction = s.afterLiquidation > 0 ? '還欠' : '應退';
-  const afterLiqColor = s.afterLiquidation > 0 ? 'var(--red)' : 'var(--green)';
-
-  return `<div class="metric-card" style="grid-column:1/-1; background: rgba(60, 60, 67, 0.18); border-color: rgba(255, 255, 255, 0.22); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px;">
-    <div style="font-family: 'SF Pro', -apple-system, sans-serif; font-size: 13px; font-weight: 400; color: #C7C7CC; letter-spacing: 0.06px;">帳款結算</div>
-    <div style="display: flex; align-items: baseline; gap: 12px;">
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #8E8E93;">${owedText}</span>
-      <span style="font-family: 'Inter', sans-serif; font-size: 20px; color: ${owedColor};">$${Math.abs(s.netOwed).toLocaleString()}</span>
+  return `<div class="metric-card" style="grid-column:1/-1;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.25)">
+    <div class="metric-label">🤝 ${settings.nameB} ↔ ${settings.nameA} 結算</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; flex-wrap:wrap; gap:8px;">
+      <div>
+        <div style="font-size:11px; color:var(--muted); margin-bottom:2px;">${owedText}</div>
+        <div class="metric-value" style="color:${owedColor};font-size:22px">$${Math.abs(s.netOwed).toLocaleString()}</div>
+      </div>
+      ${s.hasAllPrices ? `<div style="text-align:right">
+        <div style="font-size:11px; color:var(--muted); margin-bottom:2px;">清倉後估算</div>
+        <div style="font-size:16px; font-weight:600; color:${s.afterLiquidation > 0 ? 'var(--red)' : 'var(--green)'}; font-family:monospace">
+          ${s.afterLiquidation > 0 ? `${settings.nameB} 還欠` : `${settings.nameA} 應退`} $${Math.abs(s.afterLiquidation).toLocaleString()}
+        </div>
+      </div>` : ''}
     </div>
-    ${s.hasAllPrices ? `
-    <div style="display: flex; align-items: baseline; gap: 8px;">
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #8E8E93;">清倉後估算</span>
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #FFCC00;">${afterLiqName}</span>
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #C7C7CC;">${afterLiqAction}</span>
-      <span style="font-family: 'Inter', sans-serif; font-size: 20px; color: ${afterLiqColor};">$${Math.abs(s.afterLiquidation).toLocaleString()}</span>
-    </div>` : ''}
   </div>`;
 }
 
@@ -2386,7 +2345,7 @@ function renderSettlementCard() {
     } else {
       estimateHTML = `<div class="settle-estimate">
         <div class="settle-estimate-title">📊 若現在全部清倉估算</div>
-        <div style="font-size:13px; color:var(--muted); font-family:'Roboto Flex', sans-serif;">部分股票無現價，請到「持股分析」頁面更新現價後再查看</div>
+        <div style="font-size:13px; color:var(--muted); font-family:'DM Mono',monospace;">部分股票無現價，請到「持股分析」頁面更新現價後再查看</div>
       </div>`;
     }
   }
@@ -2402,13 +2361,9 @@ function renderSettlementCard() {
       <span class="settle-row-val" style="color:var(--green)">+${fmt(s.bSellProceeds)}</span>
     </div>
     <div class="settle-row">
-      <span class="settle-row-label">− ${nameB} 已直接付 ${nameA}</span>
+      <span class="settle-row-label">− ${nameB} 已直接付 ${nameA}（含紅利 ${fmt(s.bonusToA)}）</span>
       <span class="settle-row-val" style="color:var(--green)">+${fmt(s.bPaidToA)}</span>
     </div>
-    ${s.bonusToA > 0 ? `<div class="settle-row">
-      <span class="settle-row-label">＋ ${nameB} 承諾給 ${nameA} 紅利</span>
-      <span class="settle-row-val" style="color:var(--red)">−${fmt(s.bonusToA)}</span>
-    </div>` : ''}
     ${s.aRefundToB > 0 ? `<div class="settle-row">
       <span class="settle-row-label">＋ ${nameA} 曾退款給 ${nameB}</span>
       <span class="settle-row-val" style="color:var(--red)">−${fmt(s.aRefundToB)}</span>
@@ -2417,7 +2372,7 @@ function renderSettlementCard() {
       <span class="settle-total-label">${netLabel}</span>
       <span class="settle-total-val" style="color:${netColor}">${fmt(s.netOwed)}</span>
     </div>
-    <div style="font-size:12px; color:var(--muted); padding: 6px 1.25rem 10px; font-family:'Roboto Flex', sans-serif">${netSub}</div>
+    <div style="font-size:12px; color:var(--muted); padding: 6px 1.25rem 10px; font-family:'DM Mono',monospace">${netSub}</div>
     ${estimateHTML}
   </div>`;
 }
