@@ -95,7 +95,7 @@ a { color: inherit; text-decoration: none; }
 .trade-card-sym { font-family: 'Roboto Flex', sans-serif; font-weight: 500; font-size: 22px; display: inline-flex; align-items: baseline; gap: 8px; color: #94A3B8; }
 .trade-card-sym-name { font-size: 18px; color: #FFF; font-weight: normal; font-family: 'Noto Sans TC', sans-serif; }
 .trade-card-date { font-family: 'Roboto Flex', sans-serif; font-size: 13px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 2px; }
-.trade-card-body { display: grid; grid-template-columns: 1fr 1.1fr 1.8fr; gap: 0; border-top: 1px solid var(--border); }
+.trade-card-body { display: grid; grid-template-columns: 0.8fr 1fr 2.2fr; gap: 0; border-top: 1px solid var(--border); }
 .trade-card-cell { padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
 .trade-card-cell:not(:last-child) { border-right: 1px solid var(--border); }
 .trade-card-cell-label { font-size: 13px; color: var(--muted); font-family: 'Noto Sans TC', sans-serif; }
@@ -693,29 +693,29 @@ select option { background: var(--surface2); }
 
     <!-- History -->
     <div class="section" id="sec-history">
-      <div class="page-header" style="flex-shrink: 0; display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: auto; margin-bottom: 20px; padding-bottom: 12px; position: sticky; top: 0; background: var(--bg); z-index: 100; margin-top: calc(-1rem - env(safe-area-inset-top)); padding-top: calc(1.5rem + env(safe-area-inset-top)); margin-left: -1rem; margin-right: -1rem; padding-left: 1rem; padding-right: 1rem;">
+      <div class="page-header" style="flex-shrink: 0; display: flex; flex-direction: column; align-items: stretch; gap: 12px; width: auto; margin-bottom: 20px; padding-bottom: 12px; position: sticky; top: 0; background: var(--bg); z-index: 100; margin-top: calc(-1rem - env(safe-area-inset-top)); padding-top: calc(1.5rem + env(safe-area-inset-top)); margin-left: -1rem; margin-right: -1rem; padding-left: 1rem; padding-right: 1rem;">
         <div class="page-title" style="text-align: left; font-size: 22px; font-weight: 500; font-family: 'Roboto', sans-serif; color: rgba(204, 204, 204, 1); line-height: 28px; flex-shrink: 0; margin: 0;">交易明細</div>
-        <div class="history-filters" style="display:flex;gap:6px;align-items:center;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;margin-left:auto;">
-          <select id="filter-who" onchange="renderHistory()" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;">
+        <div class="history-filters" style="display:flex;gap:4px;align-items:center;flex-wrap:nowrap;width:100%;">
+          <select id="filter-who" onchange="renderHistory()" style="flex:1; min-width:0; padding:6px 2px; font-size:12px; border-radius:6px; text-align:center;">
             <option value="">人員</option>
             <option value="A" id="filter-a">人員 A</option>
             <option value="B" id="filter-b">人員 B</option>
           </select>
-          <select id="filter-sym" onchange="renderHistory()" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;">
+          <select id="filter-sym" onchange="renderHistory()" style="flex:1; min-width:0; padding:6px 2px; font-size:12px; border-radius:6px; text-align:center;">
             <option value="">股票</option>
           </select>
-          <select id="filter-side" onchange="renderHistory()" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;">
+          <select id="filter-side" onchange="renderHistory()" style="flex:1; min-width:0; padding:6px 2px; font-size:12px; border-radius:6px; text-align:center;">
             <option value="">買賣</option>
             <option value="buy">買進</option>
             <option value="sell">賣出</option>
           </select>
-          <select id="filter-range" onchange="renderHistory()" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;">
+          <select id="filter-range" onchange="renderHistory()" style="flex:1; min-width:0; padding:6px 2px; font-size:12px; border-radius:6px; text-align:center;">
             <option value="">期間</option>
             <option value="this-month">當月</option>
             <option value="3-months">近三個月</option>
             <option value="1-year">近一年</option>
           </select>
-          <select id="filter-sort" onchange="renderHistory()" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;">
+          <select id="filter-sort" onchange="renderHistory()" style="flex:1; min-width:0; padding:6px 2px; font-size:12px; border-radius:6px; text-align:center;">
             <option value="desc">新➜舊</option>
             <option value="asc">舊➜新</option>
           </select>
