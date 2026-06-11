@@ -159,9 +159,9 @@ select option { background: var(--surface2); }
 /* Chart area */
 .chart-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 2rem; }
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; overflow: hidden; }
-.chart-title { font-size: 14px; color: #C7C7CC; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 1rem; text-align: center; }
+.chart-title { font-size: 13px; color: #C7C7CC; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; margin-bottom: 1px; text-align: center; }
 .chart-wrap { position: relative; height: 220px; }
-.chart-dual { display: flex; gap: 16px; height: 220px; }
+.chart-dual { display: flex; gap: 16px; height: 180px; }
 
 /* Stock overview cards */
 .stock-grid { display: grid; gap: 12px; }
@@ -425,11 +425,11 @@ select option { background: var(--surface2); }
   
   /* Mobile chart fixes */
   .chart-grid { display: flex; flex-direction: column; }
-  .chart-card { min-height: 250px; }
+  .chart-card { min-height: auto; }
   .chart-wrap { height: 180px; }
   .chart-dual { flex-direction: row; height: auto; gap: 8px; }
   .chart-dual > div { flex: 1 !important; min-width: 0; }
-  #chart-cost-a-container, #chart-cost-b-container { height: 140px !important; }
+  #chart-cost-a-container, #chart-cost-b-container { height: 110px !important; }
   .chart-card { padding: 1rem 0.85rem; }
   
   #sync-status-bar { margin-bottom: 0.75rem; }
@@ -590,16 +590,16 @@ select option { background: var(--surface2); }
           <div class="chart-title">持倉成本分佈</div>
           <div class="chart-dual">
             <div style="flex: 1; position: relative; min-width: 0; display: flex; flex-direction: column;">
-              <div style="position: relative; height: 180px;" id="chart-cost-a-container">
+              <div style="position: relative; height: 140px;" id="chart-cost-a-container">
                 <canvas id="chart-cost-a"></canvas>
               </div>
-              <div style="text-align: center; font-size: 10px; color: var(--muted); margin-top: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-a-title">人員 A 持倉配比</div>
+              <div style="text-align: center; font-size: 10px; color: var(--muted); margin-top: -4px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-a-title">人員 A 持倉配比</div>
             </div>
             <div style="flex: 1; position: relative; min-width: 0; display: flex; flex-direction: column;">
-              <div style="position: relative; height: 180px;" id="chart-cost-b-container">
+              <div style="position: relative; height: 140px;" id="chart-cost-b-container">
                 <canvas id="chart-cost-b"></canvas>
               </div>
-              <div style="text-align: center; font-size: 10px; color: var(--muted); margin-top: 8px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-b-title">人員 B 持倉配比</div>
+              <div style="text-align: center; font-size: 10px; color: var(--muted); margin-top: -4px; font-family: 'Noto Sans TC', sans-serif;" id="chart-cost-b-title">人員 B 持倉配比</div>
             </div>
           </div>
         </div>
@@ -1477,6 +1477,7 @@ function renderCharts() {
   const donutOpts = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: { padding: 15 },
     plugins: {
       legend: { display: false },
       tooltip: {
