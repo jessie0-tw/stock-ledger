@@ -624,7 +624,7 @@ select option { background: var(--surface2); }
     <div class="section" id="sec-positions">
       <div class="page-header" style="flex-shrink: 0; display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: auto; margin-bottom: 20px; padding-bottom: 12px; position: sticky; top: 0; background: var(--bg); z-index: 100; margin-top: calc(-1rem - env(safe-area-inset-top)); padding-top: calc(1.5rem + env(safe-area-inset-top)); margin-left: -1rem; margin-right: -1rem; padding-left: 1rem; padding-right: 1rem;">
         <div class="page-title" style="text-align: left; font-size: 22px; font-weight: 500; font-family: 'Roboto', sans-serif; color: rgba(204, 204, 204, 1); line-height: 28px; flex-shrink: 0; margin: 0;">持股分析</div>
-        <button class="btn" onclick="fetchAllPrices()" id="btn-fetch-all" style="background:#00C3D0; color:#000; border:none; border-radius:4px; padding:6px 10px; font-size:12px; font-weight:500; display:flex; align-items:center; gap:6px; margin-left:auto;">
+        <button class="btn btn-primary" onclick="fetchAllPrices()" id="btn-fetch-all" style="border:none; border-radius:4px; padding:6px 10px; font-size:12px; display:flex; align-items:center; gap:6px; margin-left:auto;">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M12 0.897755V3.95938C12 4.09471 11.9473 4.2245 11.8536 4.3202C11.7598 4.41589 11.6326 4.46965 11.5 4.46965H8.5C8.36739 4.46965 8.24021 4.41589 8.14645 4.3202C8.05268 4.2245 8 4.09471 8 3.95938C8 3.82405 8.05268 3.69426 8.14645 3.59857C8.24021 3.50287 8.36739 3.44911 8.5 3.44911H10.2931L9.37875 2.51595C8.44948 1.56328 7.1878 1.0258 5.87063 1.0215H5.8425C4.53636 1.01837 3.28151 1.54011 2.34937 2.47386C2.25389 2.56482 2.12731 2.61405 1.99672 2.61099C1.86612 2.60793 1.74189 2.55284 1.65059 2.4575C1.55929 2.36215 1.50817 2.23414 1.50818 2.10082C1.50819 1.96751 1.55932 1.8395 1.65062 1.74417C2.78033 0.617359 4.29988 -0.0093287 5.87952 0.000104982C7.45916 0.00953866 8.97142 0.654333 10.0881 1.79456L11 2.72772V0.897755C11 0.762423 11.0527 0.632634 11.1464 0.536939C11.2402 0.441245 11.3674 0.387484 11.5 0.387484C11.6326 0.387484 11.7598 0.441245 11.8536 0.536939C11.9473 0.632634 12 0.762423 12 0.897755ZM9.65063 9.52708C8.70927 10.4655 7.44337 10.9873 6.12747 10.9795C4.81156 10.9716 3.55175 10.4346 2.62125 9.48498L1.70688 8.55182H3.5C3.63261 8.55182 3.75979 8.49806 3.85355 8.40237C3.94732 8.30667 4 8.17688 4 8.04155C4 7.90622 3.94732 7.77643 3.85355 7.68073C3.75979 7.58504 3.63261 7.53128 3.5 7.53128H0.5C0.367392 7.53128 0.240215 7.58504 0.146447 7.68073C0.0526785 7.77643 0 7.90622 0 8.04155V11.1032C0 11.2385 0.0526785 11.3683 0.146447 11.464C0.240215 11.5597 0.367392 11.6134 0.5 11.6134C0.632608 11.6134 0.759785 11.5597 0.853553 11.464C0.947321 11.3683 1 11.2385 1 11.1032V9.27322L1.91438 10.2064C3.02951 11.3501 4.544 11.9953 6.125 12H6.15812C7.72568 12.0041 9.23171 11.3778 10.35 10.2568C10.4413 10.1614 10.4924 10.0334 10.4924 9.90011C10.4925 9.7668 10.4413 9.63878 10.35 9.54344C10.2587 9.44809 10.1345 9.393 10.0039 9.38994C9.87332 9.38689 9.74674 9.43611 9.65125 9.52708H9.65063Z" fill="black"/></svg> 抓取現價
         </button>
       </div>
@@ -774,7 +774,7 @@ select option { background: var(--surface2); }
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-primary" onclick="exportCSV()" id="btn-export">⬇ 下載 CSV 備份</button>
-          <button class="btn" onclick="copyCSV()" id="btn-copy-csv">複製 CSV 內容</button>
+          <button class="btn btn-primary" onclick="copyCSV()" id="btn-copy-csv">複製 CSV 內容</button>
         </div>
       </div>
       <div class="form-card">
@@ -794,7 +794,7 @@ select option { background: var(--surface2); }
         </div>
         <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
           <button class="btn btn-primary" onclick="importCSV('merge')" id="btn-import-merge">合併匯入</button>
-          <button class="btn" onclick="importCSV('replace')" id="btn-import-replace">覆蓋匯入</button>
+          <button class="btn btn-primary" onclick="importCSV('replace')" id="btn-import-replace">覆蓋匯入</button>
         </div>
       </div>
       <div class="form-card">
@@ -965,7 +965,7 @@ select option { background: var(--surface2); }
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn" onclick="closeCashFlowModal()" id="btn-cf-cancel">取消</button>
+      <button class="btn btn-primary" onclick="closeCashFlowModal()" id="btn-cf-cancel">取消</button>
       <button class="btn btn-primary" onclick="saveCashFlow()" id="btn-cf-add">儲存紀錄</button>
     </div>
   </div>
