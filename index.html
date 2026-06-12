@@ -24,8 +24,8 @@
   --border2: #334155;
   --text: #F8FAFC;
   --muted: #CCCCCC;
-  --accent: #FFCC00;
-  --accent2: #E6B800;
+  --accent: #D4A853;
+  --accent2: #C09540;
   --green: #34C759;
   --red: #FF2D55;
   --a-color: #d4a853;
@@ -146,7 +146,7 @@ input, select, textarea { background: var(--surface2); border: 1px solid var(--b
 .form-group input:focus, .form-group select:focus { border-color: var(--accent); outline: none; }
 .toggle-group-custom { display: flex; gap: 8px; border: none; background: transparent; padding: 0; }
 .toggle-group-custom .toggle-btn { flex: 1; border-radius: 8px; font-size: 15px; font-weight: normal; color: var(--text); background: transparent; border: 1px solid var(--border2); transition: all 0.2s; cursor: pointer; padding: 10px 0; }
-.toggle-group-custom .toggle-btn.active { border-color: #FFCC00; color: #FFCC00; background: rgba(255,204,0,0.1); }
+.toggle-group-custom .toggle-btn.active { border-color: #D4A853; color: #D4A853; background: rgba(212,168,83,0.1); }
 .add-trade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 select option { background: var(--surface2); }
 
@@ -162,7 +162,7 @@ select option { background: var(--surface2); }
 .btn-action-red { background: transparent; border: 1px solid var(--border2); color: var(--text); }
 .btn-action-red:hover, .btn-action-red:active { border-color: var(--red); color: var(--red); background: rgba(239,68,68,0.1); }
 .btn-action-yellow { background: transparent; border: 1px solid var(--border2); color: var(--text); }
-.btn-action-yellow:hover, .btn-action-yellow:active { border-color: #FFCC00; color: #FFCC00; background: rgba(255,204,0,0.1); }
+.btn-action-yellow:hover, .btn-action-yellow:active { border-color: #D4A853; color: #D4A853; background: rgba(212,168,83,0.1); }
 .btn-action-gray { background: transparent; border: 1px solid var(--border2); color: var(--text); }
 .btn-action-gray:hover, .btn-action-gray:active { border-color: var(--border); color: #FFF; background: rgba(255,255,255,0.05); }
 
@@ -242,9 +242,9 @@ select option { background: var(--surface2); }
 .person-tabs { display: flex; width: 100%; height: 46px; background: transparent; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 5px; gap: 4px; margin-bottom: 1.5rem; }
 .person-tab { flex: 1; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 14px; cursor: pointer; color: rgba(199, 199, 204, 1); transition: all 0.15s; font-family: 'SF Pro', 'Noto Sans TC', sans-serif; border: 1px solid transparent; user-select: none; }
 .person-tab:hover { color: #FFF; background: rgba(255,255,255,0.04); }
-.person-tab.active-all { border-color: #FFCC00; color: #FFCC00; background: rgba(255,204,0,0.1); }
-.person-tab.active-a { border-color: #FFCC00; color: #FFCC00; background: rgba(255,204,0,0.1); }
-.person-tab.active-b { border-color: #FFCC00; color: #FFCC00; background: rgba(255,204,0,0.1); }
+.person-tab.active-all { border-color: #D4A853; color: #D4A853; background: rgba(212,168,83,0.1); }
+.person-tab.active-a { border-color: #D4A853; color: #D4A853; background: rgba(212,168,83,0.1); }
+.person-tab.active-b { border-color: #D4A853; color: #D4A853; background: rgba(212,168,83,0.1); }
 
 /* CSV import/export area */
 .import-area { border: 2px dashed var(--border2); border-radius: var(--radius-lg); padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.15s; }
@@ -2369,7 +2369,7 @@ function renderCashBalanceMetricCard() {
     ${s.hasAllPrices ? `
     <div style="display: flex; align-items: baseline; gap: 8px;">
       <span style="font-family: Arial, sans-serif; font-size: 13px; color: #8E8E93;">清倉後估算</span>
-      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #FFCC00;">${afterLiqName}</span>
+      <span style="font-family: Arial, sans-serif; font-size: 13px; color: #D4A853;">${afterLiqName}</span>
       <span style="font-family: Arial, sans-serif; font-size: 13px; color: #C7C7CC;">${afterLiqAction}</span>
       <span style="font-family: 'Inter', sans-serif; font-size: 20px; color: ${afterLiqColor};">$${Math.abs(s.afterLiquidation).toLocaleString()}</span>
     </div>` : ''}
