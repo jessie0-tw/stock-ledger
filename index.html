@@ -23,7 +23,7 @@
   --border: #1E293B;
   --border2: #334155;
   --text: #F8FAFC;
-  --muted: #94A3B8;
+  --muted: #CCCCCC;
   --accent: #22C55E;
   --accent2: #16A34A;
   --green: #34C759;
@@ -487,7 +487,7 @@ select option { background: var(--surface2); }
 .cf-cat-a_to_b { background: rgba(91,155,213,0.12); color: var(--b-color); border: 1px solid rgba(91,155,213,0.25); }
 .cf-cat-bonus_to_a { background: rgba(212,168,83,0.12); color: var(--a-color); border: 1px solid rgba(212,168,83,0.25); }
 .cf-note { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
-.cf-amount { font-family: 'Roboto Flex', sans-serif; font-size: 16px; font-weight: 600; flex-shrink: 0; }
+.cf-amount { font-family: 'Roboto Flex', sans-serif; font-size: 16px; font-weight: normal; flex-shrink: 0; }
 
 /* Settlement overview card */
 .settle-overview { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem; }
@@ -498,11 +498,11 @@ select option { background: var(--surface2); }
 .settle-divider { border-top: 2px solid var(--border2); margin: 0; }
 .settle-total { background: rgba(0,0,0,0.2); padding: 14px 1.25rem; display: flex; justify-content: space-between; align-items: center; }
 .settle-total-label { font-size: 14px; color: var(--text); font-weight: 500; }
-.settle-total-val { font-size: 16px; font-weight: 600; font-family: 'Roboto Flex', sans-serif; }
+.settle-total-val { font-size: 18px; font-weight: normal; font-family: 'Roboto Flex', sans-serif; }
 .settle-estimate { background: rgba(212,168,83,0.04); border-top: 1px solid rgba(212,168,83,0.15); padding: 12px 1.25rem; }
 .settle-estimate-title { font-size: 11px; color: var(--a-color); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'Roboto Flex', sans-serif; margin-bottom: 8px; }
 .settle-estimate-row { display: flex; justify-content: space-between; font-size: 13px; font-family: 'Roboto Flex', sans-serif; color: var(--muted); padding: 3px 0; }
-.settle-estimate-result { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; font-family: 'Roboto Flex', sans-serif; padding: 8px 0 0; border-top: 1px solid rgba(212,168,83,0.2); margin-top: 6px; }
+.settle-estimate-result { display: flex; justify-content: space-between; font-size: 15px; font-weight: normal; font-family: 'Roboto Flex', sans-serif; padding: 8px 0 0; border-top: 1px solid rgba(212,168,83,0.2); margin-top: 6px; }
 
 /* Category selector active state */
 #cf-cat-btn-b_to_a.active, #cf-cat-btn-a_to_b.active, #cf-cat-btn-bonus_to_a.active {
@@ -2388,7 +2388,7 @@ function renderSettlementCard() {
   const netLabel = s.netOwed > 0 ? `${nameB} 目前欠 ${nameA}` : `${nameA} 目前欠 ${nameB}`;
   const netSub = s.netOwed > 0
     ? `（此金額目前以股票形式鎖在帳戶裡）`
-    : `（${nameB} 已超額還款）`;
+    : `（已超額還款）`;
 
   let estimateHTML = '';
   if (s.hasBTrades) {
@@ -2405,7 +2405,7 @@ function renderSettlementCard() {
         </div>
         <div class="settle-estimate-result" style="align-items: center;">
           <span style="color:#FFF">${afterLabel}</span>
-          <span style="color:${afterColor}; font-size: 24px; font-weight: 700; font-family: 'Roboto Flex', sans-serif;">${fmt(s.afterLiquidation)}</span>
+          <span style="color:${afterColor}; font-size: 24px; font-weight: normal; font-family: 'Roboto Flex', sans-serif;">${fmt(s.afterLiquidation)}</span>
         </div>
       </div>`;
     } else {
@@ -2438,11 +2438,8 @@ function renderSettlementCard() {
       <span class="settle-row-val" style="color:var(--green)">−${fmt(s.aRefundToB)}</span>
     </div>` : ''}
     <div class="settle-total">
-      <span class="settle-total-label">${netLabel}</span>
-      <div style="display: flex; flex-direction: column; align-items: flex-end;">
-        <span class="settle-total-val" style="color:${netColor}">${fmt(s.netOwed)}</span>
-        ${netSub ? `<span style="font-size:12px; color:var(--muted); font-family:'Roboto Flex', sans-serif; font-weight:normal; margin-top:2px;">${netSub}</span>` : ''}
-      </div>
+      <span class="settle-total-label">${netLabel} <span style="font-size:12px; color:var(--muted); font-weight:normal;">${netSub}</span></span>
+      <span class="settle-total-val" style="color:#FFF">${fmt(s.netOwed)}</span>
     </div>
     ${estimateHTML}
   </div>`;
