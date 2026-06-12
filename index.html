@@ -494,7 +494,7 @@ select option { background: var(--surface2); }
 .settle-title { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-family: 'Roboto Flex', sans-serif; padding: 1rem 1.25rem 0.5rem; }
 .settle-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 1.25rem; border-top: 1px solid var(--border); }
 .settle-row-label { font-size: 14px; color: var(--muted); font-family: 'Roboto Flex', sans-serif; }
-.settle-row-val { font-family: 'Roboto Flex', sans-serif; font-size: 15px; font-weight: 500; }
+.settle-row-val { font-family: 'Roboto Flex', sans-serif; font-size: 18px; font-weight: normal; }
 .settle-divider { border-top: 2px solid var(--border2); margin: 0; }
 .settle-total { background: rgba(0,0,0,0.2); padding: 14px 1.25rem; display: flex; justify-content: space-between; align-items: center; }
 .settle-total-label { font-size: 14px; color: var(--text); font-weight: 500; }
@@ -727,8 +727,8 @@ select option { background: var(--surface2); }
     <!-- CSV -->
     <!-- Settings -->
     <div class="section" id="sec-settings">
-      <div class="page-header">
-        <div><div class="page-title">系統設定</div></div>
+      <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+        <div class="page-title" style="text-align: left; font-size: 22px; font-weight: 500; font-family: 'Roboto', sans-serif; color: rgba(204, 204, 204, 1); line-height: 28px; flex-shrink: 0; margin: 0;">系統設定</div>
       </div>
       <div class="form-card">
         <div style="font-size:13px;font-weight:500;margin-bottom:16px">人員與手續費設定</div>
@@ -811,19 +811,26 @@ select option { background: var(--surface2); }
 
     <!-- Cash Flow -->
     <div class="section" id="sec-cashflow">
-      <div class="page-header" style="align-items:center;">
-        <div><div class="page-title">現金往來</div><div class="page-sub">B ↔ A 結算試算與現金紀錄</div></div>
-        <button class="btn btn-primary btn-sm" onclick="openCashFlowModal()" id="btn-open-cf-modal" style="flex-shrink:0;">＋ 新增紀錄</button>
+      <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+        <div class="page-title" style="text-align: left; font-size: 22px; font-weight: 500; font-family: 'Roboto', sans-serif; color: rgba(204, 204, 204, 1); line-height: 28px; flex-shrink: 0; margin: 0;">現金往來</div>
+        <button class="btn-add-record" onclick="openCashFlowModal()" id="btn-open-cf-modal" style="position: relative; z-index: 2; display:flex; align-items:center; gap:6px; font-weight: 500; font-size: 14px; padding: 5px 14px 5px 5px; border-radius: 100px 0 0 100px; margin-right: -1rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+          新增紀錄
+        </button>
       </div>
       <div id="settlement-card-wrap"></div>
-      <div class="cf-filter-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;">
-        <select id="cf-filter-cat" onchange="renderCashFlow()" style="flex:1 1 auto;padding:8px 10px;font-size:13px">
+      <div class="cf-filter-row" style="display:flex;gap:8px;flex-wrap:nowrap;margin-bottom:1rem;">
+        <select id="cf-filter-cat" onchange="renderCashFlow()" style="flex:1; min-width:0; padding:8px 10px;font-size:13px">
           <option value="">全部類型</option>
           <option value="b_to_a">B 付 A（還款）</option>
           <option value="bonus_to_a">B 給 A（紅利）</option>
           <option value="a_to_b">A 退 B</option>
         </select>
-        <select id="cf-filter-sort" onchange="renderCashFlow()" style="flex:1 1 auto;padding:8px 10px;font-size:13px">
+        <select id="cf-filter-sort" onchange="renderCashFlow()" style="flex:1; min-width:0; padding:8px 10px;font-size:13px">
           <option value="desc">日期：新 ➜ 舊</option>
           <option value="asc">日期：舊 ➜ 新</option>
         </select>
@@ -2391,51 +2398,52 @@ function renderSettlementCard() {
       : `清倉後 ${nameA} 應退 ${nameB}`;
     if (s.hasAllPrices) {
       estimateHTML = `<div class="settle-estimate">
-        <div class="settle-estimate-title">📊 若現在全部清倉估算</div>
+
         <div class="settle-estimate-row">
           <span>${nameB} 持股估值（含手續費稅）</span>
           <span style="color:var(--green)">+${fmt(s.bHoldingsValue)}</span>
         </div>
         <div class="settle-estimate-result">
-          <span style="color:${afterColor}">${afterLabel}</span>
+          <span style="color:#FFF">${afterLabel}</span>
           <span style="color:${afterColor}">${fmt(s.afterLiquidation)}</span>
         </div>
       </div>`;
     } else {
       estimateHTML = `<div class="settle-estimate">
-        <div class="settle-estimate-title">📊 若現在全部清倉估算</div>
+
         <div style="font-size:13px; color:var(--muted); font-family:'Roboto Flex', sans-serif;">部分股票無現價，請到「持股分析」頁面更新現價後再查看</div>
       </div>`;
     }
   }
 
   container.innerHTML = `<div class="settle-overview">
-    <div class="settle-title">🤝 ${nameB} ↔ ${nameA} 結算總覽</div>
     <div class="settle-row">
       <span class="settle-row-label">＋ ${nameB} 買股累計支出</span>
-      <span class="settle-row-val" style="color:var(--red)">−${fmt(s.bBuyCost)}</span>
+      <span class="settle-row-val" style="color:var(--green)">−${fmt(s.bBuyCost)}</span>
     </div>
     <div class="settle-row">
       <span class="settle-row-label">− ${nameB} 賣股已回款</span>
-      <span class="settle-row-val" style="color:var(--green)">+${fmt(s.bSellProceeds)}</span>
+      <span class="settle-row-val" style="color:var(--red)">+${fmt(s.bSellProceeds)}</span>
     </div>
     <div class="settle-row">
       <span class="settle-row-label">− ${nameB} 已直接付 ${nameA}</span>
-      <span class="settle-row-val" style="color:var(--green)">+${fmt(s.bPaidToA)}</span>
+      <span class="settle-row-val" style="color:var(--red)">+${fmt(s.bPaidToA)}</span>
     </div>
     ${s.bonusToA > 0 ? `<div class="settle-row">
       <span class="settle-row-label">＋ ${nameB} 承諾給 ${nameA} 紅利</span>
-      <span class="settle-row-val" style="color:var(--red)">−${fmt(s.bonusToA)}</span>
+      <span class="settle-row-val" style="color:var(--green)">−${fmt(s.bonusToA)}</span>
     </div>` : ''}
     ${s.aRefundToB > 0 ? `<div class="settle-row">
       <span class="settle-row-label">＋ ${nameA} 曾退款給 ${nameB}</span>
-      <span class="settle-row-val" style="color:var(--red)">−${fmt(s.aRefundToB)}</span>
+      <span class="settle-row-val" style="color:var(--green)">−${fmt(s.aRefundToB)}</span>
     </div>` : ''}
     <div class="settle-total">
       <span class="settle-total-label">${netLabel}</span>
-      <span class="settle-total-val" style="color:${netColor}">${fmt(s.netOwed)}</span>
+      <div style="display: flex; flex-direction: column; align-items: flex-end;">
+        <span class="settle-total-val" style="color:${netColor}">${fmt(s.netOwed)}</span>
+        ${netSub ? `<span style="font-size:12px; color:var(--muted); font-family:'Roboto Flex', sans-serif; font-weight:normal; margin-top:2px;">${netSub}</span>` : ''}
+      </div>
     </div>
-    <div style="font-size:12px; color:var(--muted); padding: 6px 1.25rem 10px; font-family:'Roboto Flex', sans-serif">${netSub}</div>
     ${estimateHTML}
   </div>`;
 }
