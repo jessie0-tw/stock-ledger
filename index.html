@@ -1286,6 +1286,22 @@ function applyNames() {
   if (tB) tB.textContent = settings.nameB;
 }
 
+function editStockName(sym) {
+  const current = stockNames[sym] || '';
+  const newName = prompt(`為股票 ${sym} 設定顯示名稱：`, current);
+  if (newName !== null) {
+    const trimmed = newName.trim();
+    if (trimmed) {
+      stockNames[sym] = trimmed;
+    } else {
+      delete stockNames[sym];
+    }
+    save();
+    renderPositions();
+    if (document.getElementById('sec-history').classList.contains('active')) renderHistory();
+  }
+}
+
 // ── Position View Tabs ────────────────────────────────
 function setPositionView(v) {
   positionView = v;
@@ -1918,7 +1934,7 @@ function renderPositions() {
       return `<div class="compact-card">
         <div class="compact-top">
           <div>
-            <div class="compact-sym">${sym}<span>${stockNames[sym] || ''}</span></div>
+            <div class="compact-sym">${sym}<span onclick="editStockName('${sym}')" style="cursor:pointer; border-bottom:1px dashed var(--muted); padding-bottom:1px;" title="點擊修改名稱">${stockNames[sym] || '✍️設定名稱'}</span></div>
           </div>
           ${priceBlock}
         </div>
@@ -2007,7 +2023,7 @@ function renderPositions() {
 
       return `<div class="stock-card" style="background:var(--surface); border:1px solid var(--border); border-radius:16px; margin-bottom:16px; overflow:hidden;">
         <div class="stock-card-header" style="display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid var(--border);">
-          <div class="stock-sym" style="color:#B1D4E5; font-size:22px; font-family:'Roboto Flex', sans-serif; font-weight:500;">${sym}<span style="color:#FFF; font-size:18px; margin-left:8px; font-family:'Noto Sans TC',sans-serif; font-weight:normal;">${stockNames[sym] || ''}</span></div>
+          <div class="stock-sym" style="color:#B1D4E5; font-size:22px; font-family:'Roboto Flex', sans-serif; font-weight:500;">${sym}<span onclick="editStockName('${sym}')" style="color:#FFF; font-size:18px; margin-left:8px; font-family:'Noto Sans TC',sans-serif; font-weight:normal; cursor:pointer; border-bottom:1px dashed var(--muted);" title="點擊修改名稱">${stockNames[sym] || '✍️設定名稱'}</span></div>
           ${priceHeader}
         </div>
         <div class="stock-card-body">${tableContent}</div>
@@ -2228,7 +2244,7 @@ function renderHistory() {
           <div class="trade-card-header">
             <div class="trade-card-date">${t.date.replace(/-/g, ' / ')}</div>
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div class="trade-card-sym">${t.sym}<span class="trade-card-sym-name">${stockNames[t.sym] || ''}</span></div>
+              <div class="trade-card-sym">${t.sym}<span class="trade-card-sym-name" onclick="editStockName('${t.sym}')" style="cursor:pointer; border-bottom:1px dashed var(--muted);" title="點擊修改名稱">${stockNames[t.sym] || '✍️設定名稱'}</span></div>
               <div style="display:flex; gap:8px; align-items:center;">
                 <span class="badge-outline badge-outline-${t.who.toLowerCase()}">${name(t.who)}</span>
                 <span class="badge-outline ${isBuy ? 'badge-outline-buy' : 'badge-outline-sell'}">${isBuy ? '買進' : '賣出'}</span>
