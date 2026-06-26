@@ -1690,19 +1690,7 @@ async function loadTWSEBulkData() {
     });
     if (res2.ok) parseTpexArr(await res2.json());
   } catch(e) {
-    console.log('[名稱快取] TPEX 直連失敗（可能是 CORS）:', e.message, '→ 嘗試 proxy...');
-    try {
-      const target = encodeURIComponent('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes');
-      const proxyRes = await fetch(`https://api.allorigins.win/get?url=${target}`, {
-        signal: AbortSignal.timeout(15000)
-      });
-      if (proxyRes.ok) {
-        const outer = await proxyRes.json();
-        if (outer.contents) parseTpexArr(JSON.parse(outer.contents));
-      }
-    } catch(e2) {
-      console.log('[名稱快取] TPEX proxy 也失敗:', e2.message);
-    }
+    console.log('[名稱快取] TPEX 直連失敗（可能是 CORS，將改用個別即時查詢）:', e.message);
   }
   console.log(`[名稱快取] 已載入 ${Object.keys(_twseNameCache).length} 支股票資料`);
   return _twseNameCache;
@@ -1771,16 +1759,7 @@ async function fetchTWSEDirect(sym) {
   return parseTWSEResponse(await res.json());
 }
 
-// 策略 4：allorigins proxy（備用，若服務恢復可用）
-async function fetchViaAllorigins(sym) {
-  const target = encodeURIComponent(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${sym}.tw|otc_${sym}.tw&json=1&delay=0&_=${Date.now()}`);
-  const url = `https://api.allorigins.win/get?url=${target}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
-  if (!res.ok) throw new Error('allorigins HTTP ' + res.status);
-  const outer = await res.json();
-  if (!outer.contents) throw new Error('no contents');
-  return parseTWSEResponse(JSON.parse(outer.contents));
-}
+
 
 async function fetchPrice(sym) {
   // 主力策略：從 TWSE/TPEX 官方批量資料取得（有 CORS *、有中文名稱、今日收盤價）
@@ -1801,31 +1780,32 @@ async function fetchPrice(sym) {
   }
 
   // 批量資料找不到（新上市、權證等），改用逐一查詢
-  // 策略 0：上櫃（TPEX）透過 allorigins proxy 抓取（解決 TPEX 無 CORS 的問題）
   const strategies = [
-    { name: 'TPEX via Proxy', fn: async () => {
-      const target = encodeURIComponent(`https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes`);
-      const url = `https://api.allorigins.win/get?url=${target}`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
-      if (!res.ok) throw new Error('allorigins HTTP ' + res.status);
-      const outer = await res.json();
-      if (!outer.contents) throw new Error('no contents');
-      const arr = JSON.parse(outer.contents);
-      const item = arr.find(i => i.SecuritiesCompanyCode?.trim() === sym);
-      if (!item) throw new Error('not found in TPEX');
-      const close = parseFloat(item.Close);
-      if (!close || close <= 0) throw new Error('invalid price');
-      const changeAmt = parseFloat(item.Change || '0');
-      const prev = close - changeAmt;
-      const changePct = prev > 0 ? (changeAmt / prev * 100) : null;
-      const name = item.CompanyName?.trim() || '';
-      if (name) stockNames[sym] = name;
-      return { price: close, prev, change: changePct, name };
+    { name: 'Custom Proxy (Yahoo query2)', fn: async () => {
+      const target = encodeURIComponent(`https://query2.finance.yahoo.com/v8/finance/chart/${sym}.TWO?interval=1d&range=5d`);
+      const url = `https://tpex-proxy.0jcintw.workers.dev/?url=${target}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) throw new Error('Proxy Yahoo HTTP ' + res.status);
+      const data = await res.json();
+      const meta = data?.chart?.result?.[0]?.meta;
+      if (!meta) throw new Error('No meta');
+      const price = meta.regularMarketPrice || meta.previousClose;
+      const prev = meta.previousClose;
+      if (!price || isNaN(price) || price <= 0) throw new Error('Invalid price');
+      const change = prev ? ((price - prev) / prev * 100) : null;
+      const name = stockNames[sym] || meta.shortName || sym;
+      return { price, prev, change, name };
+    }},
+    { name: 'Custom Proxy (MIS)', fn: async () => {
+      const target = encodeURIComponent(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${sym}.tw|otc_${sym}.tw&json=1&delay=0&_=${Date.now()}`);
+      const url = `https://tpex-proxy.0jcintw.workers.dev/?url=${target}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) throw new Error('Proxy MIS HTTP ' + res.status);
+      return parseTWSEResponse(await res.json());
     }},
     { name: 'Yahoo Finance (query2)', fn: () => fetchViaYahooDirect(sym) },
     { name: 'Yahoo Finance (query1)', fn: () => fetchViaYahooQuery1(sym) },
     { name: 'TWSE MIS 直連', fn: () => fetchTWSEDirect(sym) },
-    { name: 'Proxy (allorigins)', fn: () => fetchViaAllorigins(sym) },
   ];
 
   for (const s of strategies) {
