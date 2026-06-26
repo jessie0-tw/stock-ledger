@@ -1603,25 +1603,60 @@ async function loadTWSEBulkData() {
   _twseNameCache = {};
   try {
     // 上市（TSE）- www.twse.com.tw/rwd 支援 CORS Access-Control-Allow-Origin: *
+    // 2026/06 注意：API 回傳格式已從 JSON 改為 CSV
+    // CSV 欄位：日期,證券代號,證券名稱,成交股數,成交金額,開盤價,最高價,最低價,收盤價,漲跌價差,成交筆數
     const res = await fetch('https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY_ALL', {
       signal: AbortSignal.timeout(10000)
     });
     if (res.ok) {
-      const d = await res.json();
-      if (d.stat === 'OK' && d.data) {
-        // fields: ['證券代號','證券名稱','成交股數','成交金額','開盤價','最高價','最低價','收盤價','漲跌價差','成交筆數']
-        for (const row of d.data) {
-          const sym = row[0]?.trim();
-          const name = row[1]?.trim();
-          const closeRaw = row[7]?.replace(/,/g, '');
-          const changeRaw = row[8]?.trim();  // e.g. " 0.00" "+60.00" "-5.00"
+      const text = await res.text();
+      // 嘗試 JSON（舊格式）
+      if (text.trimStart().startsWith('{')) {
+        try {
+          const d = JSON.parse(text);
+          if (d.stat === 'OK' && d.data) {
+            // 舊 JSON 格式：['證券代號','證券名稱',...,'收盤價','漲跌價差',...]
+            for (const row of d.data) {
+              const sym = row[0]?.trim();
+              const name = row[1]?.trim();
+              if (!sym || !name) continue;
+              const closeRaw = row[7]?.replace(/,/g, '');
+              const changeRaw = row[8]?.trim();
+              const close = parseFloat(closeRaw);
+              if (!isNaN(close) && close > 0) {
+                const changeAmt = parseFloat(changeRaw?.replace(/[^0-9.]/g, '') || '0');
+                const isNeg = changeRaw && changeRaw.includes('-');
+                const prev = isNeg ? close + changeAmt : Math.max(0, close - changeAmt);
+                const changePct = prev > 0 ? ((close - prev) / prev * 100) : null;
+                _twseNameCache[sym] = { price: close, name, change: changePct, prev };
+              } else {
+                if (!_twseNameCache[sym]) _twseNameCache[sym] = { price: null, name, change: null, prev: null };
+              }
+            }
+          }
+        } catch(e) { console.log('[名稱快取] JSON 解析失敗:', e.message); }
+      } else {
+        // 新 CSV 格式：日期,證券代號,證券名稱,成交股數,成交金額,開盤價,最高價,最低價,收盤價,漲跌價差,成交筆數
+        const lines = text.split('\n');
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          // 欄位以逗號分隔，值可能有雙引號包覆
+          const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+          if (cols.length < 10) continue;
+          const sym = cols[1]?.trim();
+          const name = cols[2]?.trim();
+          if (!sym || !name || sym === '證券代號') continue;
+          const closeRaw = cols[8]?.replace(/,/g, '');
+          const changeRaw = cols[9]?.trim();
           const close = parseFloat(closeRaw);
-          if (sym && name && !isNaN(close) && close > 0) {
+          if (!isNaN(close) && close > 0) {
             const changeAmt = parseFloat(changeRaw?.replace(/[^0-9.]/g, '') || '0');
             const isNeg = changeRaw && changeRaw.includes('-');
             const prev = isNeg ? close + changeAmt : Math.max(0, close - changeAmt);
             const changePct = prev > 0 ? ((close - prev) / prev * 100) : null;
             _twseNameCache[sym] = { price: close, name, change: changePct, prev };
+          } else {
+            if (!_twseNameCache[sym]) _twseNameCache[sym] = { price: null, name, change: null, prev: null };
           }
         }
       }
@@ -1737,9 +1772,13 @@ async function fetchPrice(sym) {
     const cache = await loadTWSEBulkData();
     if (cache[sym]) {
       const { price, name, change, prev } = cache[sym];
-      if (name) stockNames[sym] = name;  // 更新中文名稱快取
-      console.log(`[${sym}] 成功 via TWSE/TPEX 官方資料: ${price} (${name})`);
-      return { price, prev, change, name };
+      if (name) stockNames[sym] = name;  // 先存名稱（即使無價格）
+      if (price && price > 0) {
+        console.log(`[${sym}] 成功 via TWSE/TPEX 官方資料: ${price} (${name})`);
+        return { price, prev, change, name };
+      }
+      // 有名稱但無收盤價，繼續嘗試其他策略抓價格
+      console.log(`[${sym}] 官方資料有名稱(${name})但無收盤價，嘗試其他策略...`);
     }
   } catch(e) {
     console.log(`[${sym}] 官方批量資料失敗: ${e.message}`);
@@ -1833,7 +1872,7 @@ function renderPositions() {
     return;
   }
 
-  // 排序：持有中的股票優先，已實現（清倉）的股票置底
+  // 排序：持有中的股票優先（依最新買進日期降冪），已實現（清倉）的股票置底（依已實現損益降冪）
   syms.sort((a, b) => {
     const posA_a = pos[a + '_A'], posA_b = pos[a + '_B'];
     const posB_a = pos[b + '_A'], posB_b = pos[b + '_B'];
@@ -1843,9 +1882,33 @@ function renderPositions() {
     const activeB = positionView === 'all'
       ? ((posB_a?.qty ?? 0) > 0 || (posB_b?.qty ?? 0) > 0)
       : ((pos[b + '_' + positionView]?.qty ?? 0) > 0);
+    // 持有中 vs 已清倉：先分組
     if (activeA && !activeB) return -1;
     if (!activeA && activeB) return 1;
-    return 0;
+    // 同組內：降冪排列
+    if (activeA && activeB) {
+      // 持有中：依最新買進日期降冪（越晚買的排越前面）
+      const latestBuy = (sym, whoFilter) => {
+        const filtered = trades.filter(t =>
+          t.sym === sym && t.side === 'buy' &&
+          (whoFilter === 'all' ? true : t.who === whoFilter)
+        );
+        return filtered.length ? filtered.map(t => t.date).sort().at(-1) : '';
+      };
+      const dateA = latestBuy(a, positionView);
+      const dateB = latestBuy(b, positionView);
+      return dateB.localeCompare(dateA);
+    } else {
+      // 已清倉：依已實現損益（A+B）降冪
+      const realA = (posA_a?.realized ?? 0) + (posA_b?.realized ?? 0);
+      const realB = (posB_a?.realized ?? 0) + (posB_b?.realized ?? 0);
+      if (positionView !== 'all') {
+        const rA = pos[a + '_' + positionView]?.realized ?? 0;
+        const rB = pos[b + '_' + positionView]?.realized ?? 0;
+        return rB - rA;
+      }
+      return realB - realA;
+    }
   });
 
   const isSingle = positionView !== 'all';
