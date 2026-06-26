@@ -1664,29 +1664,45 @@ async function loadTWSEBulkData() {
   } catch(e) {
     console.log('[名稱快取] TWSE 批量載入失敗:', e.message);
   }
-  try {
-    // 上櫃（TPEx/OTC）- openapi.tpex 有 CORS
-    const res2 = await fetch('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes', {
-      signal: AbortSignal.timeout(10000)
-    });
-    if (res2.ok) {
-      const arr = await res2.json();
-      if (Array.isArray(arr)) {
-        for (const item of arr) {
-          const sym = item.SecuritiesCompanyCode?.trim();
-          const name = item.CompanyName?.trim();
-          const close = parseFloat(item.Close);
-          if (sym && name && !isNaN(close) && close > 0) {
-            const changeAmt = parseFloat(item.Change || '0');
-            const prev = close - changeAmt;
-            const changePct = prev > 0 ? (changeAmt / prev * 100) : null;
-            _twseNameCache[sym] = { price: close, name, change: changePct, prev };
-          }
-        }
+  // 上櫃（TPEx/OTC）
+  // 注意：tpex_mainboard_quotes 沒有 CORS header，瀏覽器會 block
+  // 先嘗試直連（非瀏覽器環境可用），失敗則透過 allorigins proxy
+  const parseTpexArr = (arr) => {
+    if (!Array.isArray(arr)) return;
+    for (const item of arr) {
+      const sym = item.SecuritiesCompanyCode?.trim();
+      const name = item.CompanyName?.trim();
+      if (!sym || !name) continue;
+      const close = parseFloat(item.Close);
+      if (!isNaN(close) && close > 0) {
+        const changeAmt = parseFloat(item.Change || '0');
+        const prev = close - changeAmt;
+        const changePct = prev > 0 ? (changeAmt / prev * 100) : null;
+        _twseNameCache[sym] = { price: close, name, change: changePct, prev };
+      } else {
+        if (!_twseNameCache[sym]) _twseNameCache[sym] = { price: null, name, change: null, prev: null };
       }
     }
+  };
+  try {
+    const res2 = await fetch('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes', {
+      signal: AbortSignal.timeout(8000)
+    });
+    if (res2.ok) parseTpexArr(await res2.json());
   } catch(e) {
-    console.log('[名稱快取] TPEX 批量載入失敗:', e.message);
+    console.log('[名稱快取] TPEX 直連失敗（可能是 CORS）:', e.message, '→ 嘗試 proxy...');
+    try {
+      const target = encodeURIComponent('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes');
+      const proxyRes = await fetch(`https://api.allorigins.win/get?url=${target}`, {
+        signal: AbortSignal.timeout(15000)
+      });
+      if (proxyRes.ok) {
+        const outer = await proxyRes.json();
+        if (outer.contents) parseTpexArr(JSON.parse(outer.contents));
+      }
+    } catch(e2) {
+      console.log('[名稱快取] TPEX proxy 也失敗:', e2.message);
+    }
   }
   console.log(`[名稱快取] 已載入 ${Object.keys(_twseNameCache).length} 支股票資料`);
   return _twseNameCache;
@@ -1785,7 +1801,27 @@ async function fetchPrice(sym) {
   }
 
   // 批量資料找不到（新上市、權證等），改用逐一查詢
+  // 策略 0：上櫃（TPEX）透過 allorigins proxy 抓取（解決 TPEX 無 CORS 的問題）
   const strategies = [
+    { name: 'TPEX via Proxy', fn: async () => {
+      const target = encodeURIComponent(`https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes`);
+      const url = `https://api.allorigins.win/get?url=${target}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
+      if (!res.ok) throw new Error('allorigins HTTP ' + res.status);
+      const outer = await res.json();
+      if (!outer.contents) throw new Error('no contents');
+      const arr = JSON.parse(outer.contents);
+      const item = arr.find(i => i.SecuritiesCompanyCode?.trim() === sym);
+      if (!item) throw new Error('not found in TPEX');
+      const close = parseFloat(item.Close);
+      if (!close || close <= 0) throw new Error('invalid price');
+      const changeAmt = parseFloat(item.Change || '0');
+      const prev = close - changeAmt;
+      const changePct = prev > 0 ? (changeAmt / prev * 100) : null;
+      const name = item.CompanyName?.trim() || '';
+      if (name) stockNames[sym] = name;
+      return { price: close, prev, change: changePct, name };
+    }},
     { name: 'Yahoo Finance (query2)', fn: () => fetchViaYahooDirect(sym) },
     { name: 'Yahoo Finance (query1)', fn: () => fetchViaYahooQuery1(sym) },
     { name: 'TWSE MIS 直連', fn: () => fetchTWSEDirect(sym) },
