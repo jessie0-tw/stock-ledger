@@ -1833,6 +1833,21 @@ function renderPositions() {
     return;
   }
 
+  // 排序：持有中的股票優先，已實現（清倉）的股票置底
+  syms.sort((a, b) => {
+    const posA_a = pos[a + '_A'], posA_b = pos[a + '_B'];
+    const posB_a = pos[b + '_A'], posB_b = pos[b + '_B'];
+    const activeA = positionView === 'all'
+      ? ((posA_a?.qty ?? 0) > 0 || (posA_b?.qty ?? 0) > 0)
+      : ((pos[a + '_' + positionView]?.qty ?? 0) > 0);
+    const activeB = positionView === 'all'
+      ? ((posB_a?.qty ?? 0) > 0 || (posB_b?.qty ?? 0) > 0)
+      : ((pos[b + '_' + positionView]?.qty ?? 0) > 0);
+    if (activeA && !activeB) return -1;
+    if (!activeA && activeB) return 1;
+    return 0;
+  });
+
   const isSingle = positionView !== 'all';
 
   if (isSingle) {
