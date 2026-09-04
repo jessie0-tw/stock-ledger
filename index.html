@@ -676,8 +676,8 @@ select option { background: var(--surface); }
           </div>
           
           <div class="form-group">
-            <label class="field-label">成交價（元）</label>
-            <input id="f-price" type="number" step="0.01" placeholder="600">
+            <label class="field-label">成交價（元，股票股利可填 0）</label>
+            <input id="f-price" type="number" step="0.01" placeholder="600" min="0">
           </div>
           <div class="form-group">
             <label class="field-label">備註（選填）</label>
@@ -899,8 +899,8 @@ select option { background: var(--surface); }
           <input id="edit-qty" type="number" placeholder="1000" min="1">
         </div>
         <div class="form-group">
-          <label class="field-label">成交價（元）</label>
-          <input id="edit-price" type="number" step="0.01" placeholder="600">
+          <label class="field-label">成交價（元，股票股利可填 0）</label>
+          <input id="edit-price" type="number" step="0.01" placeholder="600" min="0">
         </div>
       </div>
       <div class="form-group">
@@ -1021,12 +1021,16 @@ function backfillTrades() {
       migrated = true;
       const amt = Math.round(t.qty * t.price);
       
-      // 手續費計算
+      // 手續費計算（成交金額為 0，例如股票股利入帳，則不收手續費）
       let fee = t.fee;
       if (fee === undefined) {
-        const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
-        const minFee = settings.minFee !== undefined ? settings.minFee : 1;
-        fee = Math.max(minFee, Math.round(amt * 0.001425 * discount));
+        if (amt > 0) {
+          const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
+          const minFee = settings.minFee !== undefined ? settings.minFee : 1;
+          fee = Math.max(minFee, Math.round(amt * 0.001425 * discount));
+        } else {
+          fee = 0;
+        }
       }
       
       // 交易稅計算
@@ -2179,13 +2183,14 @@ function addTrade() {
   const note = document.getElementById('f-note').value.trim();
   if (!sym) { toast('請輸入股票代號', 'error'); return; }
   if (!qty || qty <= 0) { toast('請輸入有效股數', 'error'); return; }
-  if (!price || price <= 0) { toast('請輸入有效成交價', 'error'); return; }
+  if (isNaN(price) || price < 0) { toast('請輸入有效成交價（股票股利可填 0）', 'error'); return; }
   if (!date) { toast('請選擇日期', 'error'); return; }
   
   const amount = qty * price;
   const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
   const minFee = settings.minFee !== undefined ? settings.minFee : 1;
-  const fee = Math.max(minFee, Math.round(amount * 0.001425 * discount));
+  // 價格為 0（例如股票股利入帳）視為無實際成交金額，不收手續費
+  const fee = amount > 0 ? Math.max(minFee, Math.round(amount * 0.001425 * discount)) : 0;
   
   let taxRate = 0.003;
   if (sym.startsWith('00')) {
@@ -2195,7 +2200,7 @@ function addTrade() {
     if (isDayTrade) taxRate = 0.0015; // 當沖稅半減
   }
   
-  const tax = side === 'sell' ? Math.round(amount * taxRate) : 0;
+  const tax = (side === 'sell' && amount > 0) ? Math.round(amount * taxRate) : 0;
 
   trades.push({ id: Date.now(), sym, who, side, qty, price, date, note, fee, tax });
   save();
@@ -2725,14 +2730,15 @@ function saveEdit() {
 
   if (!sym) { toast('請輸入股票代號', 'error'); return; }
   if (!qty || qty <= 0) { toast('請輸入有效股數', 'error'); return; }
-  if (!price || price <= 0) { toast('請輸入有效成交價', 'error'); return; }
+  if (isNaN(price) || price < 0) { toast('請輸入有效成交價（股票股利可填 0）', 'error'); return; }
   if (!date) { toast('請選擇日期', 'error'); return; }
 
   // Recalculate fee and tax based on updated values
   const amount = qty * price;
   const discount = settings.feeDiscount !== undefined ? settings.feeDiscount : 0.28;
   const minFee = settings.minFee !== undefined ? settings.minFee : 1;
-  const fee = Math.max(minFee, Math.round(amount * 0.001425 * discount));
+  // 價格為 0（例如股票股利入帳）視為無實際成交金額，不收手續費
+  const fee = amount > 0 ? Math.max(minFee, Math.round(amount * 0.001425 * discount)) : 0;
 
   let taxRate = 0.003;
   if (sym.startsWith('00')) {
@@ -2741,7 +2747,7 @@ function saveEdit() {
     const isDayTrade = trades.some(t => t.id !== id && t.sym === sym && t.who === who && t.date === date && t.side === 'buy');
     if (isDayTrade) taxRate = 0.0015;
   }
-  const tax = side === 'sell' ? Math.round(amount * taxRate) : 0;
+  const tax = (side === 'sell' && amount > 0) ? Math.round(amount * taxRate) : 0;
 
   const idx = trades.findIndex(t => t.id === id);
   if (idx === -1) { toast('找不到該筆交易', 'error'); return; }
